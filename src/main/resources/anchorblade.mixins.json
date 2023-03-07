@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "doctor4t",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "anchorblade.mixin.PlayerEntityMixin"
+  ],
+  "client": [
+    "anchorblade.mixin.ItemRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+	}
+}
