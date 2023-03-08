@@ -18,24 +18,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntity {
-	@Shadow public abstract float getAttackCooldownProgress(float baseTime);
-
 	protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
 		super(entityType, world);
 	}
 
+	@Shadow public abstract float getAttackCooldownProgress(float baseTime);
+
 	@Inject(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;getAttackCooldownProgress(F)F"))
-	private void attack(Entity target, CallbackInfo ci) {
+	private void arsenal$anchorSweep(Entity target, CallbackInfo ci) {
 		if (this.getMainHandStack().getItem() instanceof AnchorbladeItem) {
 			if (this.getAttackCooldownProgress(0.5F) > 0.9F) {
-				AnchorbladeItem.spawnSweepParticles((PlayerEntity) (Object) this, AnchorbladeItem.LUX_ANCHORBLADE_SWEEP_PARTICLES[this.getRandom().nextInt(AnchorbladeItem.LUX_ANCHORBLADE_SWEEP_PARTICLES.length)]);
+				AnchorbladeItem.spawnSweepParticles((PlayerEntity) (Object) this);
 				this.world.playSound(null, this.getX(), this.getY(), this.getZ(), ModSoundEvents.ANCHORBLADE_HIT, this.getSoundCategory(), 1.0F, 1.0F);
 			}
 		}
 	}
 
 	@Inject(method = "getBlockBreakingSpeed", at = @At("RETURN"), cancellable = true)
-	public void getBlockBreakingSpeed(BlockState block, CallbackInfoReturnable<Float> cir) {
+	public void arsenal$anchorBreak(BlockState block, CallbackInfoReturnable<Float> cir) {
 		if (this.getMainHandStack().getItem() instanceof AnchorbladeItem && this.isSubmergedIn(FluidTags.WATER)) {
 			cir.setReturnValue(cir.getReturnValue() * 2f);
 		}

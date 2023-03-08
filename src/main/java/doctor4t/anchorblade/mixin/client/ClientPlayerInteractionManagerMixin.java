@@ -2,7 +2,7 @@ package doctor4t.anchorblade.mixin.client;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import doctor4t.anchorblade.common.util.AnchorSelection;
+import doctor4t.anchorblade.common.util.WeaponSlot;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -17,9 +17,9 @@ public class ClientPlayerInteractionManagerMixin {
 	@Shadow @Final private MinecraftClient client;
 
 	@WrapOperation(method = "syncSelectedSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V"))
-	private void anchorblade$onUpdateSelectedSlot(ClientPlayNetworkHandler clientPlayNetworkHandler, Packet<?> packet, Operation<Void> operation) {
-		if (packet instanceof AnchorSelection selection && this.client.player.getInventory() instanceof AnchorSelection anchorSelection) {
-			selection.anchorblade$setSelectedAnchor(anchorSelection.anchorblade$hasSelectedAnchor());
+	private void arsenal$syncWeaponSlot(ClientPlayNetworkHandler clientPlayNetworkHandler, Packet<?> packet, Operation<Void> operation) {
+		if (packet instanceof WeaponSlot selection && this.client.player.getInventory() instanceof WeaponSlot weaponSlot) {
+			selection.arsenal$setWeaponSlot(weaponSlot.arsenal$getWeaponSlot());
 		}
 		operation.call(clientPlayNetworkHandler, packet);
 	}

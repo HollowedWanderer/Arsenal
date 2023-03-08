@@ -1,6 +1,6 @@
 package doctor4t.anchorblade.mixin;
 
-import doctor4t.anchorblade.common.util.AnchorSelection;
+import doctor4t.anchorblade.common.util.WeaponSlot;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -15,9 +15,9 @@ public class ServerPlayNetworkHandlerMixin {
 	@Shadow public ServerPlayerEntity player;
 
 	@Inject(method = "onUpdateSelectedSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;getInventory()Lnet/minecraft/entity/player/PlayerInventory;", ordinal = 1))
-	private void anchorblade$onUpdateSelectedSlot(UpdateSelectedSlotC2SPacket packet, CallbackInfo ci) {
-		if (packet instanceof AnchorSelection selectPacket && this.player.getInventory() instanceof AnchorSelection selection) {
-			selection.anchorblade$setSelectedAnchor(selectPacket.anchorblade$hasSelectedAnchor());
+	private void arsenal$updateSlot(UpdateSelectedSlotC2SPacket packet, CallbackInfo ci) {
+		if (packet instanceof WeaponSlot selectPacket && this.player.getInventory() instanceof WeaponSlot selection) {
+			selection.arsenal$setWeaponSlot(selectPacket.arsenal$getWeaponSlot());
 		}
 	}
 }

@@ -1,21 +1,21 @@
 package doctor4t.anchorblade.mixin;
 
-import doctor4t.anchorblade.common.util.AnchorSelection;
+import doctor4t.anchorblade.common.util.WeaponSlot;
 import net.minecraft.network.packet.s2c.play.UpdateSelectedSlotS2CPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(UpdateSelectedSlotS2CPacket.class)
-public class UpdateSelectedSlotC2SPacketMixin implements AnchorSelection {
+public class UpdateSelectedSlotC2SPacketMixin implements WeaponSlot {
 	@Unique private boolean selectedAnchor = false;
 
 	@Override
-	public void anchorblade$setSelectedAnchor(boolean selectedAnchor) {
-		this.selectedAnchor = selectedAnchor;
+	public void arsenal$setWeaponSlot(boolean weaponSlot) {
+		this.selectedAnchor = weaponSlot;
 	}
 
 	@Override
-	public boolean anchorblade$hasSelectedAnchor() {
+	public boolean arsenal$getWeaponSlot() {
 		return this.selectedAnchor;
 	}
 }

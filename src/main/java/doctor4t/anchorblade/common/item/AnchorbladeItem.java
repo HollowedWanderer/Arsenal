@@ -9,9 +9,11 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
@@ -20,24 +22,17 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import org.quiltmc.quiltmappings.constants.MiningLevels;
 import xyz.amymialee.mialeemisc.util.MialeeText;
 
 import java.util.List;
 import java.util.Optional;
 
 public class AnchorbladeItem extends PickaxeItem {
-	public static final DefaultParticleType[] LUX_ANCHORBLADE_SWEEP_PARTICLES = {ModParticles.LUX_ANCHORLADE_SWEEP_1, ModParticles.LUX_ANCHORLADE_SWEEP_2, ModParticles.LUX_ANCHORLADE_SWEEP_3};
+	public static final DefaultParticleType[] LUX_ANCHORBLADE_SWEEP_PARTICLES = {ModParticles.LUX_ANCHORBLADE_SWEEP_1, ModParticles.LUX_ANCHORBLADE_SWEEP_2, ModParticles.LUX_ANCHORBLADE_SWEEP_3};
 
-	public AnchorbladeItem(ToolMaterial material, float attackDamage, float attackSpeed, Settings settings) {
-		super(material, (int) attackDamage, attackSpeed, settings);
-	}
-
-	public static void spawnSweepParticles(PlayerEntity player, DefaultParticleType type) {
-		double d0 = (-MathHelper.sin(player.getYaw() * ((float) Math.PI / 180F)));
-		double d1 = MathHelper.cos(player.getYaw() * ((float) Math.PI / 180F));
-		if (player.world instanceof ServerWorld) {
-			((ServerWorld) player.world).spawnParticles(type, player.getX() + d0, player.getBodyY(0.5D), player.getZ() + d1, 0, d0, 0.0D, d1, 0.0D);
-		}
+	public AnchorbladeItem(ToolMaterial material, int attackDamage, float attackSpeed, Settings settings) {
+		super(material, attackDamage, attackSpeed, settings);
 	}
 
 	@Override
@@ -55,6 +50,14 @@ public class AnchorbladeItem extends PickaxeItem {
 		super.appendTooltip(stack, world, tooltip, context);
 	}
 
+	public static void spawnSweepParticles(PlayerEntity player) {
+		double deltaX = -MathHelper.sin((float) (player.getYaw() * (Math.PI / 180F)));
+		double deltaZ = MathHelper.cos((float) (player.getYaw() * (Math.PI / 180F)));
+		if (player.world instanceof ServerWorld serverWorld) {
+			serverWorld.spawnParticles(LUX_ANCHORBLADE_SWEEP_PARTICLES[player.getRandom().nextInt(AnchorbladeItem.LUX_ANCHORBLADE_SWEEP_PARTICLES.length)], player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
+		}
+	}
+
 	public static ItemStack getWornAnchor(LivingEntity livingEntity) {
 		Optional<TrinketComponent> component = TrinketsApi.getTrinketComponent(livingEntity);
 		if (component.isPresent()) {
@@ -65,5 +68,39 @@ public class AnchorbladeItem extends PickaxeItem {
 			}
 		}
 		return ItemStack.EMPTY;
+	}
+
+	public static class AnchorBladeToolMaterial implements ToolMaterial {
+		public static final AnchorBladeToolMaterial INSTANCE = new AnchorBladeToolMaterial();
+
+		@Override
+		public int getDurability() {
+			return 2560;
+		}
+
+		@Override
+		public float getMiningSpeedMultiplier() {
+			return 9.0F;
+		}
+
+		@Override
+		public float getAttackDamage() {
+			return 4.0F;
+		}
+
+		@Override
+		public int getMiningLevel() {
+			return MiningLevels.NETHERITE;
+		}
+
+		@Override
+		public int getEnchantability() {
+			return 28;
+		}
+
+		@Override
+		public Ingredient getRepairIngredient() {
+			return Ingredient.ofItems(Items.COPPER_BLOCK);
+		}
 	}
 }

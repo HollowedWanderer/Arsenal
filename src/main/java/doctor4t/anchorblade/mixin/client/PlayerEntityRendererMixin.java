@@ -1,6 +1,6 @@
 package doctor4t.anchorblade.mixin.client;
 
-import doctor4t.anchorblade.client.render.AnchorbladeFeatureRenderer;
+import doctor4t.anchorblade.client.render.feature.AnchorbladeFeatureRenderer;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
@@ -13,12 +13,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerEntityRenderer.class)
 public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
-    public PlayerEntityRendererMixin(EntityRendererFactory.Context ctx, PlayerEntityModel<AbstractClientPlayerEntity> model, float shadowRadius) {
-        super(ctx, model, shadowRadius);
-    }
+	public PlayerEntityRendererMixin(EntityRendererFactory.Context ctx, PlayerEntityModel<AbstractClientPlayerEntity> model, float shadowRadius) {
+		super(ctx, model, shadowRadius);
+	}
 
-    @Inject(method = "<init>", at = @At("TAIL"))
-    public void anchorblade$backBlade(EntityRendererFactory.Context ctx, boolean slim, CallbackInfo ci) {
-        this.addFeature(new AnchorbladeFeatureRenderer<>(this));
-    }
+	@Inject(method = "<init>", at = @At("TAIL"))
+	public void arsenal$backBlade(EntityRendererFactory.Context ctx, boolean slim, CallbackInfo ci) {
+		this.addFeature(new AnchorbladeFeatureRenderer<>(this));
+	}
 }

@@ -2,7 +2,7 @@ package doctor4t.anchorblade.mixin.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import doctor4t.anchorblade.common.item.AnchorbladeItem;
-import doctor4t.anchorblade.common.util.AnchorSelection;
+import doctor4t.anchorblade.common.util.WeaponSlot;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -18,16 +18,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin extends DrawableHelper {
-	@Shadow protected abstract PlayerEntity getCameraPlayer();
 	@Shadow private int scaledWidth;
 	@Shadow private int scaledHeight;
+	@Shadow protected abstract PlayerEntity getCameraPlayer();
 	@Shadow protected abstract void renderHotbarItem(int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed);
 
 	@Inject(method = "renderHotbar", at = @At("TAIL"))
-	private void anchorblade$onRenderHotbar(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
+	private void arsenal$renderWeaponSlot(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
 		PlayerEntity player = this.getCameraPlayer();
 		ItemStack anchorStack = AnchorbladeItem.getWornAnchor(player);
-		if (!anchorStack.isEmpty() && player != null && player.getInventory() instanceof AnchorSelection selection && selection.anchorblade$hasSelectedAnchor()) {
+		if (!anchorStack.isEmpty() && player != null && player.getInventory() instanceof WeaponSlot selection && selection.arsenal$getWeaponSlot()) {
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 			RenderSystem.setShaderTexture(0, ClickableWidget.WIDGETS_TEXTURE);

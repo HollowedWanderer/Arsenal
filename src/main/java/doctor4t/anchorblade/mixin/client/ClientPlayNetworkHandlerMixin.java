@@ -1,6 +1,6 @@
 package doctor4t.anchorblade.mixin.client;
 
-import doctor4t.anchorblade.common.util.AnchorSelection;
+import doctor4t.anchorblade.common.util.WeaponSlot;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.UpdateSelectedSlotS2CPacket;
@@ -16,9 +16,9 @@ public class ClientPlayNetworkHandlerMixin {
 	@Shadow @Final private MinecraftClient client;
 
 	@Inject(method = "onHeldItemChange", at = @At(value = "TAIL"))
-	private void anchorblade$onUpdateSelectedSlot(UpdateSelectedSlotS2CPacket packet, CallbackInfo ci) {
-		if (packet instanceof AnchorSelection selectPacket && this.client.player.getInventory() instanceof AnchorSelection selection) {
-			selection.anchorblade$setSelectedAnchor(selectPacket.anchorblade$hasSelectedAnchor());
+	private void arsenal$syncWeaponSlot(UpdateSelectedSlotS2CPacket packet, CallbackInfo ci) {
+		if (packet instanceof WeaponSlot selectPacket && this.client.player.getInventory() instanceof WeaponSlot selection) {
+			selection.arsenal$setWeaponSlot(selectPacket.arsenal$getWeaponSlot());
 		}
 	}
 }

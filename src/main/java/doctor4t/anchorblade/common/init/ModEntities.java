@@ -1,6 +1,6 @@
 package doctor4t.anchorblade.common.init;
 
-import doctor4t.anchorblade.common.Anchorblade;
+import doctor4t.anchorblade.common.Arsenal;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.Identifier;
@@ -15,7 +15,7 @@ public interface ModEntities {
 //	public static EntityType<ModEntity> MOD_ENTITY = createEntity("mod_entity", QuiltEntityTypeBuilder.<ModEntity>create(SpawnGroup.MISC, ModEntity::new).setDimensions(EntityDimensions.fixed(0f, 0f)).maxChunkTrackingRange(128).build());
 
 	private static <T extends EntityType<? extends Entity>> T createEntity(String name, T entity) {
-		ENTITIES.put(entity, new Identifier(Anchorblade.MOD_ID, name));
+		ENTITIES.put(entity, new Identifier(Arsenal.MOD_ID, name));
 		return entity;
 	}
 

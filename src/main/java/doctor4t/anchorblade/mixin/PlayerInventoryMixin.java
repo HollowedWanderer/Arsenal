@@ -1,7 +1,7 @@
 package doctor4t.anchorblade.mixin;
 
 import doctor4t.anchorblade.common.item.AnchorbladeItem;
-import doctor4t.anchorblade.common.util.AnchorSelection;
+import doctor4t.anchorblade.common.util.WeaponSlot;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -16,12 +16,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerInventory.class)
-public class PlayerInventoryMixin implements AnchorSelection {
+public class PlayerInventoryMixin implements WeaponSlot {
 	@Shadow @Final public PlayerEntity player;
 	@Unique private boolean selectedAnchor = false;
 
 	@Inject(method = "getMainHandStack", at = @At("HEAD"), cancellable = true)
-	private void anchorblade$getMainHandStack(CallbackInfoReturnable<ItemStack> cir) {
+	private void arsenal$mainHandSlot(CallbackInfoReturnable<ItemStack> cir) {
 		if (this.selectedAnchor) {
 			ItemStack anchorStack = AnchorbladeItem.getWornAnchor(this.player);
 			if (!anchorStack.isEmpty() && anchorStack.getItem() instanceof AnchorbladeItem) {
@@ -33,7 +33,7 @@ public class PlayerInventoryMixin implements AnchorSelection {
 	}
 
 	@Inject(method = "updateItems", at = @At("TAIL"))
-	private void anchorblade$updateItems(CallbackInfo ci) {
+	private void arsenal$selectSlot(CallbackInfo ci) {
 		ItemStack anchorStack = AnchorbladeItem.getWornAnchor(this.player);
 		if (anchorStack.isEmpty() || !(anchorStack.getItem() instanceof AnchorbladeItem)) {
 			anchorStack.inventoryTick(this.player.world, this.player, 0, this.selectedAnchor);
@@ -41,7 +41,7 @@ public class PlayerInventoryMixin implements AnchorSelection {
 	}
 
 	@Inject(method = "getBlockBreakingSpeed", at = @At("HEAD"), cancellable = true)
-	private void anchorblade$getBlockBreakingSpeed(BlockState block, CallbackInfoReturnable<Float> cir) {
+	private void arsenal$slotBreaking(BlockState block, CallbackInfoReturnable<Float> cir) {
 		if (this.selectedAnchor) {
 			ItemStack anchorStack = AnchorbladeItem.getWornAnchor(this.player);
 			if (!anchorStack.isEmpty() && anchorStack.getItem() instanceof AnchorbladeItem) {
@@ -53,34 +53,34 @@ public class PlayerInventoryMixin implements AnchorSelection {
 	}
 
 	@Inject(method = "addPickBlock", at = @At("HEAD"))
-	private void anchorblade$addPickBlock(CallbackInfo ci) {
+	private void arsenal$nonPick(CallbackInfo ci) {
 		this.selectedAnchor = false;
 	}
 
 	@Inject(method = "swapSlotWithHotbar", at = @At("HEAD"))
-	private void anchorblade$swapSlotWithHotbar(int slot, CallbackInfo ci) {
+	private void arsenal$nonSwap(int slot, CallbackInfo ci) {
 		this.selectedAnchor = false;
 	}
 
 	@Inject(method = "scrollInHotbar", at = @At("HEAD"))
-	private void anchorblade$scrollInHotbar(double scrollAmount, CallbackInfo ci) {
+	private void arsenal$nonScroll(double scrollAmount, CallbackInfo ci) {
 		this.selectedAnchor = false;
 	}
 
 	@Inject(method = "clone", at = @At("HEAD"))
-	private void anchorblade$clone(PlayerInventory playerInventory, CallbackInfo ci) {
-		if (playerInventory instanceof AnchorSelection selection) {
-			this.selectedAnchor = selection.anchorblade$hasSelectedAnchor();
+	private void arsenal$cloned(PlayerInventory playerInventory, CallbackInfo ci) {
+		if (playerInventory instanceof WeaponSlot selection) {
+			this.selectedAnchor = selection.arsenal$getWeaponSlot();
 		}
 	}
 
 	@Override
-	public void anchorblade$setSelectedAnchor(boolean selectedAnchor) {
-		this.selectedAnchor = selectedAnchor;
+	public void arsenal$setWeaponSlot(boolean weaponSlot) {
+		this.selectedAnchor = weaponSlot;
 	}
 
 	@Override
-	public boolean anchorblade$hasSelectedAnchor() {
+	public boolean arsenal$getWeaponSlot() {
 		return this.selectedAnchor;
 	}
 }

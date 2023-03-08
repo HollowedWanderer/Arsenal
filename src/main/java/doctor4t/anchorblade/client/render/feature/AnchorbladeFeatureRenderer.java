@@ -1,7 +1,7 @@
-package doctor4t.anchorblade.client.render;
+package doctor4t.anchorblade.client.render.feature;
 
 import doctor4t.anchorblade.common.item.AnchorbladeItem;
-import doctor4t.anchorblade.common.util.AnchorSelection;
+import doctor4t.anchorblade.common.util.WeaponSlot;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -15,16 +15,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3f;
 
 public class AnchorbladeFeatureRenderer<T extends PlayerEntity, M extends EntityModel<T>> extends FeatureRenderer<T, M> {
-    public AnchorbladeFeatureRenderer(FeatureRendererContext<T, M> context) {
-        super(context);
-    }
+	public AnchorbladeFeatureRenderer(FeatureRendererContext<T, M> context) {
+		super(context);
+	}
 
-    @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-        ItemStack anchor = AnchorbladeItem.getWornAnchor(entity);
+	@Override
+	public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
+		ItemStack anchor = AnchorbladeItem.getWornAnchor(entity);
 		if (anchor != ItemStack.EMPTY) {
-			if (entity.getInventory() instanceof AnchorSelection selection) {
-				if (selection.anchorblade$hasSelectedAnchor()) return;
+			if (entity.getInventory() instanceof WeaponSlot selection) {
+				if (selection.arsenal$getWeaponSlot()) {
+					return;
+				}
 			}
 			matrices.push();
 			matrices.translate(-0.1, 0.25, 0.275);
@@ -33,5 +35,5 @@ public class AnchorbladeFeatureRenderer<T extends PlayerEntity, M extends Entity
 			MinecraftClient.getInstance().getItemRenderer().renderItem(anchor, ModelTransformation.Mode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, 0);
 			matrices.pop();
 		}
-    }
+	}
 }
