@@ -1,9 +1,13 @@
 {
   "item.arsenal.anchorblade": "Anchorblade",
 
+  "entity.anchorblade.anchorblade": "Anchorblade",
+
   "itemGroup.arsenal.arsenal": "Arsenal",
 
   "arsenal.subtitles.item.anchorblade.hit": "Anchorblade hits",
+  "arsenal.subtitles.item.anchorblade.throw": "Anchorblade throw",
+  "arsenal.subtitles.entity.anchorblade.land": "Anchorblade lands",
 
   "trinkets.slot.chest.arsenalweapon" : "Back Weapon"
 }

@@ -1,13 +1,12 @@
 package doctor4t.arsenal.common.item;
 
-import dev.emi.trinkets.api.SlotReference;
-import dev.emi.trinkets.api.TrinketComponent;
-import dev.emi.trinkets.api.TrinketsApi;
-import doctor4t.arsenal.common.init.ModItems;
+import doctor4t.arsenal.common.entity.AnchorbladeEntity;
+import doctor4t.anchorblade.common.init.ModSoundEvents;
 import doctor4t.arsenal.common.init.ModParticles;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.PickaxeItem;
@@ -15,9 +14,10 @@ import net.minecraft.item.ToolMaterial;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Pair;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -26,7 +26,6 @@ import org.quiltmc.quiltmappings.constants.MiningLevels;
 import xyz.amymialee.mialeemisc.util.MialeeText;
 
 import java.util.List;
-import java.util.Optional;
 
 public class AnchorbladeItem extends PickaxeItem {
 	public static final DefaultParticleType[] LUX_ANCHORBLADE_SWEEP_PARTICLES = {ModParticles.LUX_ANCHORBLADE_SWEEP_1, ModParticles.LUX_ANCHORBLADE_SWEEP_2, ModParticles.LUX_ANCHORBLADE_SWEEP_3};
@@ -37,7 +36,27 @@ public class AnchorbladeItem extends PickaxeItem {
 
 	@Override
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-		return TypedActionResult.success(user.getStackInHand(hand));
+		ItemStack stack = user.getStackInHand(hand);
+		int riptide = EnchantmentHelper.getRiptide(stack);
+		if (riptide <= 0 || user.isTouchingWaterOrRain()) {
+			if (!world.isClient) {
+				stack.damage(1, user, p -> p.sendToolBreakStatus(user.getActiveHand()));
+				if (riptide == 0) {
+					AnchorbladeEntity anchorbladeEntity = new AnchorbladeEntity(world, user, stack);
+					anchorbladeEntity.setProperties(user, user.getPitch(), user.getYaw(), 0.0F, 2.5F + (float) riptide * 0.5F, 1.0F);
+					if (user.getAbilities().creativeMode) {
+						anchorbladeEntity.pickupType = PersistentProjectileEntity.PickupPermission.CREATIVE_ONLY;
+					}
+					world.spawnEntity(anchorbladeEntity);
+					world.playSoundFromEntity(null, anchorbladeEntity, ModSoundEvents.ANCHORBLADE_THROW, SoundCategory.PLAYERS, 1.0F, 1.0F);
+					if (!user.getAbilities().creativeMode) {
+						user.getInventory().removeOne(stack);
+					}
+				}
+			}
+			user.incrementStat(Stats.USED.getOrCreateStat(this));
+		}
+		return TypedActionResult.pass(user.getStackInHand(hand));
 	}
 
 	@Override
@@ -56,18 +75,6 @@ public class AnchorbladeItem extends PickaxeItem {
 		if (player.world instanceof ServerWorld serverWorld) {
 			serverWorld.spawnParticles(LUX_ANCHORBLADE_SWEEP_PARTICLES[player.getRandom().nextInt(AnchorbladeItem.LUX_ANCHORBLADE_SWEEP_PARTICLES.length)], player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
 		}
-	}
-
-	public static ItemStack getWornAnchor(LivingEntity livingEntity) {
-		Optional<TrinketComponent> component = TrinketsApi.getTrinketComponent(livingEntity);
-		if (component.isPresent()) {
-			for (Pair<SlotReference, ItemStack> pair : component.get().getAllEquipped()) {
-				if (pair.getRight().isOf(ModItems.ANCHORBLADE)) {
-					return pair.getRight();
-				}
-			}
-		}
-		return ItemStack.EMPTY;
 	}
 
 	public static class AnchorBladeToolMaterial implements ToolMaterial {

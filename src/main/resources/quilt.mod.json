@@ -21,5 +21,5 @@
 			"client_init": "doctor4t.arsenal.client.ArsenalClient"
 		}
 	},
-	"mixin": "anchorblade.mixins.json"
+	"mixin": "arsenal.mixins.json"
 }

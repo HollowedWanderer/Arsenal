@@ -77,9 +77,6 @@ dependencies {
 	// ok zoomer
 //	runtimeOnly("com.github.EnnuiL:OkZoomer:1.19.2-SNAPSHOT")
 
-	// trinkets
-	modImplementation ("dev.emi:trinkets:${project.trinkets_version}")
-
 	// mialee misc
 	modImplementation include ("xyz.amymialee:mialeemisc:${project.mialeemisc_version}")
 }

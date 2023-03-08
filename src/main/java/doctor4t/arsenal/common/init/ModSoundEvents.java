@@ -12,6 +12,8 @@ public interface ModSoundEvents {
 	Map<SoundEvent, Identifier> SOUND_EVENTS = new LinkedHashMap<>();
 
 	SoundEvent ANCHORBLADE_HIT = createSoundEvent("item.anchorblade.hit");
+	SoundEvent ANCHORBLADE_THROW = createSoundEvent("item.anchorblade.throw");
+	SoundEvent ANCHORBLADE_LAND = createSoundEvent("entity.anchorblade.land");
 
 	static void initialize() {
 		SOUND_EVENTS.keySet().forEach(soundEvent -> {

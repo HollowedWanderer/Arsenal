@@ -1,6 +1,9 @@
 package doctor4t.arsenal.client;
 
+import doctor4t.anchorblade.common.init.ModEntities;
 import doctor4t.arsenal.client.particle.SweepAttackParticle;
+import doctor4t.arsenal.client.render.entity.AnchorbladeEntityRenderer;
+import doctor4t.arsenal.client.render.entity.ModEntityModelLayers;
 import doctor4t.arsenal.client.render.item.AnchorbladeItemRenderer;
 import doctor4t.arsenal.common.init.ModItems;
 import doctor4t.arsenal.common.init.ModParticles;
@@ -10,6 +13,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.option.KeyBind;
 import net.minecraft.client.util.ModelIdentifier;
@@ -38,6 +42,10 @@ public class ArsenalClient implements ClientModInitializer {
 				out.accept(new ModelIdentifier(anchorbladeId.getNamespace(), anchorbladeId.getPath() + "_handheld", "inventory"));
 			});
 		}
+
+		ModEntityModelLayers.initialize();
+
+		EntityRendererRegistry.register(ModEntities.ANCHORBLADE, AnchorbladeEntityRenderer::new);
 
 		ParticleFactoryRegistry.getInstance().register(ModParticles.LUX_ANCHORBLADE_SWEEP_1, SweepAttackParticle.Factory::new);
 		ParticleFactoryRegistry.getInstance().register(ModParticles.LUX_ANCHORBLADE_SWEEP_2, SweepAttackParticle.Factory::new);

@@ -24,9 +24,7 @@ public class AnchorbladeFeatureRenderer<T extends PlayerEntity, M extends Entity
 		ItemStack anchor = AnchorbladeItem.getWornAnchor(entity);
 		if (anchor != ItemStack.EMPTY) {
 			if (entity.getInventory() instanceof WeaponSlot selection) {
-				if (selection.arsenal$getWeaponSlot()) {
-					return;
-				}
+				if (selection.arsenal$getWeaponSlot()) return;
 			}
 			matrices.push();
 			matrices.translate(-0.1, 0.25, 0.275);
