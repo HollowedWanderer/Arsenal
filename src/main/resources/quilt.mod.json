@@ -2,22 +2,23 @@
 	"schema_version": 1,
 	"quilt_loader": {
 		"group": "doctor4t",
-		"id": "anchorblade",
+		"id": "arsenal",
 		"version": "${version}",
 		"metadata": {
-			"name": "Anchorblade",
+			"name": "Arsenal",
 			"description": "",
 			"contributors": {
 				"doctor4t": "Owner",
+				"AmyMialee": "Developer",
 				"Diansu": "Artist",
 				"Winsweep": "Friend"
 			},
-			"icon": "assets/anchorblade/icon.png"
+			"icon": "assets/arsenal/icon.png"
 		},
 		"intermediate_mappings": "net.fabricmc:intermediary",
 		"entrypoints": {
-			"init": "doctor4t.anchorblade.common.Anchorblade",
-			"client_init": "doctor4t.anchorblade.client.AnchorbladeClient"
+			"init": "doctor4t.arsenal.common.Arsenal",
+			"client_init": "doctor4t.arsenal.client.ArsenalClient"
 		}
 	},
 	"mixin": "anchorblade.mixins.json"

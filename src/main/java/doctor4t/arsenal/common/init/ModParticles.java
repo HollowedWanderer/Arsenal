@@ -1,0 +1,38 @@
+package doctor4t.arsenal.common.init;
+
+import doctor4t.arsenal.client.particle.SweepAttackParticle;
+import doctor4t.arsenal.common.Arsenal;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
+import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.particle.ParticleType;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+
+import java.util.function.BiConsumer;
+
+public interface ModParticles {
+	DefaultParticleType LUX_ANCHORBLADE_SWEEP_1 = FabricParticleTypes.simple(true);
+	DefaultParticleType LUX_ANCHORBLADE_SWEEP_2 = FabricParticleTypes.simple(true);
+	DefaultParticleType LUX_ANCHORBLADE_SWEEP_3 = FabricParticleTypes.simple(true);
+
+	static void initialize() {
+		initParticles(bind(Registry.PARTICLE_TYPE));
+	}
+
+	static void registerFactories() {
+		ParticleFactoryRegistry.getInstance().register(LUX_ANCHORBLADE_SWEEP_1, SweepAttackParticle.Factory::new);
+		ParticleFactoryRegistry.getInstance().register(LUX_ANCHORBLADE_SWEEP_2, SweepAttackParticle.Factory::new);
+		ParticleFactoryRegistry.getInstance().register(LUX_ANCHORBLADE_SWEEP_3, SweepAttackParticle.Factory::new);
+	}
+
+	private static void initParticles(BiConsumer<ParticleType<?>, Identifier> registry) {
+		registry.accept(LUX_ANCHORBLADE_SWEEP_1, Arsenal.id("lux_anchorblade_sweep_attack_1"));
+		registry.accept(LUX_ANCHORBLADE_SWEEP_2, Arsenal.id("lux_anchorblade_sweep_attack_2"));
+		registry.accept(LUX_ANCHORBLADE_SWEEP_3, Arsenal.id("lux_anchorblade_sweep_attack_3"));
+	}
+
+	private static <T> BiConsumer<T, Identifier> bind(Registry<? super T> registry) {
+		return (t, id) -> Registry.register(registry, id, t);
+	}
+}

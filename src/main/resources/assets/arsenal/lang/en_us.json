@@ -1,4 +1,9 @@
 {
   "item.arsenal.anchorblade": "Anchorblade",
-  "arsenal.subtitles.item.anchorblade.hit": "Anchorblade hits"
+
+  "itemGroup.arsenal.arsenal": "Arsenal",
+
+  "arsenal.subtitles.item.anchorblade.hit": "Anchorblade hits",
+
+  "trinkets.slot.chest.arsenalweapon" : "Back Weapon"
 }
