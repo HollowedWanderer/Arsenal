@@ -86,6 +86,9 @@ public class PlayerInventoryMixin implements WeaponSlotToggle, WeaponSlotHolder 
 		if (playerInventory instanceof WeaponSlotToggle selection) {
 			this.selectedWeapon = selection.arsenal$shouldWeaponSlot();
 		}
+		if (playerInventory instanceof WeaponSlotHolder holder) {
+			this.weapon.setStack(0, holder.arsenal$getWeapon());
+		}
 	}
 
 	@Override
