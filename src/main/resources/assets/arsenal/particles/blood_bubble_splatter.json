@@ -1,13 +1,13 @@
 {
   "textures": [
-    "clownscythe:blood_bubble_0",
-    "clownscythe:blood_bubble_1",
-    "clownscythe:blood_bubble_0",
-    "clownscythe:blood_bubble_1",
-    "clownscythe:blood_bubble_0",
-    "clownscythe:blood_bubble_1",
-    "clownscythe:blood_bubble_2",
-    "clownscythe:blood_bubble_3",
-    "clownscythe:blood_bubble_4"
+    "arsenal:blood_bubble_0",
+    "arsenal:blood_bubble_1",
+    "arsenal:blood_bubble_0",
+    "arsenal:blood_bubble_1",
+    "arsenal:blood_bubble_0",
+    "arsenal:blood_bubble_1",
+    "arsenal:blood_bubble_2",
+    "arsenal:blood_bubble_3",
+    "arsenal:blood_bubble_4"
   ]
 }

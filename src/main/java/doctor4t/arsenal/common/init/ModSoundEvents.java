@@ -12,7 +12,7 @@ public interface ModSoundEvents {
 	Map<SoundEvent, Identifier> SOUND_EVENTS = new LinkedHashMap<>();
 
 	SoundEvent ITEM_SCYTHE_HIT = createSoundEvent("item.scythe.hit");
-	SoundEvent ITEM_SCYTHE_SPEWING = createSoundEvent("item.clown_scythe.spewing");
+	SoundEvent ITEM_SCYTHE_SPEWING = createSoundEvent("item.scythe.spewing");
 	SoundEvent ENTITY_BLOOD_SCYTHE_HIT = createSoundEvent("entity.blood_scythe.hit");
 	SoundEvent ITEM_ANCHORBLADE_HIT = createSoundEvent("item.anchorblade.hit");
 	SoundEvent ITEM_ANCHORBLADE_THROW = createSoundEvent("item.anchorblade.throw");

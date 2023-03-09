@@ -37,7 +37,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 		this.drawTexture(matrices, i, j, 76, 61, 18, 18);
 		if (this.inventory instanceof WeaponSlotHolder holder && holder.arsenal$getWeapon().isEmpty()) {
 			RenderSystem.setShaderTexture(0, SLOT_TEXTURE);
-			this.drawTexture(matrices, i, j, 0, 0, 18, 18);
+			this.drawTexture(matrices, i + 1, j + 1, 0, 0, 16, 16);
 		}
 	}
 }
