@@ -21,8 +21,8 @@ public interface ModItems {
 	Map<Item, Identifier> ITEMS = new LinkedHashMap<>();
 	MialeeItemGroup MOD_ITEMS = MialeeItemGroup.create(Arsenal.id("arsenal"));
 
-	Item CLOWN_SCYTHE = createItem("clown_scythe", new ScytheItem(ToolMaterials.NETHERITE, 5.0f, -3.0f, new Item.Settings().rarity(Rarity.EPIC)));
-	Item ANCHORBLADE = createItem("anchorblade", new AnchorbladeItem(AnchorbladeItem.AnchorBladeToolMaterial.INSTANCE, 5, -3.0f, new QuiltItemSettings().rarity(Rarity.EPIC)));
+	Item CLOWN_SCYTHE = createItem("clown_scythe", new ScytheItem(ToolMaterials.NETHERITE, 5.0f, -3.0f, new Item.Settings().rarity(Rarity.COMMON)));
+	Item ANCHORBLADE = createItem("anchorblade", new AnchorbladeItem(AnchorbladeItem.AnchorBladeToolMaterial.INSTANCE, 5, -3.0f, new QuiltItemSettings().rarity(Rarity.COMMON)));
 
 	private static <T extends Item> T createItem(String name, T item) {
 		ITEMS.put(item, Arsenal.id(name));

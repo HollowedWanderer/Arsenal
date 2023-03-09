@@ -1,6 +1,7 @@
 package doctor4t.arsenal.mixin;
 
-import doctor4t.arsenal.common.enchantment.SpewingEnchantement;
+import doctor4t.arsenal.common.enchantment.SpewingEnchantment;
+import doctor4t.arsenal.common.enchantment.UniqueEnchantment;
 import doctor4t.arsenal.common.item.ScytheItem;
 import net.minecraft.enchantment.*;
 import net.minecraft.item.BookItem;
@@ -16,20 +17,23 @@ import java.util.List;
 public class EnchantmentHelperMixin {
 	@Inject(method = "getPossibleEntries", at = @At("RETURN"), cancellable = true)
 	private static void arsenal$noFireAspectOrKnockbackOnScythe(int power, ItemStack stack, boolean treasureAllowed, CallbackInfoReturnable<List<EnchantmentLevelEntry>> cir) {
-		if (stack.getItem() instanceof ScytheItem) {
+//		if (stack.getItem() instanceof ScytheItem) {
+//			List<EnchantmentLevelEntry> possibleEntries = cir.getReturnValue();
+//			for (int i = possibleEntries.size() - 1; i >= 0; i--) {
+//				Enchantment enchantment = possibleEntries.get(i).enchantment;
+//				if (enchantment instanceof FireAspectEnchantment || enchantment instanceof KnockbackEnchantment) {
+//					possibleEntries.remove(i);
+//				}
+//			}
+//			cir.setReturnValue(possibleEntries);
+//		}
+
+		if (!(stack.getItem() instanceof BookItem)) {
+			// remove unique enchantments from other weapons
 			List<EnchantmentLevelEntry> possibleEntries = cir.getReturnValue();
 			for (int i = possibleEntries.size() - 1; i >= 0; i--) {
 				Enchantment enchantment = possibleEntries.get(i).enchantment;
-				if (enchantment instanceof FireAspectEnchantment || enchantment instanceof KnockbackEnchantment) {
-					possibleEntries.remove(i);
-				}
-			}
-			cir.setReturnValue(possibleEntries);
-		} else if (!(stack.getItem() instanceof BookItem)) {
-			List<EnchantmentLevelEntry> possibleEntries = cir.getReturnValue();
-			for (int i = possibleEntries.size() - 1; i >= 0; i--) {
-				Enchantment enchantment = possibleEntries.get(i).enchantment;
-				if (enchantment instanceof SpewingEnchantement) {
+				if (enchantment instanceof UniqueEnchantment) {
 					possibleEntries.remove(i);
 				}
 			}

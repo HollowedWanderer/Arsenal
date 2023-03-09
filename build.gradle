@@ -55,6 +55,10 @@ repositories {
 		}
 	}
 
+	maven {
+		name "reach entity attributes"
+		url "https://maven.jamieswhiteshirt.com/libs-release"
+	}
 }
 
 // All the dependencies are declared at gradle/libs.version.toml and referenced with "libs.<id>"
@@ -79,6 +83,10 @@ dependencies {
 
 	// mialee misc
 	modImplementation include ("xyz.amymialee:mialeemisc:${project.mialeemisc_version}")
+
+	// reach entity attribute
+	modImplementation "com.jamieswhiteshirt:reach-entity-attributes:${reach_entity_attributes_version}"
+	include "com.jamieswhiteshirt:reach-entity-attributes:${reach_entity_attributes_version}"
 }
 
 processResources {

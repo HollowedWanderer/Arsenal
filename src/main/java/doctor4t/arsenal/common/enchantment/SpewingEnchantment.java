@@ -7,8 +7,8 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
-public class SpewingEnchantement extends Enchantment {
-	public SpewingEnchantement(Rarity weight, EquipmentSlot... slot) {
+public class SpewingEnchantment extends Enchantment implements UniqueEnchantment {
+	public SpewingEnchantment(Rarity weight, EquipmentSlot... slot) {
 		super(weight, EnchantmentTarget.WEAPON, slot);
 	}
 

@@ -1,5 +1,8 @@
 package doctor4t.arsenal.common.item;
 
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
+import com.jamieswhiteshirt.reachentityattributes.ReachEntityAttributes;
 import doctor4t.arsenal.common.entity.BloodScytheEntity;
 import doctor4t.arsenal.common.init.ModDamageSources;
 import doctor4t.arsenal.common.init.ModEnchantments;
@@ -7,10 +10,15 @@ import doctor4t.arsenal.common.init.ModParticles;
 import doctor4t.arsenal.common.init.ModSoundEvents;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.MiningToolItem;
+import net.minecraft.item.ToolMaterial;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.tag.BlockTags;
@@ -24,10 +32,22 @@ import xyz.amymialee.mialeemisc.util.MialeeText;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ScytheItem extends MiningToolItem implements GUIHeldVaryingRenderItem, CustomHitParticleItem, CustomHitSoundItem {
+	private static final EntityAttributeModifier REACH_MODIFIER = new EntityAttributeModifier(UUID.fromString("911af262-067d-4da2-854c-20f03cc2dd8b"), "Weapon modifier", 1, EntityAttributeModifier.Operation.ADDITION);
+
 	public ScytheItem(ToolMaterial material, float damage, float speed, Settings settings) {
 		super(damage, speed, material, BlockTags.HOE_MINEABLE, settings);
+	}
+
+	@Override
+	public Multimap<EntityAttribute, EntityAttributeModifier> getAttributeModifiers(EquipmentSlot slot) {
+		Multimap<EntityAttribute, EntityAttributeModifier> map = LinkedHashMultimap.create(super.getAttributeModifiers(slot));
+		if (slot == EquipmentSlot.MAINHAND) {
+			map.put(ReachEntityAttributes.ATTACK_RANGE, REACH_MODIFIER);
+		}
+		return map;
 	}
 
 	@Override

@@ -1,8 +1,6 @@
 package doctor4t.arsenal.common.entity;
 
-import doctor4t.arsenal.common.init.ModDamageSources;
-import doctor4t.arsenal.common.init.ModEntities;
-import doctor4t.arsenal.common.init.ModSoundEvents;
+import doctor4t.arsenal.common.init.*;
 import doctor4t.arsenal.common.util.ProjectileSlotHolder;
 import doctor4t.arsenal.common.util.WeaponSlotHolder;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -11,20 +9,25 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class AnchorbladeEntity extends PersistentProjectileEntity {
-	private ItemStack anchorbladeStack = new ItemStack(Items.TRIDENT);
+	private static final TrackedData<Boolean> REELING = DataTracker.registerData(AnchorbladeEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+	private ItemStack anchorbladeStack = new ItemStack(ModItems.ANCHORBLADE);
 	private boolean dealtDamage;
 	public int returnTimer;
 	private int slot = 0;
@@ -36,17 +39,29 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
 	public AnchorbladeEntity(World world, LivingEntity owner, ItemStack stack) {
 		super(ModEntities.ANCHORBLADE, owner, world);
 		this.anchorbladeStack = stack.copy();
+		this.dataTracker.set(REELING, (byte) EnchantmentHelper.getLevel(ModEnchantments.REELING, stack) > 0);
+	}
+
+	@Override
+	protected void initDataTracker() {
+		super.initDataTracker();
+		this.dataTracker.startTracking(REELING, false);
+	}
+
+	public boolean hasReeling() {
+		return this.dataTracker.get(REELING);
 	}
 
 	@Override
 	public void readCustomDataFromNbt(NbtCompound nbt) {
 		super.readCustomDataFromNbt(nbt);
-		if (nbt.contains("Trident", NbtElement.COMPOUND_TYPE)) {
-			this.anchorbladeStack = ItemStack.fromNbt(nbt.getCompound("Trident"));
+		if (nbt.contains("Anchorblade", NbtElement.COMPOUND_TYPE)) {
+			this.anchorbladeStack = ItemStack.fromNbt(nbt.getCompound("Anchorblade"));
 		}
 		if (nbt.contains("Slot", NbtElement.INT_TYPE)) {
 			this.slot = nbt.getInt("Slot");
 		}
+		this.dataTracker.set(REELING, (byte) EnchantmentHelper.getLevel(ModEnchantments.REELING, this.anchorbladeStack) > 0);
 	}
 
 	@Override
@@ -72,7 +87,7 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
 	@Override
 	public void tick() {
 		Entity entity = this.getOwner();
-		double d = 0.2;
+		double d = 2;
 		if ((this.dealtDamage || this.isNoClip()) && entity != null) {
 			if (!this.isOwnerAlive()) {
 				if (!this.world.isClient && this.pickupType == PersistentProjectileEntity.PickupPermission.ALLOWED) {
@@ -82,11 +97,11 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
 			} else {
 				this.setNoClip(true);
 				Vec3d vec3d = entity.getEyePos().subtract(this.getPos());
-				this.setPos(this.getX(), this.getY() + vec3d.y * 0.015 * d, this.getZ());
+//				this.setPos(this.getX(), this.getY() + vec3d.y * 0.015 * d, this.getZ());
 				if (this.world.isClient) {
 					this.lastRenderY = this.getY();
 				}
-				this.setVelocity(this.getVelocity().multiply(0.95).add(vec3d.normalize().multiply(d)));
+				this.setVelocity(vec3d.normalize().multiply(d));
 			}
 		}
 
@@ -95,14 +110,36 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
 		}
 
 		if (this.inGround && !this.dealtDamage && this.getOwner() != null && this.isOwnerAlive()) {
-			if (returnTimer++>100) {
-				this.dealtDamage =true;
+			// reel in user
+			if (this.hasReeling()) {
+				if (returnTimer++ > 100) {
+					this.dealtDamage = true;
+				}
+				float e = (float) (d / 5f);
+				Vec3d vec3d = this.getPos().subtract(entity.getEyePos());
+				entity.setVelocity(entity.getVelocity().multiply(0.95).add(vec3d.normalize().multiply(e)));
+				entity.fallDistance = 0;
+			} else {
+				float radius = 5f;
+
+				// impact
+				this.world.addParticle(ModParticles.SHOCKWAVE, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+
+				for (LivingEntity hitEntity : this.world.getEntitiesByClass(LivingEntity.class, this.getBoundingBox().expand(radius), livingEntity -> livingEntity.isAlive())) {
+					float strength = (float) (2f * (1.0 - hitEntity.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE)));
+
+					if (!(strength <= 0.0)) {
+						this.velocityDirty = true;
+						Vec3d dist = hitEntity.getPos().subtract(this.getPos());
+						float prox = (float) MathHelper.lerp(MathHelper.clamp(dist.length() / radius, 0, 1), 1, 0);
+						Vec3d dir = dist.normalize().multiply(prox * strength);
+						hitEntity.setVelocity(dir.x, dir.y, dir.z);
+						hitEntity.fallDistance = 0;
+					}
+				}
+
+				this.dealtDamage = true;
 			}
-			float e = (float) (d * 2);
-			Vec3d vec3d = this.getPos().subtract(entity.getEyePos());
-//			entity.setPos(entity.getX(), entity.getY() + vec3d.y * 0.015 * e, entity.getZ());
-			entity.setVelocity(entity.getVelocity().multiply(0.95).add(vec3d.normalize().multiply(e)));
-			entity.fallDistance = 0;
 		}
 
 		super.tick();
@@ -139,7 +176,7 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
 	@Override
 	protected void onEntityHit(EntityHitResult entityHitResult) {
 		Entity hitEntity = entityHitResult.getEntity();
-		float f = 4.0F;
+		float f = 2.0F; // damage (2 hearts)
 		if (hitEntity instanceof LivingEntity livingEntity) {
 			f += EnchantmentHelper.getAttackDamage(this.anchorbladeStack, livingEntity.getGroup());
 		}
@@ -156,11 +193,15 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
 					EnchantmentHelper.onUserDamaged(hitLivingEntity, owner);
 					EnchantmentHelper.onTargetDamaged((LivingEntity) owner, hitLivingEntity);
 
-					// knockback
-					float strength = (float) (0.2f * (1.0 - hitLivingEntity.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE)));
+					// knockback or reel in
+					float strength = (float) (3f * (1.0 - hitLivingEntity.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE)));
+
 					if (!(strength <= 0.0)) {
 						this.velocityDirty = true;
-						Vec3d dir = owner.getPos().subtract(hitLivingEntity.getPos()).multiply(strength);
+						Vec3d dir = hitLivingEntity.getPos().subtract(owner.getPos()).normalize().multiply(strength);
+						if (this.hasReeling()) {
+							dir = owner.getPos().subtract(hitLivingEntity.getPos()).multiply(strength / 10f);
+						}
 						hitLivingEntity.setVelocity(dir.x, dir.y, dir.z);
 					}
 				}

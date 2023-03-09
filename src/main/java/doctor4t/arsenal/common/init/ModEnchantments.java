@@ -1,7 +1,8 @@
 package doctor4t.arsenal.common.init;
 
 import doctor4t.arsenal.common.Arsenal;
-import doctor4t.arsenal.common.enchantment.SpewingEnchantement;
+import doctor4t.arsenal.common.enchantment.ReelingEnchantment;
+import doctor4t.arsenal.common.enchantment.SpewingEnchantment;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.util.Identifier;
@@ -13,7 +14,8 @@ import java.util.Map;
 public interface ModEnchantments {
 	Map<Enchantment, Identifier> ENCHANTMENTS = new LinkedHashMap<>();
 
-	Enchantment SPEWING = createEnchantment("spewing", new SpewingEnchantement(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND));
+	Enchantment SPEWING = createEnchantment("spewing", new SpewingEnchantment(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND));
+	Enchantment REELING = createEnchantment("reeling", new ReelingEnchantment(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND));
 
 	private static Enchantment createEnchantment(String name, Enchantment enchantment) {
 		ENCHANTMENTS.put(enchantment, new Identifier(Arsenal.MOD_ID, name));

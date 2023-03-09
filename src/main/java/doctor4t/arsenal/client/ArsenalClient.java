@@ -54,12 +54,7 @@ public class ArsenalClient implements ClientModInitializer {
 		EntityRendererRegistry.register(ModEntities.ANCHORBLADE, AnchorbladeEntityRenderer::new);
 
 		// particle renderers registration
-		ParticleFactoryRegistry.getInstance().register(ModParticles.CLOWN_SCYTHE_SWEEP_ATTACK_PARTICLE, SweepAttackParticle.Factory::new);
-		ParticleFactoryRegistry.getInstance().register(ModParticles.BLOOD_BUBBLE, BloodBubbleParticle.Factory::new);
-		ParticleFactoryRegistry.getInstance().register(ModParticles.BLOOD_BUBBLE_SPLATTER, BloodBubbleSplatterParticle.Factory::new);
-		ParticleFactoryRegistry.getInstance().register(ModParticles.LUX_ANCHORBLADE_SWEEP_1, SweepAttackParticle.Factory::new);
-		ParticleFactoryRegistry.getInstance().register(ModParticles.LUX_ANCHORBLADE_SWEEP_2, SweepAttackParticle.Factory::new);
-		ParticleFactoryRegistry.getInstance().register(ModParticles.LUX_ANCHORBLADE_SWEEP_3, SweepAttackParticle.Factory::new);
+		ModParticles.registerFactories();
 
 		// amy's bullshit sick ass custom weapon slot
 		WeaponSlotCallback.EVENT.register((player, holder, stack) -> {

@@ -14,8 +14,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class EnchantmentMixin {
 	@Inject(method = "isAcceptableItem", at = @At("RETURN"), cancellable = true)
 	protected void arsenal$isAcceptableItem(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-		if (((Object) this instanceof FireAspectEnchantment || (Object) this instanceof KnockbackEnchantment) && stack.getItem() instanceof ScytheItem) {
-			cir.setReturnValue(false);
-		}
+//		if (((Object) this instanceof FireAspectEnchantment || (Object) this instanceof KnockbackEnchantment) && stack.getItem() instanceof ScytheItem) {
+//			cir.setReturnValue(false);
+//		}
 	}
 }
