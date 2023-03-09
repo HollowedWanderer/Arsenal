@@ -9,6 +9,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -19,7 +20,6 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -87,12 +87,24 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
 					this.lastRenderY = this.getY();
 				}
 				this.setVelocity(this.getVelocity().multiply(0.95).add(vec3d.normalize().multiply(d)));
-				++this.returnTimer;
 			}
 		}
-		if (this.getOwner() != null && this.isOwnerAlive() && this.getPos().distanceTo(this.getOwner().getPos()) > 10) {
+
+		if (this.getOwner() != null && this.isOwnerAlive() && this.getPos().distanceTo(this.getOwner().getPos()) > 30) {
 			this.dealtDamage = true;
 		}
+
+		if (this.inGround && !this.dealtDamage) {
+			if (returnTimer++>100) {
+				this.dealtDamage =true;
+			}
+			float e = (float) (d * 2);
+			Vec3d vec3d = this.getPos().subtract(entity.getEyePos());
+//			entity.setPos(entity.getX(), entity.getY() + vec3d.y * 0.015 * e, entity.getZ());
+			entity.setVelocity(entity.getVelocity().multiply(0.95).add(vec3d.normalize().multiply(e)));
+			entity.fallDistance = 0;
+		}
+
 		super.tick();
 	}
 
@@ -126,25 +138,33 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
 
 	@Override
 	protected void onEntityHit(EntityHitResult entityHitResult) {
-		Entity entity = entityHitResult.getEntity();
+		Entity hitEntity = entityHitResult.getEntity();
 		float f = 4.0F;
-		if (entity instanceof LivingEntity livingEntity) {
+		if (hitEntity instanceof LivingEntity livingEntity) {
 			f += EnchantmentHelper.getAttackDamage(this.anchorbladeStack, livingEntity.getGroup());
 		}
-		Entity entity2 = this.getOwner();
-		DamageSource damageSource = ModDamageSources.anchor(this, entity2 == null ? this : entity2);
+		Entity owner = this.getOwner();
+		DamageSource damageSource = ModDamageSources.anchor(this, owner == null ? this : owner);
 		this.dealtDamage = true;
 		SoundEvent soundEvent = this.getHitSound();
-		if (entity.damage(damageSource, f)) {
-			if (entity.getType() == EntityType.ENDERMAN) {
+		if (hitEntity.damage(damageSource, f)) {
+			if (hitEntity.getType() == EntityType.ENDERMAN) {
 				return;
 			}
-			if (entity instanceof LivingEntity livingEntity2) {
-				if (entity2 instanceof LivingEntity) {
-					EnchantmentHelper.onUserDamaged(livingEntity2, entity2);
-					EnchantmentHelper.onTargetDamaged((LivingEntity) entity2, livingEntity2);
+			if (hitEntity instanceof LivingEntity hitLivingEntity) {
+				if (owner instanceof LivingEntity) {
+					EnchantmentHelper.onUserDamaged(hitLivingEntity, owner);
+					EnchantmentHelper.onTargetDamaged((LivingEntity) owner, hitLivingEntity);
+
+					// knockback
+					float strength = (float) (0.2f * (1.0 - hitLivingEntity.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE)));
+					if (!(strength <= 0.0)) {
+						this.velocityDirty = true;
+						Vec3d dir = owner.getPos().subtract(hitLivingEntity.getPos()).multiply(strength);
+						hitLivingEntity.setVelocity(dir.x, dir.y, dir.z);
+					}
 				}
-				this.onHit(livingEntity2);
+				this.onHit(hitLivingEntity);
 			}
 		}
 		this.setVelocity(this.getVelocity().multiply(-0.01, -0.1, -0.01));

@@ -18,17 +18,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-public class AnchorbladeItemRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer, SimpleSynchronousResourceReloadListener {
+public class GUIHeldVaryingItemRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer, SimpleSynchronousResourceReloadListener {
 	private static final Set<ModelTransformation.Mode> inventoryModes = Set.of(ModelTransformation.Mode.GUI, ModelTransformation.Mode.GROUND);
 	private final Identifier id;
-	private final Identifier scytheId;
+	private final Identifier weaponId;
 	private ItemRenderer itemRenderer;
-	private BakedModel inventoryScytheModel;
-	private BakedModel worldScytheModel;
+	private BakedModel inventoryWeaponModel;
+	private BakedModel worldWeaponModel;
 
-	public AnchorbladeItemRenderer(Identifier tridentId) {
-		this.id = new Identifier(tridentId.getNamespace(), tridentId.getPath() + "_renderer");
-		this.scytheId = tridentId;
+	public GUIHeldVaryingItemRenderer(Identifier weaponId) {
+		this.id = new Identifier(weaponId.getNamespace(), weaponId.getPath() + "_renderer");
+		this.weaponId = weaponId;
 	}
 
 	@Override
@@ -45,8 +45,8 @@ public class AnchorbladeItemRenderer implements BuiltinItemRendererRegistry.Dyna
 	public void reload(ResourceManager manager) {
 		final MinecraftClient client = MinecraftClient.getInstance();
 		this.itemRenderer = client.getItemRenderer();
-		this.inventoryScytheModel = client.getBakedModelManager().getModel(new ModelIdentifier(this.scytheId.getNamespace(), this.scytheId.getPath() + "_gui", "inventory"));
-		this.worldScytheModel = client.getBakedModelManager().getModel(new ModelIdentifier(this.scytheId.getNamespace(), this.scytheId.getPath() + "_handheld", "inventory"));
+		this.inventoryWeaponModel = client.getBakedModelManager().getModel(new ModelIdentifier(this.weaponId.getNamespace(), this.weaponId.getPath() + "_gui", "inventory"));
+		this.worldWeaponModel = client.getBakedModelManager().getModel(new ModelIdentifier(this.weaponId.getNamespace(), this.weaponId.getPath() + "_handheld", "inventory"));
 	}
 
 	@Override
@@ -54,14 +54,14 @@ public class AnchorbladeItemRenderer implements BuiltinItemRendererRegistry.Dyna
 		matrices.pop();
 		matrices.push();
 		if (inventoryModes.contains(mode)) {
-			this.itemRenderer.renderItem(stack, mode, false, matrices, vertexConsumers, light, overlay, this.inventoryScytheModel);
+			this.itemRenderer.renderItem(stack, mode, false, matrices, vertexConsumers, light, overlay, this.inventoryWeaponModel);
 		} else {
 			boolean leftHanded;
 			switch (mode) {
 				case FIRST_PERSON_LEFT_HAND, THIRD_PERSON_LEFT_HAND -> leftHanded = true;
 				default -> leftHanded = false;
 			}
-			this.itemRenderer.renderItem(stack, mode, leftHanded, matrices, vertexConsumers, light, overlay, this.worldScytheModel);
+			this.itemRenderer.renderItem(stack, mode, leftHanded, matrices, vertexConsumers, light, overlay, this.worldWeaponModel);
 		}
 	}
 }
