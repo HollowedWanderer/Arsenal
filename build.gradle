@@ -97,6 +97,10 @@ dependencies {
 
 	// amarite
 	modImplementation files ("libs/amarite-1.0.11.jar")
+
+	// mixin extras
+	implementation include ("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
+	annotationProcessor ("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
 }
 
 processResources {
