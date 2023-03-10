@@ -81,16 +81,16 @@ public class ScytheItem extends MiningToolItem implements GUIHeldVaryingRenderIt
 
 				world.spawnEntity(bloodScythe);
 
-				double d = -MathHelper.sin(user.getYaw() * ((float) Math.PI / 180));
-				double e = MathHelper.cos(user.getYaw() * ((float) Math.PI / 180));
-				if (world instanceof ServerWorld) {
-					((ServerWorld) world).spawnParticles(ModParticles.CLOWN_SCYTHE_SWEEP_ATTACK_PARTICLE, user.getX() + d, user.getBodyY(0.5), user.getZ() + e, 0, d, 0.0, e, 0.0);
+				if (world instanceof ServerWorld serverWorld) {
+					double d = -MathHelper.sin(user.getYaw() * ((float) Math.PI / 180));
+					double e = MathHelper.cos(user.getYaw() * ((float) Math.PI / 180));
+					double pitch = user.getPitch() * -0.02;
+					serverWorld.spawnParticles(ModParticles.CLOWN_SCYTHE_SWEEP_ATTACK_PARTICLE, user.getX() + d, user.getBodyY(0.5) + pitch, user.getZ() + e, 0, d, 0.0, e, 0.0);
 				}
 			}
 			world.playSound(null, user.getX(), user.getY(), user.getZ(), ModSoundEvents.ITEM_SCYTHE_SPEWING, SoundCategory.PLAYERS, 1.0f, 1.0f);
 			return TypedActionResult.success(user.getStackInHand(hand));
 		}
-
 		return super.use(world, user, hand);
 	}
 
@@ -108,8 +108,8 @@ public class ScytheItem extends MiningToolItem implements GUIHeldVaryingRenderIt
 	public void spawnHitParticles(PlayerEntity player) {
 		double d0 = (-MathHelper.sin(player.getYaw() * ((float) Math.PI / 180F)));
 		double d1 = MathHelper.cos(player.getYaw() * ((float) Math.PI / 180F));
-		if (player.world instanceof ServerWorld) {
-			((ServerWorld) player.world).spawnParticles(ModParticles.CLOWN_SCYTHE_SWEEP_ATTACK_PARTICLE, player.getX() + d0, player.getBodyY(0.5D), player.getZ() + d1, 0, d0, 0.0D, d1, 0.0D);
+		if (player.world instanceof ServerWorld serverWorld) {
+			serverWorld.spawnParticles(ModParticles.CLOWN_SCYTHE_SWEEP_ATTACK_PARTICLE, player.getX() + d0, player.getBodyY(0.5D), player.getZ() + d1, 0, d0, 0.0D, d1, 0.0D);
 		}
 	}
 
@@ -117,5 +117,4 @@ public class ScytheItem extends MiningToolItem implements GUIHeldVaryingRenderIt
 	public void playHitSound(PlayerEntity player) {
 		player.playSound(ModSoundEvents.ITEM_SCYTHE_HIT, 1.0F, (float) (1.0F + player.getRandom().nextGaussian() / 10f));
 	}
-
 }

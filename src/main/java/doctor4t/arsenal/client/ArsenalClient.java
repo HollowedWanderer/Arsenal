@@ -57,6 +57,9 @@ public class ArsenalClient implements ClientModInitializer {
 			if (stack.getItem() == ModItems.ANCHORBLADE) {
 				return ActionResult.FAIL;
 			}
+			if (stack.getItem() == ModItems.CLOWN_SCYTHE) {
+				return ActionResult.FAIL;
+			}
 			return ActionResult.PASS;
 		});
 

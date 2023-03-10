@@ -5,7 +5,7 @@ import doctor4t.arsenal.common.init.ModEnchantments;
 import doctor4t.arsenal.common.init.ModParticles;
 import doctor4t.arsenal.common.init.ModSoundEvents;
 import doctor4t.arsenal.common.util.AnchorOwner;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
@@ -72,7 +72,7 @@ public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRender
 
 	@Override
 	public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-		if (MinecraftClient.getInstance().options..isPressed()) {
+		if (Screen.hasShiftDown()) {
 			for (int i = 1; i <= 6; i++) {
 				tooltip.add(MialeeText.withColor(Text.translatable("item.arsenal.anchorblade.tooltip_" + i), 0xC35913));
 			}
