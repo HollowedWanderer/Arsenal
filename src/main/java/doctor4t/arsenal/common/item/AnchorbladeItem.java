@@ -5,6 +5,7 @@ import doctor4t.arsenal.common.init.ModEnchantments;
 import doctor4t.arsenal.common.init.ModParticles;
 import doctor4t.arsenal.common.init.ModSoundEvents;
 import doctor4t.arsenal.common.util.AnchorOwner;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,7 +18,9 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.stat.Stats;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.MathHelper;
@@ -69,7 +72,14 @@ public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRender
 
 	@Override
 	public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-		super.appendTooltip(stack, world, tooltip, context); // 0xC35913
+		if (MinecraftClient.getInstance().options..isPressed()) {
+			for (int i = 1; i <= 6; i++) {
+				tooltip.add(MialeeText.withColor(Text.translatable("item.arsenal.anchorblade.tooltip_" + i), 0xC35913));
+			}
+		} else {
+			tooltip.add(Text.translatable("tooltip.arsenal.hidden").setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY)));
+		}
+		super.appendTooltip(stack, world, tooltip, context);
 	}
 
 	@Override
