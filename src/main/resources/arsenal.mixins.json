@@ -18,8 +18,10 @@
     "UpdateSelectedSlotS2CPacketMixinToggle"
   ],
   "client": [
+    "accessors.CreativeSlotAccessor",
     "client.ClientPlayerInteractionManagerMixin",
     "client.ClientPlayNetworkHandlerMixin",
+    "client.CreativeInventoryScreenMixin",
     "client.HeldItemFeatureRendererMixin",
     "client.HeldItemRendererMixin",
     "client.InGameHudMixin",
