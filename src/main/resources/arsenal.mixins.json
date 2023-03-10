@@ -28,7 +28,8 @@
     "client.InventoryScreenMixin",
     "client.ItemRendererMixin",
     "client.MinecraftClientMixin",
-    "client.PlayerEntityRendererMixin"
+    "client.PlayerEntityRendererMixin",
+    "compat.Amarite$PlayerEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

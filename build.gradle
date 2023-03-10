@@ -91,6 +91,12 @@ dependencies {
 	// reach entity attribute
 	modImplementation "com.jamieswhiteshirt:reach-entity-attributes:${reach_entity_attributes_version}"
 	include "com.jamieswhiteshirt:reach-entity-attributes:${reach_entity_attributes_version}"
+
+	// trinkets
+	modImplementation ("dev.emi:trinkets:${project.trinkets_version}")
+
+	// amarite
+	modImplementation files ("libs/amarite-1.0.11.jar")
 }
 
 processResources {
