@@ -44,23 +44,27 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
 	@Override
 	public void tick() {
 		Entity owner = this.getOwner();
-		if (owner == null || !owner.isAlive()) {
-			this.discard();
-			return;
-		}
 		double d = 2;
-		if (this.hasDealtDamage() || this.isNoClip()) {
-			this.setNoClip(true);
-			Vec3d vec3d = owner.getEyePos().subtract(this.getPos());
-//			this.setPos(this.getX(), this.getY() + vec3d.y * 0.015 * d, this.getZ());
-			if (this.world.isClient) {
-				this.lastRenderY = this.getY();
+
+		if (!this.world.isClient) {
+			if (owner == null || !owner.isAlive()) {
+				this.discard();
+				return;
 			}
-			this.setVelocity(vec3d.normalize().multiply(d));
+			if (this.hasDealtDamage() || this.isNoClip()) {
+				this.setNoClip(true);
+				Vec3d vec3d = owner.getEyePos().subtract(this.getPos());
+//			this.setPos(this.getX(), this.getY() + vec3d.y * 0.015 * d, this.getZ());
+				if (this.world.isClient) {
+					this.lastRenderY = this.getY();
+				}
+				this.setVelocity(vec3d.normalize().multiply(d));
+			}
+			if (this.getPos().distanceTo(owner.getPos()) > 30) {
+				this.setDealtDamage(true);
+			}
 		}
-		if (this.getPos().distanceTo(owner.getPos()) > 30) {
-			this.setDealtDamage(true);
-		}
+
 		if (this.inGround && !this.hasDealtDamage()) {
 			if (this.hasReeling()) {
 				if (this.returnTimer++ > 100) {
@@ -88,6 +92,7 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
 				this.setDealtDamage(true);
 			}
 		}
+
 		super.tick();
 	}
 

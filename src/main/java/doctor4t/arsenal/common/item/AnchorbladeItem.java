@@ -66,7 +66,7 @@ public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRender
 	}
 
 	@Override
-	public int getStackColor() {
+	public int getNameColor() {
 		return 0xFF8700;
 	}
 
