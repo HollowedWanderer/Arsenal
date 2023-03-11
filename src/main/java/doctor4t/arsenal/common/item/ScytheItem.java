@@ -113,7 +113,7 @@ public class ScytheItem extends MiningToolItem implements GUIHeldVaryingRenderIt
 	}
 
 	@Override
-	public int getStackColor() {
+	public int getNameColor() {
 		return 0xB00C0C;
 	}
 }

@@ -1,8 +1,10 @@
 package doctor4t.arsenal.mixin.client;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.systems.RenderSystem;
+import doctor4t.arsenal.common.item.CustomColorItem;
 import doctor4t.arsenal.common.util.WeaponSlotHolder;
 import doctor4t.arsenal.common.util.WeaponSlotToggle;
 import net.minecraft.client.gui.DrawableHelper;
@@ -12,6 +14,8 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 import net.minecraft.util.Arm;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -31,6 +35,9 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
 	@Shadow
 	protected abstract void renderHotbarItem(int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed);
+
+	@Shadow
+	private ItemStack currentStack;
 
 	@Inject(method = "renderHotbar", at = @At("TAIL"))
 	private void arsenal$renderWeaponSlot(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
@@ -84,5 +91,16 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			return;
 		}
 		operation.call(hud, matrices, x, y, u, v, width, height);
+	}
+
+	@ModifyExpressionValue(
+			method = "renderHeldItemTooltip",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/text/MutableText;formatted(Lnet/minecraft/util/Formatting;)Lnet/minecraft/text/MutableText;", ordinal = 0)
+	)
+	private MutableText arsenal$heldTooltipChangeItemNameColor(MutableText mutableText) {
+		if (this.currentStack.getItem() instanceof CustomColorItem colorItem) {
+			return mutableText.setStyle(mutableText.getStyle().withColor(colorItem.getNameColor()));
+		}
+		return mutableText;
 	}
 }
