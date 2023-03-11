@@ -32,16 +32,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @SuppressWarnings("WrongEntityDataParameterClass")
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntity implements AnchorOwner {
+	@Unique
+	private static final TrackedData<Integer> BASIC_ANCHOR = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.INTEGER);
+	@Unique
+	private static final TrackedData<Integer> REELING_ANCHOR = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.INTEGER);
+
 	protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
 		super(entityType, world);
 	}
 
-	@Shadow public abstract float getAttackCooldownProgress(float baseTime);
-	@Shadow public abstract PlayerInventory getInventory();
-	@Shadow public abstract void disableShield(boolean sprinting);
+	@Shadow
+	public abstract float getAttackCooldownProgress(float baseTime);
 
-	@Unique private static final TrackedData<Integer> BASIC_ANCHOR = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.INTEGER);
-	@Unique private static final TrackedData<Integer> REELING_ANCHOR = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.INTEGER);
+	@Shadow
+	public abstract PlayerInventory getInventory();
+
+	@Shadow
+	public abstract void disableShield(boolean sprinting);
 
 	@Inject(method = "initDataTracker", at = @At("TAIL"))
 	private void arsenal$initDataTracker(CallbackInfo ci) {

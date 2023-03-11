@@ -21,10 +21,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin extends DrawableHelper {
-	@Shadow private int scaledWidth;
-	@Shadow private int scaledHeight;
-	@Shadow protected abstract PlayerEntity getCameraPlayer();
-	@Shadow protected abstract void renderHotbarItem(int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed);
+	@Shadow
+	private int scaledWidth;
+	@Shadow
+	private int scaledHeight;
+
+	@Shadow
+	protected abstract PlayerEntity getCameraPlayer();
+
+	@Shadow
+	protected abstract void renderHotbarItem(int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed);
 
 	@Inject(method = "renderHotbar", at = @At("TAIL"))
 	private void arsenal$renderWeaponSlot(float tickDelta, MatrixStack matrices, CallbackInfo ci) {

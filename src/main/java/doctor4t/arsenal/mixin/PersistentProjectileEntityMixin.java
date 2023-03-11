@@ -12,8 +12,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PersistentProjectileEntity.class)
 public abstract class PersistentProjectileEntityMixin extends ProjectileEntityMixin {
-	@Shadow public PersistentProjectileEntity.PickupPermission pickupType;
-	@Shadow protected abstract ItemStack asItemStack();
+	@Shadow
+	public PersistentProjectileEntity.PickupPermission pickupType;
+
+	@Shadow
+	protected abstract ItemStack asItemStack();
 
 	@Inject(method = "tryPickup", at = @At("HEAD"), cancellable = true)
 	private void arsenal$pickupSlot(PlayerEntity player, CallbackInfoReturnable<Boolean> cir) {

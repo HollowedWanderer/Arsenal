@@ -13,7 +13,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin {
-	@Shadow @Final private MinecraftClient client;
+	@Shadow
+	@Final
+	private MinecraftClient client;
 
 	@Inject(method = "onHeldItemChange", at = @At(value = "TAIL"))
 	private void arsenal$syncWeaponSlot(UpdateSelectedSlotS2CPacket packet, CallbackInfo ci) {

@@ -14,7 +14,9 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ClientPlayerInteractionManager.class)
 public class ClientPlayerInteractionManagerMixin {
-	@Shadow @Final private MinecraftClient client;
+	@Shadow
+	@Final
+	private MinecraftClient client;
 
 	@WrapOperation(method = "syncSelectedSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V"))
 	private void arsenal$syncWeaponSlot(ClientPlayNetworkHandler clientPlayNetworkHandler, Packet<?> packet, Operation<Void> operation) {

@@ -1,11 +1,6 @@
 package doctor4t.arsenal.common.entity;
 
-import doctor4t.arsenal.common.init.ModDamageSources;
-import doctor4t.arsenal.common.init.ModEnchantments;
-import doctor4t.arsenal.common.init.ModEntities;
-import doctor4t.arsenal.common.init.ModItems;
-import doctor4t.arsenal.common.init.ModParticles;
-import doctor4t.arsenal.common.init.ModSoundEvents;
+import doctor4t.arsenal.common.init.*;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -26,8 +21,8 @@ import net.minecraft.world.World;
 
 public class AnchorbladeEntity extends PersistentProjectileEntity {
 	private static final TrackedData<Byte> ANCHOR_FLAGS = DataTracker.registerData(AnchorbladeEntity.class, TrackedDataHandlerRegistry.BYTE);
-	private ItemStack anchorbladeStack = new ItemStack(ModItems.ANCHORBLADE);
 	public int returnTimer;
+	private ItemStack anchorbladeStack = new ItemStack(ModItems.ANCHORBLADE);
 
 	public AnchorbladeEntity(EntityType<? extends AnchorbladeEntity> entityType, World world) {
 		super(entityType, world);

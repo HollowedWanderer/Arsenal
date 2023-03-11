@@ -13,7 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayNetworkHandler.class)
 public class ServerPlayNetworkHandlerMixin {
-	@Shadow public ServerPlayerEntity player;
+	@Shadow
+	public ServerPlayerEntity player;
 
 	@Inject(method = "onUpdateSelectedSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;getInventory()Lnet/minecraft/entity/player/PlayerInventory;", ordinal = 1))
 	private void arsenal$updateSlot(UpdateSelectedSlotC2SPacket packet, CallbackInfo ci) {

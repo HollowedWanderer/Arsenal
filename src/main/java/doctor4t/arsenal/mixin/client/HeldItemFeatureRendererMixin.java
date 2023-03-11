@@ -18,13 +18,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(HeldItemFeatureRenderer.class)
 public abstract class HeldItemFeatureRendererMixin {
-    @Inject(method = "renderItem", at = @At(value = "HEAD"), cancellable = true)
-    private void arsenal$thrown(LivingEntity entity, ItemStack stack, ModelTransformation.Mode transformationMode, Arm arm, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
+	@Inject(method = "renderItem", at = @At(value = "HEAD"), cancellable = true)
+	private void arsenal$thrown(LivingEntity entity, ItemStack stack, ModelTransformation.Mode transformationMode, Arm arm, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
 		if (stack.isOf(ModItems.ANCHORBLADE)) {
 			boolean reeling = EnchantmentHelper.getLevel(ModEnchantments.REELING, stack) > 0;
 			if (entity instanceof AnchorOwner owner && owner.arsenal$isAnchorActive(reeling)) {
 				ci.cancel();
 			}
 		}
-    }
+	}
 }

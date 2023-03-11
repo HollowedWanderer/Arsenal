@@ -1,10 +1,6 @@
 package doctor4t.arsenal.common;
 
-import doctor4t.arsenal.common.init.ModEnchantments;
-import doctor4t.arsenal.common.init.ModEntities;
-import doctor4t.arsenal.common.init.ModItems;
-import doctor4t.arsenal.common.init.ModParticles;
-import doctor4t.arsenal.common.init.ModSoundEvents;
+import doctor4t.arsenal.common.init.*;
 import doctor4t.arsenal.common.util.WeaponSlotHolder;
 import doctor4t.arsenal.common.util.WeaponSlotToggle;
 import net.minecraft.item.ItemStack;
@@ -18,6 +14,10 @@ public class Arsenal implements ModInitializer {
 	public static final String MOD_ID = "arsenal";
 
 	public static final Identifier swapWeaponPacketId = id("swap_packet");
+
+	public static Identifier id(String path) {
+		return new Identifier(MOD_ID, path);
+	}
 
 	@Override
 	public void onInitialize(ModContainer mod) {
@@ -38,9 +38,5 @@ public class Arsenal implements ModInitializer {
 				toggle.arsenal$setWeaponSlot(toggled);
 			}
 		});
-	}
-
-	public static Identifier id(String path) {
-		return new Identifier(MOD_ID, path);
 	}
 }

@@ -12,11 +12,7 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Matrix3f;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.*;
 
 public class AnchorbladeEntityRenderer extends EntityRenderer<AnchorbladeEntity> {
 	private static final Identifier ANCHOR_TEXTURE = Arsenal.id("textures/item/lux_anchorblade.png");
@@ -44,7 +40,7 @@ public class AnchorbladeEntityRenderer extends EntityRenderer<AnchorbladeEntity>
 
 		matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(yawAngle - 90));
 		matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(pitchAngle - 90));
-		matrices.translate(0, -1.45,0);
+		matrices.translate(0, -1.45, 0);
 
 		this.model.setAngles(entity, tickDelta, 0, -0.1F, 0, 0);
 		this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutoutNoCull(this.getTexture(entity))), light, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);

@@ -28,13 +28,12 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import xyz.amymialee.mialeemisc.util.MialeeText;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ScytheItem extends MiningToolItem implements GUIHeldVaryingRenderItem, CustomHitParticleItem, CustomHitSoundItem {
+public class ScytheItem extends MiningToolItem implements GUIHeldVaryingRenderItem, CustomHitParticleItem, CustomHitSoundItem, CustomColorItem {
 	private static final EntityAttributeModifier REACH_MODIFIER = new EntityAttributeModifier(UUID.fromString("911af262-067d-4da2-854c-20f03cc2dd8b"), "Weapon modifier", 1, EntityAttributeModifier.Operation.ADDITION);
 
 	public ScytheItem(ToolMaterial material, float damage, float speed, Settings settings) {
@@ -95,11 +94,6 @@ public class ScytheItem extends MiningToolItem implements GUIHeldVaryingRenderIt
 	}
 
 	@Override
-	public Text getName(ItemStack stack) {
-		return MialeeText.withColor(super.getName(stack), 0xB00C0C);
-	}
-
-	@Override
 	public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
 		super.appendTooltip(stack, world, tooltip, context); // 0x850909
 	}
@@ -116,5 +110,10 @@ public class ScytheItem extends MiningToolItem implements GUIHeldVaryingRenderIt
 	@Override
 	public void playHitSound(PlayerEntity player) {
 		player.playSound(ModSoundEvents.ITEM_SCYTHE_HIT, 1.0F, (float) (1.0F + player.getRandom().nextGaussian() / 10f));
+	}
+
+	@Override
+	public int getStackColor() {
+		return 0xB00C0C;
 	}
 }

@@ -15,7 +15,7 @@
 			},
 			"icon": "assets/arsenal/icon.png"
 		},
-		"accessWidener" : "arsenal.accesswidener",
+		"accessWidener": "arsenal.accesswidener",
 		"intermediate_mappings": "net.fabricmc:intermediary",
 		"entrypoints": {
 			"init": "doctor4t.arsenal.common.Arsenal",

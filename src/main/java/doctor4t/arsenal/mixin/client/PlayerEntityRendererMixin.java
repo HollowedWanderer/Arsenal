@@ -27,13 +27,6 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
 		super(ctx, model, shadowRadius);
 	}
 
-	@Inject(method = "<init>", at = @At("TAIL"))
-	public void arsenal$backBlade(EntityRendererFactory.Context ctx, boolean slim, CallbackInfo ci) {
-		this.addFeature(new BackWeaponFeatureRenderer<>(this));
-		this.addFeature(new AnchorbladeFeatureRenderer<>(this));
-		this.addFeature(new ClownScytheFeatureRenderer<>(this));
-	}
-
 	@Inject(method = "getArmPose", at = @At("HEAD"), cancellable = true)
 	private static void amarite$swordPoses(AbstractClientPlayerEntity player, Hand hand, CallbackInfoReturnable<BipedEntityModel.ArmPose> cir) {
 		ItemStack stack = player.getStackInHand(hand);
@@ -43,5 +36,12 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
 				cir.setReturnValue(BipedEntityModel.ArmPose.EMPTY);
 			}
 		}
+	}
+
+	@Inject(method = "<init>", at = @At("TAIL"))
+	public void arsenal$backBlade(EntityRendererFactory.Context ctx, boolean slim, CallbackInfo ci) {
+		this.addFeature(new BackWeaponFeatureRenderer<>(this));
+		this.addFeature(new AnchorbladeFeatureRenderer<>(this));
+		this.addFeature(new ClownScytheFeatureRenderer<>(this));
 	}
 }

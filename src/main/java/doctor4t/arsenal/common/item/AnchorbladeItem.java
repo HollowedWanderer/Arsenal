@@ -31,7 +31,7 @@ import xyz.amymialee.mialeemisc.util.MialeeText;
 
 import java.util.List;
 
-public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRenderItem, CustomHitParticleItem, CustomHitSoundItem {
+public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRenderItem, CustomHitParticleItem, CustomHitSoundItem, CustomColorItem {
 	public static final DefaultParticleType[] LUX_ANCHORBLADE_SWEEP_PARTICLES = {ModParticles.LUX_ANCHORBLADE_SWEEP_1, ModParticles.LUX_ANCHORBLADE_SWEEP_2, ModParticles.LUX_ANCHORBLADE_SWEEP_3};
 
 	public AnchorbladeItem(ToolMaterial material, int attackDamage, float attackSpeed, Settings settings) {
@@ -66,8 +66,8 @@ public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRender
 	}
 
 	@Override
-	public Text getName(ItemStack stack) {
-		return MialeeText.withColor(super.getName(stack), 0xFF8700);
+	public int getStackColor() {
+		return 0xFF8700;
 	}
 
 	@Override

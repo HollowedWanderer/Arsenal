@@ -9,11 +9,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -23,11 +19,17 @@ import java.util.List;
 
 @Mixin(PlayerInventory.class)
 public class PlayerInventoryMixin implements WeaponSlotToggle, WeaponSlotHolder {
-	@Shadow @Final public PlayerEntity player;
-	@Shadow @Final @Mutable private List<DefaultedList<ItemStack>> combinedInventory;
-
-	@Unique private final SimpleInventory weapon = new SimpleInventory(1);
-	@Unique private boolean selectedWeapon = false;
+	@Unique
+	private final SimpleInventory weapon = new SimpleInventory(1);
+	@Shadow
+	@Final
+	public PlayerEntity player;
+	@Shadow
+	@Final
+	@Mutable
+	private List<DefaultedList<ItemStack>> combinedInventory;
+	@Unique
+	private boolean selectedWeapon = false;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void arsenal$init(CallbackInfo ci) {

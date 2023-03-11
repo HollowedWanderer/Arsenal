@@ -1,7 +1,6 @@
 package doctor4t.arsenal.compat.client;
 
 import com.winsweep.amarite.registry.AmariteItems;
-import doctor4t.arsenal.common.init.ModItems;
 import doctor4t.arsenal.common.util.WeaponSlotHolder;
 import doctor4t.arsenal.common.util.WeaponSlotToggle;
 import net.minecraft.client.MinecraftClient;

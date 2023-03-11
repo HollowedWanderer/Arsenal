@@ -37,6 +37,17 @@ public class ArsenalClient implements ClientModInitializer {
 	private static KeyBind weaponKeybind;
 	private static KeyBind swapKeybind;
 
+	public static void registerGUIHandheldVaryingWeapon(Item item) {
+		Identifier weaponId = Registry.ITEM.getId(item);
+		GUIHeldVaryingItemRenderer GUIHeldVaryingItemRenderer = new GUIHeldVaryingItemRenderer(weaponId);
+		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(GUIHeldVaryingItemRenderer);
+		BuiltinItemRendererRegistry.INSTANCE.register(item, GUIHeldVaryingItemRenderer);
+		ModelLoadingRegistry.INSTANCE.registerModelProvider((manager, out) -> {
+			out.accept(new ModelIdentifier(weaponId.getNamespace(), weaponId.getPath() + "_gui", "inventory"));
+			out.accept(new ModelIdentifier(weaponId.getNamespace(), weaponId.getPath() + "_handheld", "inventory"));
+		});
+	}
+
 	@Override
 	public void onInitializeClient(ModContainer mod) {
 		// custom item renderers registration
@@ -96,16 +107,5 @@ public class ArsenalClient implements ClientModInitializer {
 		});
 
 		ArsenalCompatClient.init();
-	}
-
-	public static void registerGUIHandheldVaryingWeapon(Item item) {
-		Identifier weaponId = Registry.ITEM.getId(item);
-		GUIHeldVaryingItemRenderer GUIHeldVaryingItemRenderer = new GUIHeldVaryingItemRenderer(weaponId);
-		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(GUIHeldVaryingItemRenderer);
-		BuiltinItemRendererRegistry.INSTANCE.register(item, GUIHeldVaryingItemRenderer);
-		ModelLoadingRegistry.INSTANCE.registerModelProvider((manager, out) -> {
-			out.accept(new ModelIdentifier(weaponId.getNamespace(), weaponId.getPath() + "_gui", "inventory"));
-			out.accept(new ModelIdentifier(weaponId.getNamespace(), weaponId.getPath() + "_handheld", "inventory"));
-		});
 	}
 }

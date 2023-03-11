@@ -7,7 +7,8 @@ import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(UpdateSelectedSlotS2CPacket.class)
 public class UpdateSelectedSlotC2SPacketMixinToggle implements WeaponSlotToggle {
-	@Unique private boolean selectedWeapon = false;
+	@Unique
+	private boolean selectedWeapon = false;
 
 	@Override
 	public void arsenal$setWeaponSlot(boolean weaponSlot) {

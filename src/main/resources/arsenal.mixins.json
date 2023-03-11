@@ -6,6 +6,7 @@
   "mixins": [
     "EnchantmentHelperMixin",
     "EnchantmentMixin",
+    "ItemStackMixin",
     "PersistentProjectileEntityMixin",
     "PlayerEntityMixin",
     "PlayerInventoryMixin",
@@ -13,7 +14,6 @@
     "PlayerScreenHandlerMixin",
     "ProjectileEntityMixin",
     "ServerPlayNetworkHandlerMixin",
-    "TridentItemMixin",
     "UpdateSelectedSlotC2SPacketMixinToggle",
     "UpdateSelectedSlotS2CPacketMixinToggle"
   ],

@@ -12,7 +12,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
-	@Shadow @Nullable public ClientPlayerEntity player;
+	@Shadow
+	@Nullable
+	public ClientPlayerEntity player;
 
 	@Inject(method = "handleInputEvents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getInventory()Lnet/minecraft/entity/player/PlayerInventory;"))
 	private void arsenal$inputSlot(CallbackInfo ci) {
