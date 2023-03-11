@@ -30,7 +30,6 @@ public abstract class ItemStackMixin {
 	@Inject(method = "getRarity", at = @At("RETURN"), cancellable = true)
 	public void getRarity(CallbackInfoReturnable<Rarity> cir) {
 		if (this.getItem() instanceof CustomColorItem) {
-			System.out.println(cir.getReturnValue());
 			cir.setReturnValue(Rarity.COMMON);
 		}
 	}
