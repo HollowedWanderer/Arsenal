@@ -5,11 +5,11 @@ import doctor4t.arsenal.client.render.entity.BloodScytheEntityRenderer;
 import doctor4t.arsenal.client.render.entity.ModEntityModelLayers;
 import doctor4t.arsenal.client.render.item.GUIHeldVaryingItemRenderer;
 import doctor4t.arsenal.common.Arsenal;
+import doctor4t.arsenal.common.components.BackWeaponComponent;
 import doctor4t.arsenal.common.init.ModEntities;
 import doctor4t.arsenal.common.init.ModItems;
 import doctor4t.arsenal.common.init.ModParticles;
 import doctor4t.arsenal.common.util.WeaponSlotCallback;
-import doctor4t.arsenal.common.util.WeaponSlotToggle;
 import doctor4t.arsenal.compat.ArsenalCompatClient;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -19,9 +19,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.option.KeyBind;
 import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
@@ -65,7 +63,7 @@ public class ArsenalClient implements ClientModInitializer {
 		ModParticles.registerFactories();
 
 		// amy's bullshit sick ass custom weapon slot
-		WeaponSlotCallback.EVENT.register((player, holder, stack) -> {
+		WeaponSlotCallback.EVENT.register((player, stack) -> {
 			if (stack.getItem() == ModItems.ANCHORBLADE) {
 				return ActionResult.FAIL;
 			}
@@ -75,6 +73,7 @@ public class ArsenalClient implements ClientModInitializer {
 			return ActionResult.PASS;
 		});
 
+		// keybindings
 		weaponKeybind = KeyBindingHelper.registerKeyBinding(new KeyBind(
 				"key.arsenal.select_weapon",
 				GLFW.GLFW_KEY_R,
@@ -86,26 +85,17 @@ public class ArsenalClient implements ClientModInitializer {
 				"category.arsenal"
 		));
 
+		// client tick events
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			if (weaponKeybind.wasPressed()) {
-				PlayerEntity player = client.player;
-				if (player != null && player.getInventory() instanceof WeaponSlotToggle selection) {
-					selection.arsenal$setWeaponSlot(!selection.arsenal$shouldWeaponSlot());
-					if (client.getNetworkHandler() != null) {
-						UpdateSelectedSlotC2SPacket packet = new UpdateSelectedSlotC2SPacket(player.getInventory().selectedSlot);
-						//noinspection ConstantValue
-						if (packet instanceof WeaponSlotToggle selectPacket) {
-							selectPacket.arsenal$setWeaponSlot(selection.arsenal$shouldWeaponSlot());
-						}
-						client.getNetworkHandler().sendPacket(packet);
-					}
-				}
+			if (weaponKeybind.wasPressed() && client.player != null) {
+				BackWeaponComponent.setHoldingBackWeapon(client.player, !BackWeaponComponent.isHoldingBackWeapon(client.player));
 			}
 			if (swapKeybind.wasPressed()) {
 				ClientPlayNetworking.send(Arsenal.swapWeaponPacketId, PacketByteBufs.empty());
 			}
 		});
 
+		// compat
 		ArsenalCompatClient.init();
 	}
 }

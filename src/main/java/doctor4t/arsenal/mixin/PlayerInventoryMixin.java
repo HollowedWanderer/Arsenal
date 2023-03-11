@@ -1,153 +1,63 @@
 package doctor4t.arsenal.mixin;
 
-import com.google.common.collect.ImmutableList;
-import doctor4t.arsenal.common.util.WeaponSlotHolder;
-import doctor4t.arsenal.common.util.WeaponSlotToggle;
+import doctor4t.arsenal.common.components.BackWeaponComponent;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
-import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
-
 @Mixin(PlayerInventory.class)
-public class PlayerInventoryMixin implements WeaponSlotToggle, WeaponSlotHolder {
-	@Unique
-	private final SimpleInventory weapon = new SimpleInventory(1);
-	@Shadow
-	@Final
-	public PlayerEntity player;
-	@Shadow
-	@Final
-	@Mutable
-	private List<DefaultedList<ItemStack>> combinedInventory;
-	@Unique
-	private boolean selectedWeapon = false;
-
-	@Inject(method = "<init>", at = @At("TAIL"))
-	private void arsenal$init(CallbackInfo ci) {
-		this.combinedInventory = ImmutableList.<DefaultedList<ItemStack>>builder()
-				.addAll(this.combinedInventory)
-				.add(this.weapon.stacks)
-				.build();
-	}
+public class PlayerInventoryMixin {
+	@Shadow @Final public PlayerEntity player;
 
 	@Inject(method = "getMainHandStack", at = @At("HEAD"), cancellable = true)
 	private void arsenal$mainHandSlot(CallbackInfoReturnable<ItemStack> cir) {
-		if (this.selectedWeapon) {
-			if (!this.weapon.isEmpty()) {
-				cir.setReturnValue(this.weapon.getStack(0));
+		if (BackWeaponComponent.isHoldingBackWeapon(this.player)) {
+			if (!BackWeaponComponent.getBackWeapon(this.player).isEmpty()) {
+				cir.setReturnValue(BackWeaponComponent.getBackWeapon(this.player));
 			} else {
-				this.selectedWeapon = false;
+				BackWeaponComponent.setHoldingBackWeapon(this.player, false);
 			}
 		}
 	}
 
 	@Inject(method = "updateItems", at = @At("TAIL"))
 	private void arsenal$selectSlot(CallbackInfo ci) {
-		if (!this.weapon.isEmpty()) {
-			this.weapon.getStack(0).inventoryTick(this.player.world, this.player, 0, this.selectedWeapon);
+		if (!BackWeaponComponent.getBackWeapon(this.player).isEmpty()) {
+			BackWeaponComponent.getBackWeapon(this.player).inventoryTick(this.player.world, this.player, 0, BackWeaponComponent.isHoldingBackWeapon(this.player));
 		}
 	}
 
 	@Inject(method = "getBlockBreakingSpeed", at = @At("HEAD"), cancellable = true)
 	private void arsenal$slotBreaking(BlockState block, CallbackInfoReturnable<Float> cir) {
-		if (this.selectedWeapon) {
-			if (!this.weapon.isEmpty()) {
-				cir.setReturnValue(this.weapon.getStack(0).getMiningSpeedMultiplier(block));
+		if (BackWeaponComponent.isHoldingBackWeapon(this.player)) {
+			if (!BackWeaponComponent.getBackWeapon(this.player).isEmpty()) {
+				cir.setReturnValue(BackWeaponComponent.getBackWeapon(this.player).getMiningSpeedMultiplier(block));
 			} else {
-				this.selectedWeapon = false;
+				BackWeaponComponent.setHoldingBackWeapon(this.player, false);
 			}
 		}
 	}
 
 	@Inject(method = "addPickBlock", at = @At("HEAD"))
 	private void arsenal$nonPick(CallbackInfo ci) {
-		this.selectedWeapon = false;
+		BackWeaponComponent.setHoldingBackWeapon(this.player, false);
 	}
 
 	@Inject(method = "swapSlotWithHotbar", at = @At("HEAD"))
 	private void arsenal$nonSwap(int slot, CallbackInfo ci) {
-		this.selectedWeapon = false;
+		BackWeaponComponent.setHoldingBackWeapon(this.player, false);
 	}
 
 	@Inject(method = "scrollInHotbar", at = @At("HEAD"))
 	private void arsenal$nonScroll(double scrollAmount, CallbackInfo ci) {
-		this.selectedWeapon = false;
-	}
-
-	@Inject(method = "clone", at = @At("HEAD"))
-	private void arsenal$cloned(PlayerInventory playerInventory, CallbackInfo ci) {
-		if (playerInventory instanceof WeaponSlotToggle selection) {
-			this.selectedWeapon = selection.arsenal$shouldWeaponSlot();
-		}
-		if (playerInventory instanceof WeaponSlotHolder holder) {
-			this.weapon.setStack(0, holder.arsenal$getWeapon());
-		}
-	}
-
-	@Override
-	public void arsenal$setWeaponSlot(boolean weaponSlot) {
-		this.selectedWeapon = weaponSlot;
-	}
-
-	@Override
-	public boolean arsenal$shouldWeaponSlot() {
-		return this.selectedWeapon;
-	}
-
-	@Override
-	public void arsenal$setWeapon(ItemStack weapon) {
-		this.weapon.setStack(0, weapon);
-	}
-
-	@Override
-	public SimpleInventory arsenal$getWeaponSlot() {
-		return this.weapon;
-	}
-
-	@Override
-	public int arsenal$getSlotHolding(ItemStack stack) {
-		int index = 0;
-		for (DefaultedList<ItemStack> list : this.combinedInventory) {
-			for (ItemStack itemStack : list) {
-				if (itemStack == stack) {
-					return index;
-				}
-				index++;
-			}
-		}
-		return -1;
-	}
-
-	@Override
-	public boolean arsenal$tryInsertIntoSlot(int slot, ItemStack stack) {
-		int index = 0;
-		for (DefaultedList<ItemStack> list : this.combinedInventory) {
-			int innerIndex = 0;
-			for (ItemStack itemStack : list) {
-				if (slot == index) {
-					if (itemStack.isEmpty()) {
-						list.set(innerIndex, stack);
-						return true;
-					}
-				}
-				innerIndex++;
-				index++;
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public ItemStack arsenal$getWeapon() {
-		return this.weapon.getStack(0);
+		BackWeaponComponent.setHoldingBackWeapon(this.player, false);
 	}
 }

@@ -6,7 +6,7 @@ import net.minecraft.util.ActionResult;
 
 public class AmariteCompatClient {
 	public static void init() {
-		WeaponSlotCallback.EVENT.register((player, holder, stack) -> {
+		WeaponSlotCallback.EVENT.register((player, stack) -> {
 			if (stack.getItem() == AmariteItems.AMARITE_LONGSWORD) {
 				return ActionResult.FAIL;
 			}

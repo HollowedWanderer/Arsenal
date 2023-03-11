@@ -144,7 +144,7 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
 
 	@Override
 	protected boolean tryPickup(PlayerEntity player) {
-		return this.isNoClip() && this.isOwner(player);
+		return this.isOwner(player);
 	}
 
 	@Override

@@ -42,24 +42,24 @@ public class BloodScytheEntity extends PersistentProjectileEntity {
 		super.tick();
 
 		for (float x = -3; x <= 3; x += 0.1) {
-			world.addParticle(ModParticles.BLOOD_BUBBLE, this.getX() + x * Math.cos(getYaw()), this.getY(), this.getZ() + x * Math.sin(getYaw()), this.getVelocity().getX(), this.getVelocity().getY(), this.getVelocity().getZ());
+			this.world.addParticle(ModParticles.BLOOD_BUBBLE, this.getX() + x * Math.cos(this.getYaw()), this.getY(), this.getZ() + x * Math.sin(this.getYaw()), this.getVelocity().getX(), this.getVelocity().getY(), this.getVelocity().getZ());
 		}
 
 		if (this.inGround || this.age > 20) {
 			for (int i = 0; i < 50; i++) {
-				world.addParticle(ModParticles.BLOOD_BUBBLE_SPLATTER, this.getX() + (random.nextGaussian() * 2) * Math.cos(getYaw()), this.getY(), this.getZ() + (random.nextGaussian() * 2) * Math.sin(getYaw()), random.nextGaussian() / 10, random.nextFloat() / 2, random.nextGaussian() / 10);
+				this.world.addParticle(ModParticles.BLOOD_BUBBLE_SPLATTER, this.getX() + (this.random.nextGaussian() * 2) * Math.cos(this.getYaw()), this.getY(), this.getZ() + (this.random.nextGaussian() * 2) * Math.sin(this.getYaw()), this.random.nextGaussian() / 10, this.random.nextFloat() / 2, this.random.nextGaussian() / 10);
 			}
-			ticksUntilRemove--;
+			this.ticksUntilRemove--;
 		}
 
-		if (ticksUntilRemove <= 0) {
+		if (this.ticksUntilRemove <= 0) {
 			this.discard();
 		}
 
-		if (!world.isClient) {
-			for (LivingEntity livingEntity : world.getEntitiesByClass(LivingEntity.class, this.getBoundingBox(), livingEntity -> this.getOwner() != livingEntity)) {
+		if (!this.world.isClient) {
+			for (LivingEntity livingEntity : this.world.getEntitiesByClass(LivingEntity.class, this.getBoundingBox(), livingEntity -> this.getOwner() != livingEntity)) {
 				livingEntity.damage(ModDamageSources.bloodScythe(this, this.getOwner()), 12.0f);
-				for (StatusEffectInstance effect : effects) {
+				for (StatusEffectInstance effect : this.effects) {
 					livingEntity.addStatusEffect(effect);
 				}
 			}

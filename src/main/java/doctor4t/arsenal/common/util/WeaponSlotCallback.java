@@ -8,9 +8,9 @@ import net.minecraft.util.ActionResult;
 
 public interface WeaponSlotCallback {
 	Event<WeaponSlotCallback> EVENT = EventFactory.createArrayBacked(WeaponSlotCallback.class,
-			(listeners) -> (player, holder, anchor) -> {
+			(listeners) -> (player, stack) -> {
 				for (WeaponSlotCallback listener : listeners) {
-					ActionResult result = listener.interact(player, holder, anchor);
+					ActionResult result = listener.interact(player, stack);
 					if (result != ActionResult.PASS) {
 						return result;
 					}
@@ -18,5 +18,5 @@ public interface WeaponSlotCallback {
 				return ActionResult.PASS;
 			});
 
-	ActionResult interact(PlayerEntity player, WeaponSlotHolder holder, ItemStack anchor);
+	ActionResult interact(PlayerEntity player, ItemStack anchor);
 }

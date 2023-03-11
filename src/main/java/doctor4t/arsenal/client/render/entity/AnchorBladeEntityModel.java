@@ -2,7 +2,13 @@ package doctor4t.arsenal.client.render.entity;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import doctor4t.arsenal.common.entity.AnchorbladeEntity;
-import net.minecraft.client.model.*;
+import net.minecraft.client.model.Dilation;
+import net.minecraft.client.model.ModelData;
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.model.ModelPartBuilder;
+import net.minecraft.client.model.ModelPartData;
+import net.minecraft.client.model.ModelTransform;
+import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3f;
@@ -13,7 +19,7 @@ public class AnchorBladeEntityModel extends EntityModel<AnchorbladeEntity> {
 
 	public AnchorBladeEntityModel(ModelPart root) {
 		this.bone = root.getChild("bone");
-		this.attachment = bone.getChild("attachment");
+		this.attachment = this.bone.getChild("attachment");
 	}
 
 	public static TexturedModelData getTexturedModelData() {
@@ -44,7 +50,7 @@ public class AnchorBladeEntityModel extends EntityModel<AnchorbladeEntity> {
 	}
 
 	public Vec3f getAttachmentPosition() {
-		return new Vec3f(attachment.pivotX / 16.0F, attachment.pivotY / 16.0F, attachment.pivotZ / 16.0F);
+		return new Vec3f(this.attachment.pivotX / 16.0F, this.attachment.pivotY / 16.0F, this.attachment.pivotZ / 16.0F);
 	}
 
 	@Override

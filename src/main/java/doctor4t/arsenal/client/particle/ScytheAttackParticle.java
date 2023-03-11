@@ -27,6 +27,7 @@ public class ScytheAttackParticle extends SpriteBillboardParticle {
 		return 15728880;
 	}
 
+	@Override
 	public void tick() {
 		this.prevPosX = this.x;
 		this.prevPosY = this.y;
@@ -38,13 +39,13 @@ public class ScytheAttackParticle extends SpriteBillboardParticle {
 		}
 	}
 
+	@Override
 	public ParticleTextureSheet getType() {
 		return ParticleTextureSheet.PARTICLE_SHEET_LIT;
 	}
 
 	@Environment(EnvType.CLIENT)
 	public record Factory(SpriteProvider spriteSet) implements ParticleFactory<DefaultParticleType> {
-
 		@Override
 		public Particle createParticle(DefaultParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
 			return new ScytheAttackParticle(world, x, y, z, velocityX, this.spriteSet);

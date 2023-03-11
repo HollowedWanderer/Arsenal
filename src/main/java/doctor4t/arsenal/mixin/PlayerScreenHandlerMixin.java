@@ -1,5 +1,6 @@
 package doctor4t.arsenal.mixin;
 
+import doctor4t.arsenal.common.components.BackWeaponComponent;
 import doctor4t.arsenal.common.util.WeaponSlot;
 import doctor4t.arsenal.common.util.WeaponSlotHolder;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,8 +22,6 @@ public abstract class PlayerScreenHandlerMixin extends AbstractRecipeScreenHandl
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void arsenal$init(PlayerInventory inventory, boolean onServer, PlayerEntity owner, CallbackInfo ci) {
-		if (owner.getInventory() instanceof WeaponSlotHolder holder) {
-			this.addSlot(new WeaponSlot(holder.arsenal$getWeaponSlot(), 0, 77, 44));
-		}
+		this.addSlot(new WeaponSlot(BackWeaponComponent.getBackWeaponInventory(inventory.player), 0, 77, 44));
 	}
 }

@@ -23,9 +23,8 @@ public class ShockwaveParticle extends ExplosionLargeParticle {
 		this.colorGreen = 1;
 		this.colorBlue = 1;
 		this.colorAlpha = 0.5f;
-		setSpriteForAge(spriteProvider);
+		this.setSpriteForAge(spriteProvider);
 	}
-
 
 	@Override
 	public float getSize(float tickDelta) {
@@ -44,10 +43,7 @@ public class ShockwaveParticle extends ExplosionLargeParticle {
 		float f = (float) (MathHelper.lerp(tickDelta, this.prevPosX, this.x) - vec3d.getX());
 		float g = (float) (MathHelper.lerp(tickDelta, this.prevPosY, this.y) - vec3d.getY());
 		float h = (float) (MathHelper.lerp(tickDelta, this.prevPosZ, this.z) - vec3d.getZ());
-		Quaternion quaternion;
-
-		quaternion = camera.getRotation();
-
+		Quaternion quaternion = camera.getRotation();
 		Vec3f[] vec3fs = new Vec3f[]{new Vec3f(-1, -1, 0), new Vec3f(-1, 1, 0), new Vec3f(1, 1, 0), new Vec3f(1, -1, 0)};
 		float size = this.getSize(tickDelta);
 		for (int i = 0; i < 4; ++i) {
@@ -56,10 +52,8 @@ public class ShockwaveParticle extends ExplosionLargeParticle {
 			vec3f.scale(size);
 			vec3f.add(f, g, h);
 		}
-
 		int brightness = this.getBrightness(tickDelta);
 		this.colorAlpha = (float) MathHelper.lerp((float) this.age / this.getMaxAge(), 0.5, 0);
-
 		this.vertex(vertexConsumer, vec3fs[0], this.getMaxU(), this.getMaxV(), brightness);
 		this.vertex(vertexConsumer, vec3fs[1], this.getMaxU(), this.getMinV(), brightness);
 		this.vertex(vertexConsumer, vec3fs[2], this.getMinU(), this.getMinV(), brightness);
@@ -80,8 +74,7 @@ public class ShockwaveParticle extends ExplosionLargeParticle {
 		return ParticleTextureSheet.PARTICLE_SHEET_TRANSLUCENT;
 	}
 
-	public static class Factory
-			implements ParticleFactory<DefaultParticleType> {
+	public static class Factory implements ParticleFactory<DefaultParticleType> {
 		private final SpriteProvider spriteProvider;
 
 		public Factory(SpriteProvider spriteProvider) {

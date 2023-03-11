@@ -5,22 +5,17 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "EnchantmentHelperMixin",
-    "EnchantmentMixin",
     "ItemStackMixin",
     "PersistentProjectileEntityMixin",
     "PlayerEntityMixin",
     "PlayerInventoryMixin",
-    "PlayerManagerMixin",
     "PlayerScreenHandlerMixin",
     "ProjectileEntityMixin",
     "ServerPlayNetworkHandlerMixin",
-    "UpdateSelectedSlotC2SPacketMixinToggle",
-    "UpdateSelectedSlotS2CPacketMixinToggle"
+    "TridentItemMixin"
   ],
   "client": [
     "accessors.CreativeSlotAccessor",
-    "client.ClientPlayerInteractionManagerMixin",
-    "client.ClientPlayNetworkHandlerMixin",
     "client.CreativeInventoryScreenMixin",
     "client.HeldItemFeatureRendererMixin",
     "client.HeldItemRendererMixin",
@@ -28,8 +23,7 @@
     "client.InventoryScreenMixin",
     "client.ItemRendererMixin",
     "client.MinecraftClientMixin",
-    "client.PlayerEntityRendererMixin",
-    "compat.Amarite$PlayerEntityRendererMixin"
+    "client.PlayerEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

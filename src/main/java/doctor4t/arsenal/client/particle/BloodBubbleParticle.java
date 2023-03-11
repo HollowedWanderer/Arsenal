@@ -13,16 +13,17 @@ public class BloodBubbleParticle extends SpriteBillboardParticle {
 		super(world, x, y, z, velocityX, velocityY, velocityZ);
 		this.spriteProvider = spriteProvider;
 		this.setSpriteForAge(spriteProvider);
-		this.scale *= 0.25f + random.nextFloat() * 0.50f;
+		this.scale *= 0.25f + this.random.nextFloat() * 0.50f;
 	}
 
+	@Override
 	public ParticleTextureSheet getType() {
 		return ParticleTextureSheet.PARTICLE_SHEET_LIT;
 	}
 
+	@Override
 	public void tick() {
-		this.setSpriteForAge(spriteProvider);
-
+		this.setSpriteForAge(this.spriteProvider);
 		this.prevPosX = this.x;
 		this.prevPosY = this.y;
 		this.prevPosZ = this.z;
@@ -49,9 +50,9 @@ public class BloodBubbleParticle extends SpriteBillboardParticle {
 			this.spriteProvider = spriteProvider;
 		}
 
+		@Override
 		public Particle createParticle(DefaultParticleType defaultParticleType, ClientWorld clientWorld, double d, double e, double f, double g, double h, double i) {
 			return new BloodBubbleParticle(clientWorld, d, e, f, g, h, i, this.spriteProvider);
 		}
 	}
-
 }

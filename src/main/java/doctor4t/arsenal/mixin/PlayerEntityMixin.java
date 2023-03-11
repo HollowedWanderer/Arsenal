@@ -6,7 +6,6 @@ import doctor4t.arsenal.common.item.CustomHitParticleItem;
 import doctor4t.arsenal.common.item.CustomHitSoundItem;
 import doctor4t.arsenal.common.item.ScytheItem;
 import doctor4t.arsenal.common.util.AnchorOwner;
-import doctor4t.arsenal.common.util.WeaponSlotHolder;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -16,8 +15,6 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
@@ -32,23 +29,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @SuppressWarnings("WrongEntityDataParameterClass")
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntity implements AnchorOwner {
-	@Unique
-	private static final TrackedData<Integer> BASIC_ANCHOR = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.INTEGER);
-	@Unique
-	private static final TrackedData<Integer> REELING_ANCHOR = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.INTEGER);
+	@Unique private static final TrackedData<Integer> BASIC_ANCHOR = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.INTEGER);
+	@Unique private static final TrackedData<Integer> REELING_ANCHOR = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.INTEGER);
 
 	protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
 		super(entityType, world);
 	}
 
-	@Shadow
-	public abstract float getAttackCooldownProgress(float baseTime);
-
-	@Shadow
-	public abstract PlayerInventory getInventory();
-
-	@Shadow
-	public abstract void disableShield(boolean sprinting);
+	@Shadow public abstract float getAttackCooldownProgress(float baseTime);
+	@Shadow public abstract void disableShield(boolean sprinting);
 
 	@Inject(method = "initDataTracker", at = @At("TAIL"))
 	private void arsenal$initDataTracker(CallbackInfo ci) {
@@ -72,25 +61,6 @@ public abstract class PlayerEntityMixin extends LivingEntity implements AnchorOw
 	public void arsenal$multiplyAnchorbladeMiningSpeedUnderwater(BlockState block, CallbackInfoReturnable<Float> cir) {
 		if (this.getMainHandStack().getItem() instanceof AnchorbladeItem && this.isSubmergedIn(FluidTags.WATER)) {
 			cir.setReturnValue(cir.getReturnValue() * 2f);
-		}
-	}
-
-	@Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
-	private void arsenal$readNbt(NbtCompound nbt, CallbackInfo ci) {
-		if (this.getInventory() instanceof WeaponSlotHolder holder) {
-			if (nbt.contains("arsenal$weapon")) {
-				holder.arsenal$setWeapon(ItemStack.fromNbt(nbt.getCompound("arsenal$weapon")));
-			}
-		}
-	}
-
-	@Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
-	private void arsenal$writeNbt(NbtCompound nbt, CallbackInfo ci) {
-		if (this.getInventory() instanceof WeaponSlotHolder holder) {
-			ItemStack weapon = holder.arsenal$getWeapon();
-			if (!weapon.isEmpty()) {
-				nbt.put("arsenal$weapon", weapon.writeNbt(new NbtCompound()));
-			}
 		}
 	}
 

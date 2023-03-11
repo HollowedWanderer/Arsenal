@@ -19,8 +19,12 @@
 		"intermediate_mappings": "net.fabricmc:intermediary",
 		"entrypoints": {
 			"init": "doctor4t.arsenal.common.Arsenal",
-			"client_init": "doctor4t.arsenal.client.ArsenalClient"
+			"client_init": "doctor4t.arsenal.client.ArsenalClient",
+			"cardinal-components-entity": "doctor4t.arsenal.common.ArsenalComponents"
 		}
 	},
-	"mixin": "arsenal.mixins.json"
+	"mixin": "arsenal.mixins.json",
+	"cardinal-components": [
+		"arsenal:backweapon"
+	]
 }

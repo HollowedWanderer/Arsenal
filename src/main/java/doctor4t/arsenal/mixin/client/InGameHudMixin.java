@@ -3,8 +3,7 @@ package doctor4t.arsenal.mixin.client;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.systems.RenderSystem;
-import doctor4t.arsenal.common.util.WeaponSlotHolder;
-import doctor4t.arsenal.common.util.WeaponSlotToggle;
+import doctor4t.arsenal.common.components.BackWeaponComponent;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -21,26 +20,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin extends DrawableHelper {
-	@Shadow
-	private int scaledWidth;
-	@Shadow
-	private int scaledHeight;
-
-	@Shadow
-	protected abstract PlayerEntity getCameraPlayer();
-
-	@Shadow
-	protected abstract void renderHotbarItem(int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed);
+	@Shadow private int scaledWidth;
+	@Shadow private int scaledHeight;
+	@Shadow protected abstract PlayerEntity getCameraPlayer();
+	@Shadow protected abstract void renderHotbarItem(int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed);
 
 	@Inject(method = "renderHotbar", at = @At("TAIL"))
 	private void arsenal$renderWeaponSlot(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
 		PlayerEntity player = this.getCameraPlayer();
 		if (player == null) return;
-		if (player.getInventory() instanceof WeaponSlotHolder holder && !holder.arsenal$getWeapon().isEmpty()) {
-			ItemStack stack = holder.arsenal$getWeapon();
-			if (stack.isEmpty()) return;
+		ItemStack stack = BackWeaponComponent.getBackWeapon(player);
+		if (!stack.isEmpty()) {
 			int i = this.scaledWidth / 2;
-			if (player.getInventory() instanceof WeaponSlotToggle selection && selection.arsenal$shouldWeaponSlot()) {
+			if (BackWeaponComponent.isHoldingBackWeapon(player)) {
 				RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 				RenderSystem.setShader(GameRenderer::getPositionTexShader);
 				RenderSystem.setShaderTexture(0, ClickableWidget.WIDGETS_TEXTURE);
@@ -80,7 +72,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
 	@WrapOperation(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;drawTexture(Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V", ordinal = 1))
 	private void arsenal$selection(InGameHud hud, MatrixStack matrices, int x, int y, int u, int v, int width, int height, Operation<Void> operation) {
-		if (this.getCameraPlayer() != null && this.getCameraPlayer().getInventory() instanceof WeaponSlotToggle selection && selection.arsenal$shouldWeaponSlot()) {
+		if (this.getCameraPlayer() != null && BackWeaponComponent.isHoldingBackWeapon(this.getCameraPlayer())) {
 			return;
 		}
 		operation.call(hud, matrices, x, y, u, v, width, height);

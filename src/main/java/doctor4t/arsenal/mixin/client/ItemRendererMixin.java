@@ -18,9 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ItemRenderer.class)
 public abstract class ItemRendererMixin {
-	@Shadow
-	@Final
-	private ItemModels models;
+	@Shadow @Final private ItemModels models;
 
 	@Inject(method = "getHeldItemModel", at = @At("HEAD"), cancellable = true)
 	private void arsenal$getInventoryItem(ItemStack stack, World world, LivingEntity entity, int seed, CallbackInfoReturnable<BakedModel> cir) {
