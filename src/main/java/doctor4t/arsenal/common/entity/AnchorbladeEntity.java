@@ -75,6 +75,10 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
 				if (this.returnTimer++ > 100) {
 					this.setDealtDamage(true);
 				}
+				if (owner == null) {
+					this.setDealtDamage(true);
+					return;
+				}
 				float e = (float) (d / 5f);
 				Vec3d vec3d = this.getPos().subtract(owner.getEyePos());
 				owner.setVelocity(owner.getVelocity().multiply(0.95).add(vec3d.normalize().multiply(e)));
@@ -87,10 +91,10 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
 					float strength = (float) (2f * (1.0 - hitEntity.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE)));
 					if (!(strength <= 0.0)) {
 						this.velocityDirty = true;
-						Vec3d dist = hitEntity.getPos().subtract(this.getPos());
-						float prox = (float) MathHelper.lerp(MathHelper.clamp(dist.length() / radius, 0, 1), 1, 0);
-						Vec3d dir = dist.normalize().multiply(prox * strength);
-						hitEntity.setVelocity(dir.x, dir.y, dir.z);
+						Vec3d distance = hitEntity.getPos().add(0, hitEntity.getHeight() / 2f, 0).subtract(this.getPos());
+						float proximity = (float) MathHelper.lerp(MathHelper.clamp(distance.length() / radius, 0, 1), 1, 0);
+						Vec3d direction = distance.normalize().multiply(proximity * strength);
+						hitEntity.setVelocity(direction.x, direction.y, direction.z);
 						hitEntity.fallDistance = 0;
 					}
 				}
