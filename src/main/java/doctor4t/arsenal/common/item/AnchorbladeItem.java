@@ -46,7 +46,7 @@ public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRender
 		if (user instanceof AnchorOwner owner) {
 			boolean reeling = EnchantmentHelper.getLevel(ModEnchantments.REELING, stack) > 0;
 			if (owner.arsenal$isAnchorActive(reeling)) {
-				owner.arsenal$getAnchor(reeling).setDealtDamage(true);
+				owner.arsenal$getAnchor(reeling).setRecalled(true);
 				return TypedActionResult.fail(stack);
 			}
 			int riptide = EnchantmentHelper.getRiptide(stack);

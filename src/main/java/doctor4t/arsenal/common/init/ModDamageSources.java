@@ -15,6 +15,6 @@ public interface ModDamageSources {
 	}
 
 	static DamageSource spewing() {
-		return new DamageSource("spewing").setUnblockable();
+		return new DamageSource("spewing").setBypassesArmor().setUsesMagic().setUnblockable();
 	}
 }

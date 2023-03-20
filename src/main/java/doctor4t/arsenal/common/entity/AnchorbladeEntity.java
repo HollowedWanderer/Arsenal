@@ -59,11 +59,15 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
 			if (this.hasDealtDamage() || this.isNoClip()) {
 				this.setNoClip(true);
 				Vec3d vec3d = owner.getEyePos().subtract(this.getPos());
-//			this.setPos(this.getX(), this.getY() + vec3d.y * 0.015 * d, this.getZ());
 				if (this.world.isClient) {
 					this.lastRenderY = this.getY();
 				}
-				this.setVelocity(vec3d.normalize().multiply(d));
+				if (this.isRecalled()) {
+					double length = vec3d.length();
+					this.setVelocity(vec3d.normalize().multiply(Math.min(length, d * 3)));
+				} else {
+					this.setVelocity(vec3d.normalize().multiply(d));
+				}
 			}
 			if (this.getPos().distanceTo(owner.getPos()) > 30) {
 				this.setDealtDamage(true);
@@ -122,7 +126,7 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
 	@Override
 	protected void onEntityHit(EntityHitResult entityHitResult) {
 		Entity hitEntity = entityHitResult.getEntity();
-		float damage = 2.0F;
+		float damage = 4.5F;
 		if (hitEntity instanceof LivingEntity livingEntity) {
 			damage += EnchantmentHelper.getAttackDamage(this.anchorbladeStack, livingEntity.getGroup());
 		}
@@ -195,6 +199,15 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
 
 	public void setReeling(boolean reeling) {
 		this.setAnchorFlag(1, reeling);
+	}
+
+	public boolean isRecalled() {
+		return this.getAnchorFlag(2);
+	}
+
+	public void setRecalled(boolean recalled) {
+		if (recalled) this.setDealtDamage(true);
+		this.setAnchorFlag(2, recalled);
 	}
 
 	private boolean getAnchorFlag(int flag) {
