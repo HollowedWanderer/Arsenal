@@ -64,9 +64,10 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
 				}
 				if (this.isRecalled()) {
 					double length = vec3d.length();
-					this.setVelocity(vec3d.normalize().multiply(Math.min(length, d * 3)));
+					this.setVelocity(vec3d.normalize().multiply(Math.min(length, d * 8)));
 				} else {
-					this.setVelocity(vec3d.normalize().multiply(d));
+					double length = vec3d.length();
+					this.setVelocity(vec3d.normalize().multiply(Math.min(length, d * 3)));
 				}
 			}
 			if (this.getPos().distanceTo(owner.getPos()) > 30) {
@@ -96,6 +97,10 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
 					if (!(strength <= 0.0)) {
 						this.velocityDirty = true;
 						Vec3d distance = hitEntity.getPos().add(0, hitEntity.getHeight() / 2f, 0).subtract(this.getPos());
+						Vec3d footDistance = hitEntity.getPos().subtract(this.getPos());
+						if (footDistance.y > distance.y) {
+							distance = footDistance;
+						}
 						float proximity = (float) MathHelper.lerp(MathHelper.clamp(distance.length() / radius, 0, 1), 1, 0);
 						Vec3d direction = distance.normalize().multiply(proximity * strength);
 						hitEntity.setVelocity(direction.x, direction.y, direction.z);
