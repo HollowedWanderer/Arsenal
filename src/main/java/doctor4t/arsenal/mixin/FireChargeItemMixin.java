@@ -12,6 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class FireChargeItemMixin {
 	@Inject(method = "useOnBlock", at = @At("HEAD"), cancellable = true)
 	private void arsenal$throwInstead(ItemUsageContext context, CallbackInfoReturnable<ActionResult> cir) {
-		cir.setReturnValue(ActionResult.FAIL);
+		cir.setReturnValue(ActionResult.PASS);
 	}
 }

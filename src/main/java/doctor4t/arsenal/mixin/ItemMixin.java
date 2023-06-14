@@ -21,10 +21,15 @@ public class ItemMixin {
 		Item item = (Item) (Object) this;
 		if (item == Items.FIRE_CHARGE) {
 			ItemStack stack = user.getStackInHand(hand);
-			Vec3d vec3d = user.getRotationVec(1.0F).normalize().multiply(2);
-			SmallFireballEntity smallFireballEntity = new SmallFireballEntity(world, user, vec3d.getX(), vec3d.getY(), vec3d.getZ());
-			smallFireballEntity.setPosition(smallFireballEntity.getX(), user.getEyeY(), smallFireballEntity.getZ());
-			world.spawnEntity(smallFireballEntity);
+			if (!world.isClient()) {
+				world.syncWorldEvent(null, 1018, user.getBlockPos(), 0);
+				Vec3d vec3d = user.getRotationVec(1.0F).normalize().multiply(2);
+				SmallFireballEntity smallFireballEntity = new SmallFireballEntity(world, user, vec3d.getX(), vec3d.getY(), vec3d.getZ());
+				smallFireballEntity.setPosition(smallFireballEntity.getX(), user.getEyeY(), smallFireballEntity.getZ());
+				world.spawnEntity(smallFireballEntity);
+				stack.decrement(1);
+				user.getItemCooldownManager().set(Items.FIRE_CHARGE, 6);
+			}
 			cir.setReturnValue(TypedActionResult.success(stack));
 		}
 	}
