@@ -5,6 +5,8 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "EnchantmentHelperMixin",
+    "FireChargeItemMixin",
+    "ItemMixin",
     "ItemStackMixin",
     "PersistentProjectileEntityMixin",
     "PlayerEntityMixin",

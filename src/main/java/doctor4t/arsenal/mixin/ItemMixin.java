@@ -1,0 +1,31 @@
+package doctor4t.arsenal.mixin;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.SmallFireballEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+@Mixin(Item.class)
+public class ItemMixin {
+	@Inject(method = "use", at = @At("HEAD"), cancellable = true)
+	private void arsenal$throw(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
+		Item item = (Item) (Object) this;
+		if (item == Items.FIRE_CHARGE) {
+			ItemStack stack = user.getStackInHand(hand);
+			Vec3d vec3d = user.getRotationVec(1.0F).normalize().multiply(2);
+			SmallFireballEntity smallFireballEntity = new SmallFireballEntity(world, user, vec3d.getX(), vec3d.getY(), vec3d.getZ());
+			smallFireballEntity.setPosition(smallFireballEntity.getX(), user.getEyeY(), smallFireballEntity.getZ());
+			world.spawnEntity(smallFireballEntity);
+			cir.setReturnValue(TypedActionResult.success(stack));
+		}
+	}
+}
