@@ -1,6 +1,5 @@
 package doctor4t.arsenal.mixin.client;
 
-import doctor4t.arsenal.client.render.feature.AmariteLongswordFeatureRenderer;
 import doctor4t.arsenal.client.render.feature.AnchorbladeFeatureRenderer;
 import doctor4t.arsenal.client.render.feature.BackWeaponFeatureRenderer;
 import doctor4t.arsenal.client.render.feature.ClownScytheFeatureRenderer;
@@ -16,7 +15,6 @@ import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
-import org.quiltmc.loader.api.QuiltLoader;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -45,6 +43,5 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
 		this.addFeature(new BackWeaponFeatureRenderer<>(this));
 		this.addFeature(new AnchorbladeFeatureRenderer<>(this));
 		this.addFeature(new ClownScytheFeatureRenderer<>(this));
-		if (QuiltLoader.isModLoaded("amarite")) this.addFeature(new AmariteLongswordFeatureRenderer<>(this));
 	}
 }

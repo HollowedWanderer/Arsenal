@@ -10,7 +10,6 @@ import doctor4t.arsenal.common.init.ModEntities;
 import doctor4t.arsenal.common.init.ModItems;
 import doctor4t.arsenal.common.init.ModParticles;
 import doctor4t.arsenal.common.util.WeaponSlotCallback;
-import doctor4t.arsenal.compat.ArsenalCompatClient;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
@@ -94,8 +93,5 @@ public class ArsenalClient implements ClientModInitializer {
 				ClientPlayNetworking.send(Arsenal.swapWeaponPacketId, PacketByteBufs.empty());
 			}
 		});
-
-		// compat
-		ArsenalCompatClient.init();
 	}
 }
