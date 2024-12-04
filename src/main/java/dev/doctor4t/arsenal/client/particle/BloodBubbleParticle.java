@@ -37,9 +37,6 @@ public class BloodBubbleParticle extends SpriteBillboardParticle {
             this.velocityX *= 1.1;
             this.velocityZ *= 1.1;
         }
-//        this.velocityX *= this.velocityMultiplier;
-//        this.velocityY *= this.velocityMultiplier;
-//        this.velocityZ *= this.velocityMultiplier;
     }
 
     @Environment(EnvType.CLIENT)

@@ -1,5 +1,6 @@
 package dev.doctor4t.arsenal.item;
 
+import dev.doctor4t.arsenal.client.particle.contract.ColoredParticleInitialData;
 import dev.doctor4t.arsenal.entity.AnchorbladeEntity;
 import dev.doctor4t.arsenal.index.ArsenalEnchantments;
 import dev.doctor4t.arsenal.index.ArsenalParticles;
@@ -31,8 +32,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRenderItem, CustomHitParticleItem, CustomHitSoundItem, CustomColorItem {
-    public static final DefaultParticleType[] LUX_ANCHORBLADE_SWEEP_PARTICLES = {ArsenalParticles.LUX_ANCHORBLADE_SWEEP_1, ArsenalParticles.LUX_ANCHORBLADE_SWEEP_2, ArsenalParticles.LUX_ANCHORBLADE_SWEEP_3};
-
     public AnchorbladeItem(ToolMaterial material, int attackDamage, float attackSpeed, Settings settings) {
         super(material, attackDamage, attackSpeed, settings);
     }
@@ -85,8 +84,10 @@ public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRender
     public void spawnHitParticles(PlayerEntity player) {
         double deltaX = -MathHelper.sin((float) (player.getYaw() * (Math.PI / 180F)));
         double deltaZ = MathHelper.cos((float) (player.getYaw() * (Math.PI / 180F)));
+
         if (player.getWorld() instanceof ServerWorld serverWorld) {
-            serverWorld.spawnParticles(LUX_ANCHORBLADE_SWEEP_PARTICLES[player.getRandom().nextInt(AnchorbladeItem.LUX_ANCHORBLADE_SWEEP_PARTICLES.length)], player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
+            ColoredParticleInitialData data = new ColoredParticleInitialData(0xFF0000);
+            serverWorld.spawnParticles(ArsenalParticles.SWEEP_ATTACK_PARTICLE.setData(data), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
         }
     }
 

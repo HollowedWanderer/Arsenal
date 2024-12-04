@@ -1,25 +1,24 @@
 package dev.doctor4t.arsenal.client.particle;
 
+import dev.doctor4t.arsenal.client.particle.type.SweepAttackParticleType;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
+import org.jetbrains.annotations.Nullable;
+
+import java.awt.*;
 
 public class SweepAttackParticle extends SpriteBillboardParticle {
     private final SpriteProvider spriteWithAge;
 
-    private SweepAttackParticle(ClientWorld world, double x, double y, double z, double scale, SpriteProvider spriteWithAge) {
+    private SweepAttackParticle(ClientWorld world, double x, double y, double z, SpriteProvider spriteWithAge) {
         super(world, x, y, z, 0.0D, 0.0D, 0.0D);
         this.spriteWithAge = spriteWithAge;
         this.maxAge = 4;
         this.scale = 1.0F - (float) scale * 0.5F;
         this.setSpriteForAge(spriteWithAge);
-    }
-
-    @Override
-    protected int getBrightness(float tint) {
-        return 15728880;
     }
 
     @Override
@@ -36,14 +35,25 @@ public class SweepAttackParticle extends SpriteBillboardParticle {
 
     @Override
     public ParticleTextureSheet getType() {
-        return ParticleTextureSheet.PARTICLE_SHEET_LIT;
+        return ParticleTextureSheet.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Environment(EnvType.CLIENT)
-    public record Factory(SpriteProvider spriteSet) implements ParticleFactory<DefaultParticleType> {
+    public static class Factory implements ParticleFactory<DefaultParticleType> {
+        private final SpriteProvider spriteProvider;
+
+        public Factory(SpriteProvider spriteProvider) {
+            this.spriteProvider = spriteProvider;
+        }
+
         @Override
-        public Particle createParticle(DefaultParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
-            return new SweepAttackParticle(world, x, y, z, velocityX, this.spriteSet);
+        public @Nullable SweepAttackParticle createParticle(DefaultParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
+            SweepAttackParticle instance = new SweepAttackParticle(world, x, y, z, this.spriteProvider);
+            if (parameters instanceof SweepAttackParticleType sweepParameters && sweepParameters.initialData != null) {
+                Color color = new Color(sweepParameters.initialData.color);
+                instance.setColor(color.getRed()/255f, color.getGreen()/255f, color.getBlue()/255f);
+            }
+            return instance;
         }
     }
 }
