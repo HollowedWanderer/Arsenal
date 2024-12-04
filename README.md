@@ -1,5 +1,1 @@
-- Netherite level pickaxe
-- Custom hit sounds
-- Custom sweep particles on hit
-- 2x faster mining speed underwater
-- Can be displayed on back in trinkets chest slot
+# Arsenal

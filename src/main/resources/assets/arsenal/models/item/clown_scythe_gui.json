@@ -1,6 +1,0 @@
-{
-  "parent": "item/handheld",
-  "textures": {
-    "layer0": "arsenal:item/clown_scythe_gui"
-  }
-}
