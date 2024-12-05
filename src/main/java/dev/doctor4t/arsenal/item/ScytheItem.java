@@ -34,10 +34,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ScytheItemName extends MiningToolItem implements GUIHeldVaryingRenderItem, CustomHitParticleItem, CustomHitSoundItem, CustomNameColorItem {
+public class ScytheItem extends MiningToolItem implements GUIHeldVaryingRenderItem, CustomHitParticleItem, CustomHitSoundItem, CustomNameColorItem {
     private static final EntityAttributeModifier REACH_MODIFIER = new EntityAttributeModifier(UUID.fromString("911af262-067d-4da2-854c-20f03cc2dd8b"), "Weapon modifier", 0.5, EntityAttributeModifier.Operation.ADDITION);
 
-    public ScytheItemName(ToolMaterial material, float damage, float speed, Settings settings) {
+    public ScytheItem(ToolMaterial material, float damage, float speed, Settings settings) {
         super(damage, speed, material, BlockTags.HOE_MINEABLE, settings);
     }
 
@@ -106,8 +106,6 @@ public class ScytheItemName extends MiningToolItem implements GUIHeldVaryingRend
 
     @Override
     public void spawnHitParticles(PlayerEntity player) {
-        double d0 = (-MathHelper.sin(player.getYaw() * ((float) Math.PI / 180F)));
-        double d1 = MathHelper.cos(player.getYaw() * ((float) Math.PI / 180F));
         if (player.getWorld() instanceof ServerWorld serverWorld) {
             double deltaX = -MathHelper.sin((float) (player.getYaw() * (Math.PI / 180F)));
             double deltaZ = MathHelper.cos((float) (player.getYaw() * (Math.PI / 180F)));

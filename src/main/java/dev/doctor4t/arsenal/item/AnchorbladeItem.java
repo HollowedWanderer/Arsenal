@@ -27,8 +27,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class AnchorbladeItemName extends PickaxeItem implements GUIHeldVaryingRenderItem, CustomHitParticleItem, CustomHitSoundItem, CustomNameColorItem {
-    public AnchorbladeItemName(ToolMaterial material, int attackDamage, float attackSpeed, Settings settings) {
+public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRenderItem, CustomHitParticleItem, CustomHitSoundItem, CustomNameColorItem {
+    public AnchorbladeItem(ToolMaterial material, int attackDamage, float attackSpeed, Settings settings) {
         super(material, attackDamage, attackSpeed, settings);
     }
 
@@ -51,6 +51,9 @@ public class AnchorbladeItemName extends PickaxeItem implements GUIHeldVaryingRe
                         owner.arsenal$setAnchor(anchorbladeEntity);
                         world.spawnEntity(anchorbladeEntity);
                         world.playSoundFromEntity(null, anchorbladeEntity, ArsenalSoundEvents.ITEM_ANCHORBLADE_THROW, SoundCategory.PLAYERS, 1.0F, 1.0F);
+
+                        user.getItemCooldownManager().set(this, 20);
+
                         return TypedActionResult.success(user.getStackInHand(hand));
                     }
                 }

@@ -55,11 +55,10 @@ public class AnchorbladeEntityRenderer extends EntityRenderer<AnchorbladeEntity>
 
         matrices.pop();
 
-        // FIXME: Chain does not link perfectly to the ring
         if (entity.getOwner() instanceof LivingEntity owner) {
             matrices.push();
             Vec3d pos = entity.getLerpedPos(tickDelta);
-            Vec3d ringPos = new Vec3d(1, 0, 0).rotateZ(pitchAngle * MathHelper.RADIANS_PER_DEGREE).rotateY((yawAngle + 90) * MathHelper.RADIANS_PER_DEGREE);
+            Vec3d ringPos = new Vec3d(1, 0, 0).rotateZ(pitchAngle * MathHelper.RADIANS_PER_DEGREE).rotateY((yawAngle + 90) * MathHelper.RADIANS_PER_DEGREE).add(0, entity.getHeight()/2f, 0);
             Vec3d ownerPos = owner.getLeashPos(tickDelta).subtract(pos);
             float length = (float) ringPos.distanceTo(ownerPos);
             MatrixStack.Entry matrixEntry = matrices.peek();

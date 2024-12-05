@@ -6,7 +6,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleEffect;
 
-@Environment(EnvType.CLIENT)
 public class SweepAttackParticleType extends DefaultParticleType {
     public ColoredParticleInitialData initialData;
 
