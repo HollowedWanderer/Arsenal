@@ -7,7 +7,6 @@ import dev.doctor4t.arsenal.index.ArsenalParticles;
 import dev.doctor4t.arsenal.index.ArsenalSoundEvents;
 import dev.doctor4t.arsenal.util.AnchorOwner;
 import net.fabricmc.yarn.constants.MiningLevels;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,9 +18,7 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.stat.Stats;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.MathHelper;
@@ -30,8 +27,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRenderItem, CustomHitParticleItem, CustomHitSoundItem, CustomColorItem {
-    public AnchorbladeItem(ToolMaterial material, int attackDamage, float attackSpeed, Settings settings) {
+public class AnchorbladeItemName extends PickaxeItem implements GUIHeldVaryingRenderItem, CustomHitParticleItem, CustomHitSoundItem, CustomNameColorItem {
+    public AnchorbladeItemName(ToolMaterial material, int attackDamage, float attackSpeed, Settings settings) {
         super(material, attackDamage, attackSpeed, settings);
     }
 
@@ -64,19 +61,15 @@ public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRender
     }
 
     @Override
-    public int getNameColor() {
-        return 0xFF8700;
-    }
-
-    @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        if (Screen.hasShiftDown()) {
-            for (int i = 1; i <= 6; i++) {
-                tooltip.add(Text.translatable("item.arsenal.anchorblade.tooltip_" + i).styled(style -> style.withColor(0xC35913)));
-            }
-        } else {
-            tooltip.add(Text.translatable("tooltip.arsenal.hidden").setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY)));
-        }
+        // TODO: Only apply that tooltip for the custom lux skin
+//        if (Screen.hasShiftDown()) {
+//            for (int i = 1; i <= 6; i++) {
+//                tooltip.add(Text.translatable("item.arsenal.anchorblade.tooltip_" + i).styled(style -> style.withColor(0xC35913)));
+//            }
+//        } else {
+//            tooltip.add(Text.translatable("tooltip.arsenal.hidden").setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY)));
+//        }
         super.appendTooltip(stack, world, tooltip, context);
     }
 

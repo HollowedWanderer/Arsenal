@@ -34,10 +34,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ScytheItem extends MiningToolItem implements GUIHeldVaryingRenderItem, CustomHitParticleItem, CustomHitSoundItem, CustomColorItem {
+public class ScytheItemName extends MiningToolItem implements GUIHeldVaryingRenderItem, CustomHitParticleItem, CustomHitSoundItem, CustomNameColorItem {
     private static final EntityAttributeModifier REACH_MODIFIER = new EntityAttributeModifier(UUID.fromString("911af262-067d-4da2-854c-20f03cc2dd8b"), "Weapon modifier", 0.5, EntityAttributeModifier.Operation.ADDITION);
 
-    public ScytheItem(ToolMaterial material, float damage, float speed, Settings settings) {
+    public ScytheItemName(ToolMaterial material, float damage, float speed, Settings settings) {
         super(damage, speed, material, BlockTags.HOE_MINEABLE, settings);
     }
 
@@ -120,10 +120,5 @@ public class ScytheItem extends MiningToolItem implements GUIHeldVaryingRenderIt
     @Override
     public void playHitSound(PlayerEntity player) {
         player.playSound(ArsenalSoundEvents.ITEM_SCYTHE_HIT, 1.0F, (float) (1.0F + player.getRandom().nextGaussian() / 10f));
-    }
-
-    @Override
-    public int getNameColor() {
-        return 0xB00C0C;
     }
 }

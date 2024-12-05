@@ -1,8 +1,8 @@
 package dev.doctor4t.arsenal.index;
 
 import dev.doctor4t.arsenal.Arsenal;
-import dev.doctor4t.arsenal.item.AnchorbladeItem;
-import dev.doctor4t.arsenal.item.ScytheItem;
+import dev.doctor4t.arsenal.item.AnchorbladeItemName;
+import dev.doctor4t.arsenal.item.ScytheItemName;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -21,8 +21,8 @@ import java.util.Map;
 public interface ArsenalItems {
     Map<Item, Identifier> ITEMS = new LinkedHashMap<>();
 
-    Item SCYTHE = create("scythe", new ScytheItem(ToolMaterials.NETHERITE, 5.0f, -3.0f, new Item.Settings().rarity(Rarity.COMMON)));
-    Item ANCHORBLADE = create("anchorblade", new AnchorbladeItem(AnchorbladeItem.AnchorBladeToolMaterial.INSTANCE, 5, -3.0f, new FabricItemSettings().rarity(Rarity.COMMON)));
+    Item SCYTHE = create("scythe", new ScytheItemName(ToolMaterials.NETHERITE, 5.0f, -3.0f, new Item.Settings().rarity(Rarity.COMMON)));
+    Item ANCHORBLADE = create("anchorblade", new AnchorbladeItemName(AnchorbladeItemName.AnchorBladeToolMaterial.INSTANCE, 5, -3.0f, new FabricItemSettings().rarity(Rarity.COMMON)));
 
     static <T extends Item> T create(String name, T item) {
         ITEMS.put(item, Arsenal.id(name));
