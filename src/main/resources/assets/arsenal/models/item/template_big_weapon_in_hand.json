@@ -1,8 +1,5 @@
 {
   "parent": "item/handheld",
-  "textures": {
-    "layer0": "arsenal:item/anchorblade"
-  },
   "display": {
     "thirdperson_righthand": {
       "rotation": [

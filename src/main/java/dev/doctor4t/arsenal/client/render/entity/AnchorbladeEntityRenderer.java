@@ -27,6 +27,7 @@ public class AnchorbladeEntityRenderer extends EntityRenderer<AnchorbladeEntity>
     private final ItemRenderer itemRenderer;
     private final BakedModelManager bakedModelManager;
 
+    // TODO: Make the entity have the right anchorblade skin and chain
     private static final Identifier CHAIN_TEXTURE = Arsenal.id("textures/entity/chain.png");
     private static final RenderLayer CHAIN_LAYER = RenderLayer.getEntitySmoothCutout(CHAIN_TEXTURE);
 

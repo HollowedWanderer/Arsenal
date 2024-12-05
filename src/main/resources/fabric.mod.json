@@ -34,7 +34,8 @@
 	"accessWidener" : "arsenal.accesswidener",
 	"custom": {
 		"cardinal-components": [
-			"arsenal:backweapon"
+			"arsenal:back_weapon",
+			"arsenal:weapon_skin"
 		]
 	},
 	"depends": {

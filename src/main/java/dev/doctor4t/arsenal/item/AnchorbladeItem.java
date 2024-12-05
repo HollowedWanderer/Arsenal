@@ -1,5 +1,7 @@
 package dev.doctor4t.arsenal.item;
 
+import dev.doctor4t.arsenal.cca.ArsenalComponents;
+import dev.doctor4t.arsenal.cca.WeaponSkinComponent;
 import dev.doctor4t.arsenal.client.particle.contract.ColoredParticleInitialData;
 import dev.doctor4t.arsenal.entity.AnchorbladeEntity;
 import dev.doctor4t.arsenal.index.ArsenalEnchantments;
@@ -7,29 +9,48 @@ import dev.doctor4t.arsenal.index.ArsenalParticles;
 import dev.doctor4t.arsenal.index.ArsenalSoundEvents;
 import dev.doctor4t.arsenal.util.AnchorOwner;
 import net.fabricmc.yarn.constants.MiningLevels;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.PickaxeItem;
-import net.minecraft.item.ToolMaterial;
+import net.minecraft.item.*;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRenderItem, CustomHitParticleItem, CustomHitSoundItem, CustomNameColorItem {
+public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRenderItem, CustomHitParticleItem, CustomHitSoundItem, CustomNameColorItem, ArsenalWeaponItem {
     public AnchorbladeItem(ToolMaterial material, int attackDamage, float attackSpeed, Settings settings) {
         super(material, attackDamage, attackSpeed, settings);
+    }
+
+    @Override
+    public ActionResult useOnBlock(ItemUsageContext context) {
+        BlockState blockStateClicked = context.getWorld().getBlockState(context.getBlockPos());
+        PlayerEntity user = context.getPlayer();
+        if (user != null && user.isSneaking() && (blockStateClicked.isOf(Blocks.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE))) {
+            WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(user.getStackInHand(context.getHand()));
+            if (weaponSkinComponent != null) {
+                if (weaponSkinComponent.getSkin().equals("lux")) {
+                    weaponSkinComponent.setSkin("");
+                } else {
+                    weaponSkinComponent.setSkin("lux");
+                }
+                return ActionResult.SUCCESS;
+            }
+        }
+        return super.useOnBlock(context);
     }
 
     @Override
@@ -52,6 +73,7 @@ public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRender
                         world.spawnEntity(anchorbladeEntity);
                         world.playSoundFromEntity(null, anchorbladeEntity, ArsenalSoundEvents.ITEM_ANCHORBLADE_THROW, SoundCategory.PLAYERS, 1.0F, 1.0F);
 
+                        // TODO: Make it so the counter only enables when hitting an entity with the anchorblade instead?
                         user.getItemCooldownManager().set(this, 20);
 
                         return TypedActionResult.success(user.getStackInHand(hand));
@@ -124,5 +146,10 @@ public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRender
         public Ingredient getRepairIngredient() {
             return Ingredient.ofItems(Items.COPPER_BLOCK);
         }
+    }
+
+    @Override
+    public boolean canMine(BlockState state, World world, BlockPos pos, PlayerEntity miner) {
+        return !miner.isCreative();
     }
 }

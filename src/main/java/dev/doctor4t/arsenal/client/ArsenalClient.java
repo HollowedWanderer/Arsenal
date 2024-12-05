@@ -48,8 +48,10 @@ public class ArsenalClient implements ClientModInitializer {
         BuiltinItemRendererRegistry.INSTANCE.register(ArsenalItems.ANCHORBLADE, new AnchorbladeDynamicItemRenderer());
 
         // Force load the telescope models (otherwise since they're never called they wouldn't be loaded by default)
-        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(ScytheDynamicItemRenderer.WEAPON, ScytheDynamicItemRenderer.WEAPON_IN_HAND));
-        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(AnchorbladeDynamicItemRenderer.WEAPON, AnchorbladeDynamicItemRenderer.WEAPON_IN_HAND));
+        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(ScytheDynamicItemRenderer.DEFAULT_MODEL_IDENTIFIER.getLeft(), ScytheDynamicItemRenderer.DEFAULT_MODEL_IDENTIFIER.getRight()));
+        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(ScytheDynamicItemRenderer.CLOWN_MODEL_IDENTIFIER.getLeft(), ScytheDynamicItemRenderer.CLOWN_MODEL_IDENTIFIER.getRight()));
+        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(AnchorbladeDynamicItemRenderer.DEFAULT_MODEL_IDENTIFIER.getLeft(), AnchorbladeDynamicItemRenderer.DEFAULT_MODEL_IDENTIFIER.getRight()));
+        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(AnchorbladeDynamicItemRenderer.LUX_MODEL_IDENTIFIER.getLeft(), AnchorbladeDynamicItemRenderer.LUX_MODEL_IDENTIFIER.getRight()));
 
         // model layers initialization
         ModEntityModelLayers.initialize();
