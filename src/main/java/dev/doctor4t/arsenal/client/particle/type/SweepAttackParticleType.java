@@ -1,8 +1,6 @@
 package dev.doctor4t.arsenal.client.particle.type;
 
 import dev.doctor4t.arsenal.client.particle.contract.ColoredParticleInitialData;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleEffect;
 

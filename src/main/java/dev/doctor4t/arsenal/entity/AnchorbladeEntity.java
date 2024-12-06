@@ -12,6 +12,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.MathHelper;
@@ -20,8 +21,9 @@ import net.minecraft.world.World;
 
 public class AnchorbladeEntity extends PersistentProjectileEntity {
     private static final TrackedData<Byte> ANCHOR_FLAGS = DataTracker.registerData(AnchorbladeEntity.class, TrackedDataHandlerRegistry.BYTE);
+    private static final TrackedData<ItemStack> ITEM = DataTracker.registerData(AnchorbladeEntity.class, TrackedDataHandlerRegistry.ITEM_STACK);
+
     public int returnTimer;
-    private ItemStack anchorbladeStack = new ItemStack(ArsenalItems.ANCHORBLADE);
 
     public AnchorbladeEntity(EntityType<? extends AnchorbladeEntity> entityType, World world) {
         super(entityType, world);
@@ -29,15 +31,31 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
 
     public AnchorbladeEntity(World world, LivingEntity owner, ItemStack stack) {
         super(ArsenalEntities.ANCHORBLADE, owner, world);
-        this.anchorbladeStack = stack.copy();
+        this.setItem(stack.copy());
         this.setNoGravity(true);
         this.setReeling(EnchantmentHelper.getLevel(ArsenalEnchantments.REELING, stack) > 0);
+    }
+
+    public void setItem(ItemStack stack) {
+        if (!stack.isOf(Items.ENDER_EYE) || stack.hasNbt()) {
+            this.getDataTracker().set(ITEM, stack.copyWithCount(1));
+        }
+    }
+
+    private ItemStack getTrackedItem() {
+        return this.getDataTracker().get(ITEM);
+    }
+
+    public ItemStack getStack() {
+        ItemStack itemStack = this.getTrackedItem();
+        return itemStack.isEmpty() ? new ItemStack(Items.ENDER_EYE) : itemStack;
     }
 
     @Override
     protected void initDataTracker() {
         super.initDataTracker();
-        this.dataTracker.startTracking(ANCHOR_FLAGS, (byte) 0);
+        this.getDataTracker().startTracking(ANCHOR_FLAGS, (byte) 0);
+        this.getDataTracker().startTracking(ITEM, ItemStack.EMPTY);
     }
 
     @Override
@@ -123,7 +141,7 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
         Entity hitEntity = entityHitResult.getEntity();
         float damage = 10F;
         if (hitEntity instanceof LivingEntity livingEntity) {
-            damage += EnchantmentHelper.getAttackDamage(this.anchorbladeStack, livingEntity.getGroup());
+            damage += EnchantmentHelper.getAttackDamage(this.getTrackedItem(), livingEntity.getGroup());
         }
         Entity owner = this.getOwner();
         this.setDealtDamage(true);

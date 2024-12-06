@@ -13,6 +13,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.util.Hand;
@@ -71,6 +72,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements AnchorOw
     @Inject(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;addCritParticles(Lnet/minecraft/entity/Entity;)V"))
     private void arsenal$scytheReelTargetOnCrit(Entity target, CallbackInfo ci) {
         if (this.getStackInHand(Hand.MAIN_HAND).getItem() instanceof ScytheItem) {
+            // TODO: Make the scythe reset targetting on entities so that they don't attack the player when reaped
             target.setVelocity(this.getPos().subtract(target.getPos()).multiply(0.25f));
             target.velocityModified = true;
         }

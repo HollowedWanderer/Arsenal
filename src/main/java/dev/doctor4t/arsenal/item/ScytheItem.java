@@ -39,6 +39,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class ScytheItem extends MiningToolItem implements GUIHeldVaryingRenderItem, CustomHitParticleItem, CustomHitSoundItem, CustomNameColorItem, ArsenalWeaponItem {
@@ -64,11 +65,15 @@ public class ScytheItem extends MiningToolItem implements GUIHeldVaryingRenderIt
         if (user != null && user.isSneaking() && (blockStateClicked.isOf(Blocks.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE))) {
             WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(user.getStackInHand(context.getHand()));
             if (weaponSkinComponent != null) {
-                if (weaponSkinComponent.getSkin().equals("clown")) {
-                    weaponSkinComponent.setSkin("");
-                } else {
-                    weaponSkinComponent.setSkin("clown");
+                Skin currentSkin = Skin.fromString(weaponSkinComponent.getSkinName());
+
+                if (currentSkin == null) {
+                    currentSkin = Skin.DEFAULT;
                 }
+
+                Skin nextSkin = Skin.getNext(currentSkin);
+                weaponSkinComponent.setSkin(nextSkin.getName());
+
                 return ActionResult.SUCCESS;
             }
         }
@@ -148,5 +153,28 @@ public class ScytheItem extends MiningToolItem implements GUIHeldVaryingRenderIt
     @Override
     public boolean canMine(BlockState state, World world, BlockPos pos, PlayerEntity miner) {
         return !miner.isCreative();
+    }
+
+    public enum Skin {
+        DEFAULT,
+        CLOWN,
+        CARRION,
+        GILDED;
+
+        public String getName() {
+            return this.name().toLowerCase(Locale.ROOT);
+        }
+
+        @Nullable
+        public static Skin fromString(String name) {
+            for (Skin skin : Skin.values()) if (skin.getName().equalsIgnoreCase(name)) return skin;
+            return null;
+        }
+
+        @Nullable
+        public static Skin getNext(Skin skin) {
+            Skin[] values = Skin.values();
+            return values[(skin.ordinal() + 1) % values.length];
+        }
     }
 }

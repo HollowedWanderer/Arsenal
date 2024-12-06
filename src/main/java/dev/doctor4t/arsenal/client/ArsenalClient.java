@@ -10,6 +10,7 @@ import dev.doctor4t.arsenal.client.render.item.ScytheDynamicItemRenderer;
 import dev.doctor4t.arsenal.index.ArsenalEntities;
 import dev.doctor4t.arsenal.index.ArsenalItems;
 import dev.doctor4t.arsenal.index.ArsenalParticles;
+import dev.doctor4t.arsenal.item.AnchorbladeItem;
 import dev.doctor4t.arsenal.util.WeaponSlotCallback;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -23,13 +24,10 @@ import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 @SuppressWarnings("unused")
 public class ArsenalClient implements ClientModInitializer {
-    public static final Identifier ANCHORBLADE_ENTITY_MODEL = Arsenal.id("item/anchorblade_in_hand");
-
     public static ModelTransformationMode currentMode = ModelTransformationMode.NONE;
 
     static {
@@ -47,11 +45,9 @@ public class ArsenalClient implements ClientModInitializer {
         BuiltinItemRendererRegistry.INSTANCE.register(ArsenalItems.SCYTHE, new ScytheDynamicItemRenderer());
         BuiltinItemRendererRegistry.INSTANCE.register(ArsenalItems.ANCHORBLADE, new AnchorbladeDynamicItemRenderer());
 
-        // Force load the telescope models (otherwise since they're never called they wouldn't be loaded by default)
-        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(ScytheDynamicItemRenderer.DEFAULT_MODEL_IDENTIFIER.getLeft(), ScytheDynamicItemRenderer.DEFAULT_MODEL_IDENTIFIER.getRight()));
-        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(ScytheDynamicItemRenderer.CLOWN_MODEL_IDENTIFIER.getLeft(), ScytheDynamicItemRenderer.CLOWN_MODEL_IDENTIFIER.getRight()));
-        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(AnchorbladeDynamicItemRenderer.DEFAULT_MODEL_IDENTIFIER.getLeft(), AnchorbladeDynamicItemRenderer.DEFAULT_MODEL_IDENTIFIER.getRight()));
-        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(AnchorbladeDynamicItemRenderer.LUX_MODEL_IDENTIFIER.getLeft(), AnchorbladeDynamicItemRenderer.LUX_MODEL_IDENTIFIER.getRight()));
+        // Force load the weapon models (otherwise since they're never called they wouldn't be loaded by default)
+        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(ScytheDynamicItemRenderer.MODELS_TO_REGISTER));
+        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(AnchorbladeDynamicItemRenderer.MODELS_TO_REGISTER));
 
         // model layers initialization
         ModEntityModelLayers.initialize();
@@ -97,6 +93,9 @@ public class ArsenalClient implements ClientModInitializer {
         });
 
         // Anchorblade entity model init
-        ModelLoadingPlugin.register(context -> context.addModels(ANCHORBLADE_ENTITY_MODEL));
+        for (AnchorbladeItem.Skin value : AnchorbladeItem.Skin.values()) {
+            ModelLoadingPlugin.register(context -> context.addModels(value.anchorbladeEntityModel));
+        }
+
     }
 }

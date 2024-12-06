@@ -1,5 +1,6 @@
 package dev.doctor4t.arsenal.item;
 
+import dev.doctor4t.arsenal.Arsenal;
 import dev.doctor4t.arsenal.cca.ArsenalComponents;
 import dev.doctor4t.arsenal.cca.WeaponSkinComponent;
 import dev.doctor4t.arsenal.client.particle.contract.ColoredParticleInitialData;
@@ -22,6 +23,7 @@ import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -29,6 +31,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 
 public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRenderItem, CustomHitParticleItem, CustomHitSoundItem, CustomNameColorItem, ArsenalWeaponItem {
     public AnchorbladeItem(ToolMaterial material, int attackDamage, float attackSpeed, Settings settings) {
@@ -42,11 +45,15 @@ public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRender
         if (user != null && user.isSneaking() && (blockStateClicked.isOf(Blocks.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE))) {
             WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(user.getStackInHand(context.getHand()));
             if (weaponSkinComponent != null) {
-                if (weaponSkinComponent.getSkin().equals("lux")) {
-                    weaponSkinComponent.setSkin("");
-                } else {
-                    weaponSkinComponent.setSkin("lux");
+                Skin currentSkin = Skin.fromString(weaponSkinComponent.getSkinName());
+
+                if (currentSkin == null) {
+                    currentSkin = Skin.DEFAULT;
                 }
+
+                Skin nextSkin = Skin.getNext(currentSkin);
+                weaponSkinComponent.setSkin(nextSkin.getName());
+
                 return ActionResult.SUCCESS;
             }
         }
@@ -151,5 +158,37 @@ public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRender
     @Override
     public boolean canMine(BlockState state, World world, BlockPos pos, PlayerEntity miner) {
         return !miner.isCreative();
+    }
+
+
+    public enum Skin {
+        DEFAULT,
+        LUX,
+        CARRION,
+        GILDED;
+
+        public final Identifier chainTexture;
+        public final Identifier anchorbladeEntityModel;
+
+        Skin() {
+            this.chainTexture = Arsenal.id(this.getName().equals("default") ? "textures/entity/chain.png" : "textures/entity/chain_" + this.getName() + ".png");
+            this.anchorbladeEntityModel = Arsenal.id(this.getName().equals("default") ? "item/anchorblade_in_hand" : "item/anchorblade_" + this.getName() + "_in_hand");
+        }
+
+        public String getName() {
+            return this.name().toLowerCase(Locale.ROOT);
+        }
+
+        @Nullable
+        public static Skin fromString(String name) {
+            for (Skin skin : Skin.values()) if (skin.getName().equalsIgnoreCase(name)) return skin;
+            return null;
+        }
+
+        @Nullable
+        public static Skin getNext(Skin skin) {
+            Skin[] values = Skin.values();
+            return values[(skin.ordinal() + 1) % values.length];
+        }
     }
 }

@@ -2,6 +2,8 @@ package dev.doctor4t.arsenal.datagen;
 
 import dev.doctor4t.arsenal.Arsenal;
 import dev.doctor4t.arsenal.index.ArsenalItems;
+import dev.doctor4t.arsenal.item.AnchorbladeItem;
+import dev.doctor4t.arsenal.item.ScytheItem;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.client.*;
@@ -27,12 +29,14 @@ public class ArsenalModelGen extends FabricModelProvider {
     @Override
     public void generateItemModels(ItemModelGenerator generator) {
         registerBuiltinModel(ArsenalItems.SCYTHE, generator);
-        registerBigWeapon(null, ArsenalItems.SCYTHE, generator);
-        registerBigWeapon("clown", ArsenalItems.SCYTHE, generator);
+        for (ScytheItem.Skin value : ScytheItem.Skin.values()) {
+            registerBigWeapon(value == ScytheItem.Skin.DEFAULT ? null : value.getName(), ArsenalItems.SCYTHE, generator);
+        }
 
         registerBuiltinModel(ArsenalItems.ANCHORBLADE, generator);
-        registerBigWeapon(null, ArsenalItems.ANCHORBLADE, generator);
-        registerBigWeapon("lux", ArsenalItems.ANCHORBLADE, generator);
+        for (AnchorbladeItem.Skin value : AnchorbladeItem.Skin.values()) {
+            registerBigWeapon(value == AnchorbladeItem.Skin.DEFAULT ? null : value.getName(), ArsenalItems.ANCHORBLADE, generator);
+        }
     }
 
     private static Model model(String parent, @Nullable String variant, TextureKey... keys) {

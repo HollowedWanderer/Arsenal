@@ -1,7 +1,6 @@
 package dev.doctor4t.arsenal.cca;
 
 import dev.doctor4t.arsenal.Arsenal;
-import dev.doctor4t.arsenal.index.ArsenalItems;
 import dev.doctor4t.arsenal.item.ArsenalWeaponItem;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;

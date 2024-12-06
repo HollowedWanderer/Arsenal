@@ -14,7 +14,8 @@ public abstract class ItemStackMixin {
     @Shadow
     public abstract Item getItem();
 
-    @Shadow public abstract boolean isEmpty();
+    @Shadow
+    public abstract boolean isEmpty();
 
     @ModifyExpressionValue(
             method = "getTooltip",
