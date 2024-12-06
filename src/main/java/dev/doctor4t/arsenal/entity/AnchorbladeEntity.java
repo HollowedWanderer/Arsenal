@@ -156,7 +156,7 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
                     EnchantmentHelper.onUserDamaged(hitLivingEntity, owner);
                     EnchantmentHelper.onTargetDamaged((LivingEntity) owner, hitLivingEntity);
                     // knockback or reel in
-                    float strength = (float) (5f * (1.0 - hitLivingEntity.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE)));
+                    float strength = (float) (3f * (1.0 - hitLivingEntity.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE)));
                     if (!(strength <= 0.0)) {
                         this.velocityDirty = true;
                         Vec3d dir = hitLivingEntity.getPos().subtract(owner.getPos()).normalize().multiply(strength);

@@ -54,7 +54,7 @@ public class AnchorbladeEntityRenderer extends EntityRenderer<AnchorbladeEntity>
                 chainLayer = RenderLayer.getEntitySmoothCutout(skin.chainTexture);
             }
         }
-        this.itemRenderer.renderItem(anchorbladeEntity.getStack(), ModelTransformationMode.FIXED, false, matrices, vertexConsumers, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, model);
+        this.itemRenderer.renderItem(anchorbladeEntity.getStack(), ModelTransformationMode.FIXED, false, matrices, vertexConsumers, light, OverlayTexture.DEFAULT_UV, model);
 
         matrices.pop();
 

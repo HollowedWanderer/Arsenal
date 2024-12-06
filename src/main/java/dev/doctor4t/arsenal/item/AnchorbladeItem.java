@@ -14,6 +14,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.recipe.Ingredient;
@@ -39,10 +40,25 @@ public class AnchorbladeItem extends PickaxeItem implements GUIHeldVaryingRender
     }
 
     @Override
+    public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
+        super.inventoryTick(stack, world, entity, slot, selected);
+
+        WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(stack);
+        if (weaponSkinComponent != null && entity instanceof PlayerEntity player) {
+            if (!Arsenal.isSupporter(player.getUuid())) {
+                // TODO: Send message to player saying cosmetics are exclusive to supporters
+                weaponSkinComponent.setSkin(Skin.DEFAULT.getName());
+            }
+        }
+    }
+
+    @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
         BlockState blockStateClicked = context.getWorld().getBlockState(context.getBlockPos());
         PlayerEntity user = context.getPlayer();
-        if (user != null && user.isSneaking() && (blockStateClicked.isOf(Blocks.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE))) {
+        // TODO: Send message to player saying cosmetics are exclusive to supporters
+        // TODO: Add sound effects and maybe particles?
+        if (user != null && user.isSneaking() && Arsenal.isSupporter(user.getUuid()) && (blockStateClicked.isOf(Blocks.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE))) {
             WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(user.getStackInHand(context.getHand()));
             if (weaponSkinComponent != null) {
                 Skin currentSkin = Skin.fromString(weaponSkinComponent.getSkinName());

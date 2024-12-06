@@ -3,6 +3,7 @@ package dev.doctor4t.arsenal.item;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.jamieswhiteshirt.reachentityattributes.ReachEntityAttributes;
+import dev.doctor4t.arsenal.Arsenal;
 import dev.doctor4t.arsenal.cca.ArsenalComponents;
 import dev.doctor4t.arsenal.cca.WeaponSkinComponent;
 import dev.doctor4t.arsenal.client.particle.contract.ColoredParticleInitialData;
@@ -15,6 +16,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -59,10 +61,25 @@ public class ScytheItem extends MiningToolItem implements GUIHeldVaryingRenderIt
     }
 
     @Override
+    public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
+        super.inventoryTick(stack, world, entity, slot, selected);
+
+        WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(stack);
+        if (weaponSkinComponent != null && entity instanceof PlayerEntity player) {
+            if (!Arsenal.isSupporter(player.getUuid())) {
+                // TODO: Send message to player saying cosmetics are exclusive to supporters
+                weaponSkinComponent.setSkin(Skin.DEFAULT.getName());
+            }
+        }
+    }
+
+    @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
         BlockState blockStateClicked = context.getWorld().getBlockState(context.getBlockPos());
         PlayerEntity user = context.getPlayer();
-        if (user != null && user.isSneaking() && (blockStateClicked.isOf(Blocks.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE))) {
+        // TODO: Send message to player saying cosmetics are exclusive to supporters
+        // TODO: Add sound effects and maybe particles?
+        if (user != null && user.isSneaking() && Arsenal.isSupporter(user.getUuid()) && (blockStateClicked.isOf(Blocks.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE))) {
             WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(user.getStackInHand(context.getHand()));
             if (weaponSkinComponent != null) {
                 Skin currentSkin = Skin.fromString(weaponSkinComponent.getSkinName());
