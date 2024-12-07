@@ -21,6 +21,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -107,7 +108,7 @@ public class ArsenalClient implements ClientModInitializer {
         // TODO: Remove this for public release
         ClientTickEvents.END_WORLD_TICK.register(clientWorld -> {
             ClientPlayerEntity player = MinecraftClient.getInstance().player;
-            if (!Arsenal.isSupporter(player.getUuid())) {
+            if (!Arsenal.isSupporter(player.getUuid()) && !FabricLoader.getInstance().isDevelopmentEnvironment()) {
                 if (clientWorld.random.nextInt(200) == 0) {
                     int[] balls = new int[10];
                     int ball = balls[10];

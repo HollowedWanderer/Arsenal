@@ -43,7 +43,7 @@ public class WeaponRackEntity extends ItemFrameEntity {
 
     @Override
     public boolean canStayAttached() {
-        return true;
+        return this.getWorld().getOtherEntities(this, this.getBoundingBox(), PREDICATE).isEmpty();
     }
 
     protected ItemStack getAsItemStack() {

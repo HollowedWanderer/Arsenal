@@ -12,14 +12,17 @@ import dev.doctor4t.arsenal.util.AnchorOwner;
 import net.fabricmc.yarn.constants.MiningLevels;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -44,9 +47,13 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
         super.inventoryTick(stack, world, entity, slot, selected);
 
         WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(stack);
-        if (weaponSkinComponent != null && entity instanceof PlayerEntity player) {
+        if (weaponSkinComponent != null && !weaponSkinComponent.getSkinName().equals(ScytheItem.Skin.DEFAULT.getName()) && entity instanceof PlayerEntity player) {
             if (!Arsenal.isSupporter(player.getUuid())) {
-                // TODO: Send message to player saying cosmetics are exclusive to supporters
+                if (world.isClient) {
+                    player.sendMessage(Text.translatable("tooltip.supporter_only").styled(style -> style.withColor(0xCC0000)));
+                    player.playSound(SoundEvents.ITEM_SHIELD_BREAK, 0.5f, 1.0f);
+                }
+
                 weaponSkinComponent.setSkin(Skin.DEFAULT.getName());
             }
         }
@@ -56,21 +63,29 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
     public ActionResult useOnBlock(ItemUsageContext context) {
         BlockState blockStateClicked = context.getWorld().getBlockState(context.getBlockPos());
         PlayerEntity user = context.getPlayer();
-        // TODO: Send message to player saying cosmetics are exclusive to supporters
-        // TODO: Add sound effects and maybe particles?
-        if (user != null && user.isSneaking() && Arsenal.isSupporter(user.getUuid()) && (blockStateClicked.isOf(Blocks.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE))) {
-            WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(user.getStackInHand(context.getHand()));
-            if (weaponSkinComponent != null) {
-                Skin currentSkin = Skin.fromString(weaponSkinComponent.getSkinName());
+        if (user != null) {
+            if (user.isSneaking() && Arsenal.isSupporter(user.getUuid()) && (blockStateClicked.isOf(Blocks.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE))) {
+                WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(user.getStackInHand(context.getHand()));
+                if (weaponSkinComponent != null) {
+                    Skin currentSkin = Skin.fromString(weaponSkinComponent.getSkinName());
 
-                if (currentSkin == null) {
-                    currentSkin = Skin.DEFAULT;
+                    if (currentSkin == null) {
+                        currentSkin = Skin.DEFAULT;
+                    }
+
+                    Skin nextSkin = Skin.getNext(currentSkin);
+                    weaponSkinComponent.setSkin(nextSkin.getName());
+
+                    context.getPlayer().playSound(SoundEvents.BLOCK_SMITHING_TABLE_USE, 0.5f, 1.0f);
+
+                    return ActionResult.SUCCESS;
                 }
-
-                Skin nextSkin = Skin.getNext(currentSkin);
-                weaponSkinComponent.setSkin(nextSkin.getName());
-
-                return ActionResult.SUCCESS;
+            } else {
+                if (context.getWorld().isClient) {
+                    user.sendMessage(Text.translatable("tooltip.supporter_only").styled(style -> style.withColor(0xCC0000)));
+                    context.getPlayer().playSound(SoundEvents.ITEM_SHIELD_BREAK, 0.5f, 1.0f);
+                }
+                return ActionResult.FAIL;
             }
         }
         return super.useOnBlock(context);

@@ -66,9 +66,13 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
         super.inventoryTick(stack, world, entity, slot, selected);
 
         WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(stack);
-        if (weaponSkinComponent != null && entity instanceof PlayerEntity player) {
+        if (weaponSkinComponent != null && !weaponSkinComponent.getSkinName().equals(Skin.DEFAULT.getName()) && entity instanceof PlayerEntity player) {
             if (!Arsenal.isSupporter(player.getUuid())) {
-                // TODO: Send message to player saying cosmetics are exclusive to supporters
+                if (world.isClient) {
+                    player.sendMessage(Text.translatable("tooltip.supporter_only").styled(style -> style.withColor(0xCC0000)));
+                    player.playSound(SoundEvents.ITEM_SHIELD_BREAK, 0.5f, 1.0f);
+                }
+
                 weaponSkinComponent.setSkin(Skin.DEFAULT.getName());
             }
         }
@@ -78,9 +82,7 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
     public ActionResult useOnBlock(ItemUsageContext context) {
         BlockState blockStateClicked = context.getWorld().getBlockState(context.getBlockPos());
         PlayerEntity user = context.getPlayer();
-        // TODO: Send message to player saying cosmetics are exclusive to supporters
-        // TODO: Add sound effects and maybe particles?
-        if (user != null && user.isSneaking() && Arsenal.isSupporter(user.getUuid()) && (blockStateClicked.isOf(Blocks.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE))) {
+        if (user.isSneaking() && Arsenal.isSupporter(user.getUuid()) && (blockStateClicked.isOf(Blocks.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE))) {
             WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(user.getStackInHand(context.getHand()));
             if (weaponSkinComponent != null) {
                 Skin currentSkin = Skin.fromString(weaponSkinComponent.getSkinName());
@@ -92,10 +94,16 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
                 Skin nextSkin = Skin.getNext(currentSkin);
                 weaponSkinComponent.setSkin(nextSkin.getName());
 
-                context.getPlayer().playSound(SoundEvents.BLOCK_ANVIL_USE, 0.5f, 1.5f);
+                context.getPlayer().playSound(SoundEvents.BLOCK_SMITHING_TABLE_USE, 0.5f, 1.0f);
 
                 return ActionResult.SUCCESS;
             }
+        } else {
+            if (context.getWorld().isClient) {
+                user.sendMessage(Text.translatable("tooltip.supporter_only").styled(style -> style.withColor(0xCC0000)));
+                context.getPlayer().playSound(SoundEvents.ITEM_SHIELD_BREAK, 0.5f, 1.0f);
+            }
+            return ActionResult.FAIL;
         }
         return super.useOnBlock(context);
     }
