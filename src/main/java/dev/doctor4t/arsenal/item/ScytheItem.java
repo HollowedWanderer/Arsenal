@@ -217,9 +217,10 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
 
     public enum Skin {
         DEFAULT(0xFFD9D9D9, 0xFF7F8885, null, null),
-        CLOWN(0xFFD90420, 0xFF8C0420, "Grace", "tooltip.arsenal.scythe_clown"),
+        GRACE(0xFFD90420, 0xFF8C0420, null, "tooltip.arsenal.scythe_grace"),
         CARRION(0xFFE9DFB8, 0xFF9D806E, null, null),
-        GILDED(0xFFF1BC5A, 0xFFE28634, null, null);
+        GILDED(0xFFF1BC5A, 0xFFE28634, null, null),
+        ROZE(0xFFB70066, 0xFF710949, null, null);
 
         public final int color;
         public final int shadowColor;

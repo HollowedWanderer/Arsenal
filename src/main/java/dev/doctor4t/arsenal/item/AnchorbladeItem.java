@@ -209,7 +209,7 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
 
     public enum Skin {
         DEFAULT(new int[]{0xFF2B2632}, new int[]{0xFF1B1B1B}, null, null),
-        LUX(new int[]{0xFFFF5E00, 0xFF37965B, 0xFFA51BB7}, new int[]{0xFFC52400, 0xFF115642, 0xFF671081}, "L'Ancre", "tooltip.arsenal.anchorblade_lux"),
+        LANCRE(new int[]{0xFFFF5E00, 0xFF37965B, 0xFFA51BB7}, new int[]{0xFFC52400, 0xFF115642, 0xFF671081}, "L'Ancre", "tooltip.arsenal.anchorblade_lancre"),
         CARRION(new int[]{0xFFE9DFB8}, new int[]{0xFF9D806E}, null, null),
         GILDED(new int[]{0xFFF1BC5A}, new int[]{0xFFE28634}, null, null);
 

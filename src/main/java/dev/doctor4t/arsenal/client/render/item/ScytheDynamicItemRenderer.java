@@ -23,9 +23,10 @@ public class ScytheDynamicItemRenderer implements BuiltinItemRendererRegistry.Dy
     public static final List<ModelIdentifier> MODELS_TO_REGISTER = new ArrayList<>();
 
     public static final Pair<ModelIdentifier, ModelIdentifier> DEFAULT_MODEL_IDENTIFIER = registerVariantModelPair("");
-    public static final Pair<ModelIdentifier, ModelIdentifier> CLOWN_MODEL_IDENTIFIER = registerVariantModelPair("clown");
+    public static final Pair<ModelIdentifier, ModelIdentifier> GRACE_MODEL_IDENTIFIER = registerVariantModelPair("grace");
     public static final Pair<ModelIdentifier, ModelIdentifier> CARRION_MODEL_IDENTIFIER = registerVariantModelPair("carrion");
     public static final Pair<ModelIdentifier, ModelIdentifier> GILDED_MODEL_IDENTIFIER = registerVariantModelPair("gilded");
+    public static final Pair<ModelIdentifier, ModelIdentifier> ROZE_MODEL_IDENTIFIER = registerVariantModelPair("roze");
 
     private static @NotNull Pair<ModelIdentifier, ModelIdentifier> registerVariantModelPair(String name) {
         String s = "scythe" + (name.isEmpty() ? "" : "_") + name;
@@ -43,12 +44,14 @@ public class ScytheDynamicItemRenderer implements BuiltinItemRendererRegistry.Dy
         Pair<ModelIdentifier, ModelIdentifier> modelIdentifierPair = DEFAULT_MODEL_IDENTIFIER;
         WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(stack);
         if (weaponSkinComponent != null) {
-            if (ScytheItem.Skin.fromString(weaponSkinComponent.getSkinName()) == ScytheItem.Skin.CLOWN) {
-                modelIdentifierPair = CLOWN_MODEL_IDENTIFIER;
+            if (ScytheItem.Skin.fromString(weaponSkinComponent.getSkinName()) == ScytheItem.Skin.GRACE) {
+                modelIdentifierPair = GRACE_MODEL_IDENTIFIER;
             } else if (ScytheItem.Skin.fromString(weaponSkinComponent.getSkinName()) == ScytheItem.Skin.CARRION) {
                 modelIdentifierPair = CARRION_MODEL_IDENTIFIER;
             } else if (ScytheItem.Skin.fromString(weaponSkinComponent.getSkinName()) == ScytheItem.Skin.GILDED) {
                 modelIdentifierPair = GILDED_MODEL_IDENTIFIER;
+            } else if (ScytheItem.Skin.fromString(weaponSkinComponent.getSkinName()) == ScytheItem.Skin.ROZE) {
+                modelIdentifierPair = ROZE_MODEL_IDENTIFIER;
             }
         }
         return modelIdentifierPair;

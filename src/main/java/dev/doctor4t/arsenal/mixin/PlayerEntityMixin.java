@@ -11,6 +11,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
@@ -75,10 +76,12 @@ public abstract class PlayerEntityMixin extends LivingEntity implements AnchorOw
     @Inject(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;addCritParticles(Lnet/minecraft/entity/Entity;)V"))
     private void arsenal$scytheReelTargetOnCrit(Entity target, CallbackInfo ci) {
         if (this.getStackInHand(Hand.MAIN_HAND).getItem() instanceof ScytheItem) {
+            float strength = 1f;
             if (target instanceof MobEntity mob) {
-                mob.addStatusEffect(new StatusEffectInstance(ArsenalStatusEffects.STUN, 10, 0, false, false, true));
+                strength = (float) (.25f * (1.0 - mob.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE)));
+                mob.addStatusEffect(new StatusEffectInstance(ArsenalStatusEffects.STUN, 10, 0, false, false, false));
             }
-            target.setVelocity(this.getPos().subtract(target.getPos()).multiply(0.25f));
+            target.setVelocity(this.getPos().subtract(target.getPos()).multiply(strength));
             target.velocityModified = true;
         }
     }

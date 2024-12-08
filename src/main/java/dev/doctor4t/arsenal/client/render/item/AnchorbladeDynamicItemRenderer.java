@@ -23,7 +23,7 @@ public class AnchorbladeDynamicItemRenderer implements BuiltinItemRendererRegist
     public static final List<ModelIdentifier> MODELS_TO_REGISTER = new ArrayList<>();
 
     public static final Pair<ModelIdentifier, ModelIdentifier> DEFAULT_MODEL_IDENTIFIER = registerVariantModelPair("");
-    public static final Pair<ModelIdentifier, ModelIdentifier> LUX_MODEL_IDENTIFIER = registerVariantModelPair("lux");
+    public static final Pair<ModelIdentifier, ModelIdentifier> LANCRE_MODEL_IDENTIFIER = registerVariantModelPair("lancre");
     public static final Pair<ModelIdentifier, ModelIdentifier> CARRION_MODEL_IDENTIFIER = registerVariantModelPair("carrion");
     public static final Pair<ModelIdentifier, ModelIdentifier> GILDED_MODEL_IDENTIFIER = registerVariantModelPair("gilded");
 
@@ -43,8 +43,8 @@ public class AnchorbladeDynamicItemRenderer implements BuiltinItemRendererRegist
         Pair<ModelIdentifier, ModelIdentifier> modelIdentifierPair = DEFAULT_MODEL_IDENTIFIER;
         WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(stack);
         if (weaponSkinComponent != null) {
-            if (AnchorbladeItem.Skin.fromString(weaponSkinComponent.getSkinName()) == AnchorbladeItem.Skin.LUX) {
-                modelIdentifierPair = LUX_MODEL_IDENTIFIER;
+            if (AnchorbladeItem.Skin.fromString(weaponSkinComponent.getSkinName()) == AnchorbladeItem.Skin.LANCRE) {
+                modelIdentifierPair = LANCRE_MODEL_IDENTIFIER;
             } else if (AnchorbladeItem.Skin.fromString(weaponSkinComponent.getSkinName()) == AnchorbladeItem.Skin.CARRION) {
                 modelIdentifierPair = CARRION_MODEL_IDENTIFIER;
             } else if (AnchorbladeItem.Skin.fromString(weaponSkinComponent.getSkinName()) == AnchorbladeItem.Skin.GILDED) {

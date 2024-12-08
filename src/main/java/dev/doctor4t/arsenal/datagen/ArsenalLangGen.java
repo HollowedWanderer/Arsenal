@@ -2,6 +2,7 @@ package dev.doctor4t.arsenal.datagen;
 
 import dev.doctor4t.arsenal.index.ArsenalEntities;
 import dev.doctor4t.arsenal.index.ArsenalItems;
+import dev.doctor4t.arsenal.index.ArsenalStatusEffects;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 
@@ -19,8 +20,10 @@ public class ArsenalLangGen extends FabricLanguageProvider {
         builder.add(ArsenalEntities.BLOOD_SCYTHE, "Blood Scythe");
         builder.add(ArsenalItems.WEAPON_RACK, "Weapon Rack");
         builder.add(ArsenalEntities.WEAPON_RACK, "Weapon Rack");
+        builder.add(ArsenalStatusEffects.STUN, "Stun");
         builder.add("tooltip.supporter_only", "Cosmetics are reserved to Ko-Fi and YouTube members only.\nIf you want access to them (and other cool perks), consider supporting!");
-        builder.add("tooltip.arsenal.anchorblade_lux", "Orginally designed by Diansu and forged by RAT to be gifted\nto Lux in a distant universe, this weapon has seen many worlds.\nAfter this Lux saw her own die, she travelled to another one\nto hand it to this new world's Lux. Since then, it has been\npassed on for generations, almost as a tradition,\none coral fan growing for every Lux who owned it.");
+        builder.add("tooltip.arsenal.anchorblade_lancre", "Originally designed by Diansu and forged by RAT to be gifted\nto Lux in a distant universe, this weapon has seen many worlds.\nAfter this Lux saw her own die, she travelled to another one\nto hand it to this new world's Lux. Since then, it has been\npassed on for generations, almost as a tradition,\none coral fan growing for every Lux who owned it.");
+        builder.add("tooltip.arsenal.scythe_grace", ""); // TODO: Add grace scythe lore
         builder.add("tooltip.arsenal.hidden", "Press [Shift] to show lore");
         builder.add("enchantment.arsenal.spewing", "Spewing");
         builder.add("enchantment.arsenal.spewing.desc", "Using the Scythe will spew out a blood blade damaging you and transferring half the duration of your potion effects to any entity hit.");
