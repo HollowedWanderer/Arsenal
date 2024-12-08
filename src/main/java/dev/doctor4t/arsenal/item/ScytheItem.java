@@ -12,8 +12,10 @@ import dev.doctor4t.arsenal.index.ArsenalDamageTypes;
 import dev.doctor4t.arsenal.index.ArsenalEnchantments;
 import dev.doctor4t.arsenal.index.ArsenalParticles;
 import dev.doctor4t.arsenal.index.ArsenalSounds;
+import dev.doctor4t.ratatouille.util.TextUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -33,6 +35,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
@@ -82,28 +85,30 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
     public ActionResult useOnBlock(ItemUsageContext context) {
         BlockState blockStateClicked = context.getWorld().getBlockState(context.getBlockPos());
         PlayerEntity user = context.getPlayer();
-        if (user.isSneaking() && Arsenal.isSupporter(user.getUuid()) && (blockStateClicked.isOf(Blocks.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE))) {
-            WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(user.getStackInHand(context.getHand()));
-            if (weaponSkinComponent != null) {
-                Skin currentSkin = Skin.fromString(weaponSkinComponent.getSkinName());
+        if (user != null && user.isSneaking() && (blockStateClicked.isOf(Blocks.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE))) {
+            if (Arsenal.isSupporter(user.getUuid())) {
+                WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(user.getStackInHand(context.getHand()));
+                if (weaponSkinComponent != null) {
+                    Skin currentSkin = Skin.fromString(weaponSkinComponent.getSkinName());
 
-                if (currentSkin == null) {
-                    currentSkin = Skin.DEFAULT;
+                    if (currentSkin == null) {
+                        currentSkin = Skin.DEFAULT;
+                    }
+
+                    Skin nextSkin = Skin.getNext(currentSkin);
+                    weaponSkinComponent.setSkin(nextSkin.getName());
+
+                    context.getPlayer().playSound(SoundEvents.BLOCK_SMITHING_TABLE_USE, 0.5f, 1.0f);
+
+                    return ActionResult.SUCCESS;
                 }
-
-                Skin nextSkin = Skin.getNext(currentSkin);
-                weaponSkinComponent.setSkin(nextSkin.getName());
-
-                context.getPlayer().playSound(SoundEvents.BLOCK_SMITHING_TABLE_USE, 0.5f, 1.0f);
-
-                return ActionResult.SUCCESS;
+            } else {
+                if (context.getWorld().isClient) {
+                    user.sendMessage(Text.translatable("tooltip.supporter_only").styled(style -> style.withColor(0xCC0000)));
+                    context.getPlayer().playSound(SoundEvents.ITEM_SHIELD_BREAK, 0.5f, 1.0f);
+                }
+                return ActionResult.FAIL;
             }
-        } else {
-            if (context.getWorld().isClient) {
-                user.sendMessage(Text.translatable("tooltip.supporter_only").styled(style -> style.withColor(0xCC0000)));
-                context.getPlayer().playSound(SoundEvents.ITEM_SHIELD_BREAK, 0.5f, 1.0f);
-            }
-            return ActionResult.FAIL;
         }
         return super.useOnBlock(context);
     }
@@ -159,17 +164,40 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        super.appendTooltip(stack, world, tooltip, context); // 0x850909
+        WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(stack);
+        if (weaponSkinComponent != null && !weaponSkinComponent.getSkinName().equals(Skin.DEFAULT.getName())) {
+            Skin skin = Skin.fromString(weaponSkinComponent.getSkinName());
+
+            if (skin != null) {
+                tooltip.add(Text.literal(TextUtils.formatValueString(weaponSkinComponent.getSkinName())).styled(style -> style.withColor(skin.color)));
+                if (skin.lore != null) {
+                    if (Screen.hasShiftDown()) {
+                        tooltip.add(Text.translatable(skin.lore).styled(style -> style.withColor(skin.color)));
+                    } else {
+                        tooltip.add(Text.translatable("tooltip.arsenal.hidden").styled(style -> style.withColor(Formatting.DARK_GRAY)));
+                    }
+                }
+            }
+        }
+
+        super.appendTooltip(stack, world, tooltip, context);
     }
 
     @Override
     public void spawnHitParticles(PlayerEntity player) {
         if (player.getWorld() instanceof ServerWorld serverWorld) {
-            double deltaX = -MathHelper.sin((float) (player.getYaw() * (Math.PI / 180F)));
-            double deltaZ = MathHelper.cos((float) (player.getYaw() * (Math.PI / 180F)));
+            WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(player.getMainHandStack());
+            if (weaponSkinComponent != null) {
+                Skin skin = Skin.fromString(weaponSkinComponent.getSkinName());
 
-            ColoredParticleInitialData data = new ColoredParticleInitialData(0xFFAEB4B4);
-            serverWorld.spawnParticles(ArsenalParticles.SWEEP_ATTACK_PARTICLE.setData(data), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
+                if (skin != null) {
+                    double deltaX = -MathHelper.sin((float) (player.getYaw() * (Math.PI / 180F)));
+                    double deltaZ = MathHelper.cos((float) (player.getYaw() * (Math.PI / 180F)));
+
+                    ColoredParticleInitialData data = new ColoredParticleInitialData(skin.color);
+                    serverWorld.spawnParticles(ArsenalParticles.SWEEP_ATTACK_PARTICLE.setData(data), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
+                }
+            }
         }
     }
 
@@ -184,10 +212,18 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
     }
 
     public enum Skin {
-        DEFAULT,
-        CLOWN,
-        CARRION,
-        GILDED;
+        DEFAULT(0xFFAEB4B4, null),
+        CLOWN(0xFFD90629, "tooltip.arsenal.scythe_clown"),
+        CARRION(0xFFB03E45, null),
+        GILDED(0xFFF1BC5A, null);
+
+        public final int color;
+        public final @Nullable String lore;
+
+        Skin(int color, @Nullable String lore) {
+            this.color = color;
+            this.lore = lore;
+        }
 
         public String getName() {
             return this.name().toLowerCase(Locale.ROOT);

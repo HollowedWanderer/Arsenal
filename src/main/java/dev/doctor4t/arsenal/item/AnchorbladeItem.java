@@ -9,26 +9,23 @@ import dev.doctor4t.arsenal.index.ArsenalEnchantments;
 import dev.doctor4t.arsenal.index.ArsenalParticles;
 import dev.doctor4t.arsenal.index.ArsenalSounds;
 import dev.doctor4t.arsenal.util.AnchorOwner;
+import dev.doctor4t.ratatouille.util.TextUtils;
 import net.fabricmc.yarn.constants.MiningLevels;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -47,7 +44,7 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
         super.inventoryTick(stack, world, entity, slot, selected);
 
         WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(stack);
-        if (weaponSkinComponent != null && !weaponSkinComponent.getSkinName().equals(ScytheItem.Skin.DEFAULT.getName()) && entity instanceof PlayerEntity player) {
+        if (weaponSkinComponent != null && !weaponSkinComponent.getSkinName().equals(Skin.DEFAULT.getName()) && entity instanceof PlayerEntity player) {
             if (!Arsenal.isSupporter(player.getUuid())) {
                 if (world.isClient) {
                     player.sendMessage(Text.translatable("tooltip.supporter_only").styled(style -> style.withColor(0xCC0000)));
@@ -63,8 +60,8 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
     public ActionResult useOnBlock(ItemUsageContext context) {
         BlockState blockStateClicked = context.getWorld().getBlockState(context.getBlockPos());
         PlayerEntity user = context.getPlayer();
-        if (user != null) {
-            if (user.isSneaking() && Arsenal.isSupporter(user.getUuid()) && (blockStateClicked.isOf(Blocks.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE))) {
+        if (user != null && user.isSneaking() && (blockStateClicked.isOf(Blocks.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE))) {
+            if (Arsenal.isSupporter(user.getUuid())) {
                 WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(user.getStackInHand(context.getHand()));
                 if (weaponSkinComponent != null) {
                     Skin currentSkin = Skin.fromString(weaponSkinComponent.getSkinName());
@@ -88,6 +85,7 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
                 return ActionResult.FAIL;
             }
         }
+
         return super.useOnBlock(context);
     }
 
@@ -125,27 +123,40 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        // TODO: Display skin name and color
-        // TODO: Only apply that tooltip for the custom lux skin
-//        if (Screen.hasShiftDown()) {
-//            for (int i = 1; i <= 6; i++) {
-//                tooltip.add(Text.translatable("item.arsenal.anchorblade.tooltip_" + i).styled(style -> style.withColor(0xC35913)));
-//            }
-//        } else {
-//            tooltip.add(Text.translatable("tooltip.arsenal.hidden").setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY)));
-//        }
+        WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(stack);
+        if (weaponSkinComponent != null && !weaponSkinComponent.getSkinName().equals(Skin.DEFAULT.getName())) {
+            Skin skin = Skin.fromString(weaponSkinComponent.getSkinName());
+            if (skin != null) {
+                tooltip.add(Text.literal(TextUtils.formatValueString(weaponSkinComponent.getSkinName())).styled(style -> style.withColor(skin.color)));
+                if (skin.lore != null) {
+                    if (Screen.hasShiftDown()) {
+                        tooltip.add(Text.translatable(skin.lore).styled(style -> style.withColor(skin.color)));
+                    } else {
+                        tooltip.add(Text.translatable("tooltip.arsenal.hidden").styled(style -> style.withColor(Formatting.DARK_GRAY)));
+                    }
+                }
+            }
+        }
+
         super.appendTooltip(stack, world, tooltip, context);
     }
 
     @Override
     public void spawnHitParticles(PlayerEntity player) {
-        // TODO: Custom colors for each skin
-        double deltaX = -MathHelper.sin((float) (player.getYaw() * (Math.PI / 180F)));
-        double deltaZ = MathHelper.cos((float) (player.getYaw() * (Math.PI / 180F)));
-
+        // TODO: Make the particle take two colors, for more control over the sprite and make the swings look better
         if (player.getWorld() instanceof ServerWorld serverWorld) {
-            ColoredParticleInitialData data = new ColoredParticleInitialData(0xFF2B2632);
-            serverWorld.spawnParticles(ArsenalParticles.SWEEP_ATTACK_PARTICLE.setData(data), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
+            WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(player.getMainHandStack());
+            if (weaponSkinComponent != null) {
+                Skin skin = Skin.fromString(weaponSkinComponent.getSkinName());
+
+                if (skin != null) {
+                    double deltaX = -MathHelper.sin((float) (player.getYaw() * (Math.PI / 180F)));
+                    double deltaZ = MathHelper.cos((float) (player.getYaw() * (Math.PI / 180F)));
+
+                    ColoredParticleInitialData data = new ColoredParticleInitialData(skin.color);
+                    serverWorld.spawnParticles(ArsenalParticles.SWEEP_ATTACK_PARTICLE.setData(data), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
+                }
+            }
         }
     }
 
@@ -195,17 +206,21 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
 
 
     public enum Skin {
-        DEFAULT,
-        LUX,
-        CARRION,
-        GILDED;
+        DEFAULT(0xFF2B2632, null),
+        LUX(0xFFD37619, "tooltip.arsenal.anchorblade_lux"),
+        CARRION(0xFFB03E45, null),
+        GILDED(0xFFF1BC5A, null);
 
         public final Identifier chainTexture;
         public final Identifier anchorbladeEntityModel;
+        public final int color;
+        public final @Nullable String lore;
 
-        Skin() {
+        Skin(int color, @Nullable String lore) {
             this.chainTexture = Arsenal.id(this.getName().equals("default") ? "textures/entity/chain.png" : "textures/entity/chain_" + this.getName() + ".png");
             this.anchorbladeEntityModel = Arsenal.id(this.getName().equals("default") ? "item/anchorblade_in_hand" : "item/anchorblade_" + this.getName() + "_in_hand");
+            this.color = color;
+            this.lore = lore;
         }
 
         public String getName() {
