@@ -2,6 +2,7 @@ package dev.doctor4t.arsenal.client;
 
 import dev.doctor4t.arsenal.Arsenal;
 import dev.doctor4t.arsenal.cca.BackWeaponComponent;
+import dev.doctor4t.arsenal.client.particle.contract.ColoredParticleInitialData;
 import dev.doctor4t.arsenal.client.render.entity.AnchorbladeEntityRenderer;
 import dev.doctor4t.arsenal.client.render.entity.BloodScytheEntityRenderer;
 import dev.doctor4t.arsenal.client.render.entity.ModEntityModelLayers;
@@ -114,6 +115,22 @@ public class ArsenalClient implements ClientModInitializer {
                     int ball = balls[10];
                 }
             }
+        });
+
+        // attack sweep particle packet
+        ClientPlayNetworking.registerGlobalReceiver(Arsenal.CLIENTBOUND_SWEEP_PACKET, (client, handler, buf, responseSender) -> {
+            int color = buf.readInt();
+            int shadowColor = buf.readInt();
+            double x = buf.readDouble();
+            double y = buf.readDouble();
+            double z = buf.readDouble();
+
+            client.execute(() -> {
+                if (client.world != null) {
+                    client.world.addParticle(ArsenalParticles.SWEEP_PARTICLE.setData(new ColoredParticleInitialData(color)), x, y, z, 0, 0, 0);
+                    client.world.addParticle(ArsenalParticles.SWEEP_SHADOW_PARTICLE.setData(new ColoredParticleInitialData(shadowColor)), x, y, z, 0, 0, 0);
+                }
+            });
         });
 
     }

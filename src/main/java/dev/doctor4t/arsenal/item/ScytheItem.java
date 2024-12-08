@@ -6,12 +6,11 @@ import com.jamieswhiteshirt.reachentityattributes.ReachEntityAttributes;
 import dev.doctor4t.arsenal.Arsenal;
 import dev.doctor4t.arsenal.cca.ArsenalComponents;
 import dev.doctor4t.arsenal.cca.WeaponSkinComponent;
-import dev.doctor4t.arsenal.client.particle.contract.ColoredParticleInitialData;
 import dev.doctor4t.arsenal.entity.BloodScytheEntity;
 import dev.doctor4t.arsenal.index.ArsenalDamageTypes;
 import dev.doctor4t.arsenal.index.ArsenalEnchantments;
-import dev.doctor4t.arsenal.index.ArsenalParticles;
 import dev.doctor4t.arsenal.index.ArsenalSounds;
+import dev.doctor4t.arsenal.util.SweepParticleUtil;
 import dev.doctor4t.ratatouille.util.TextUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -30,14 +29,12 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.MiningToolItem;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -114,53 +111,55 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        if (EnchantmentHelper.getEquipmentLevel(ArsenalEnchantments.SPEWING, user) > 0) {
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        if (EnchantmentHelper.getEquipmentLevel(ArsenalEnchantments.SPEWING, player) > 0) {
             float f = 1.0f;
 
             if (!world.isClient) {
-                BloodScytheEntity bloodScythe = new BloodScytheEntity(world, user);
-                bloodScythe.setOwner(user);
-                bloodScythe.setVelocity(user, user.getPitch(), user.getYaw(), 0.0f, f * 3.0f, 1.0f);
+                BloodScytheEntity bloodScythe = new BloodScytheEntity(world, player);
+                bloodScythe.setOwner(player);
+                bloodScythe.setVelocity(player, player.getPitch(), player.getYaw(), 0.0f, f * 3.0f, 1.0f);
                 bloodScythe.setDamage(bloodScythe.getDamage());
-                user.getStackInHand(hand).damage(1, user, p -> p.sendToolBreakStatus(hand));
+                player.getStackInHand(hand).damage(1, player, p -> p.sendToolBreakStatus(hand));
                 bloodScythe.pickupType = PersistentProjectileEntity.PickupPermission.CREATIVE_ONLY;
 
                 ArrayList<StatusEffectInstance> statusEffectsHalved = new ArrayList<>();
-                float absorption = user.getAbsorptionAmount();
-                for (StatusEffectInstance statusEffect : user.getStatusEffects()) {
+                float absorption = player.getAbsorptionAmount();
+                for (StatusEffectInstance statusEffect : player.getStatusEffects()) {
                     StatusEffectInstance statusHalved = new StatusEffectInstance(statusEffect.getEffectType(), statusEffect.getDuration() / 2, statusEffect.getAmplifier(), statusEffect.isAmbient(), statusEffect.shouldShowParticles(), statusEffect.shouldShowIcon());
                     bloodScythe.addEffect(statusHalved);
                     statusEffectsHalved.add(statusHalved);
                 }
-                user.clearStatusEffects();
+                player.clearStatusEffects();
                 for (StatusEffectInstance statusEffectInstance : statusEffectsHalved) {
-                    user.addStatusEffect(statusEffectInstance);
+                    player.addStatusEffect(statusEffectInstance);
                 }
-                user.setAbsorptionAmount(absorption);
+                player.setAbsorptionAmount(absorption);
 
-                user.damage(world.getDamageSources().create(ArsenalDamageTypes.SPEWING), 3f);
-                user.getItemCooldownManager().set(this, 20);
+                player.damage(world.getDamageSources().create(ArsenalDamageTypes.SPEWING), 3f);
+                player.getItemCooldownManager().set(this, 20);
 
                 world.spawnEntity(bloodScythe);
 
-                WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(user.getMainHandStack());
-                if (weaponSkinComponent != null) {
-                    Skin skin = Skin.fromString(weaponSkinComponent.getSkinName());
+                if (player.getWorld() instanceof ServerWorld serverWorld) {
+                    WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(player.getMainHandStack());
 
-                    if (skin != null) {
-                        double deltaX = -MathHelper.sin((float) (user.getYaw() * (Math.PI / 180F)));
-                        double deltaZ = MathHelper.cos((float) (user.getYaw() * (Math.PI / 180F)));
-
-                        user.getWorld().addParticle(ArsenalParticles.SWEEP_PARTICLE.setData(new ColoredParticleInitialData(skin.color)), user.getX() + deltaX, user.getBodyY(0.5D), user.getZ() + deltaZ, 0, 0, 0);
-                        user.getWorld().addParticle(ArsenalParticles.SWEEP_SHADOW_PARTICLE.setData(new ColoredParticleInitialData(skin.shadowColor)), user.getX() + deltaX, user.getBodyY(0.5D), user.getZ() + deltaZ, 0, 0, 0);
+                    Skin skin = Skin.DEFAULT;
+                    if (weaponSkinComponent != null) {
+                        Skin toSkin = Skin.fromString(weaponSkinComponent.getSkinName());
+                        if (toSkin != null) {
+                            skin = toSkin;
+                        }
                     }
+
+                    Pair<Integer, Integer> colorPair = new Pair<>(skin.color, skin.shadowColor);
+                    SweepParticleUtil.sendSweepPacketToClient(serverWorld, colorPair, player.getX() + -MathHelper.sin((float) (player.getYaw() * (Math.PI / 180F))), player.getBodyY(0.5D), player.getZ() + MathHelper.cos((float) (player.getYaw() * (Math.PI / 180F))));
                 }
             }
-            world.playSound(null, user.getX(), user.getY(), user.getZ(), ArsenalSounds.ITEM_SCYTHE_SPEWING, SoundCategory.PLAYERS, 1.0f, 1.0f);
-            return TypedActionResult.success(user.getStackInHand(hand));
+            world.playSound(null, player.getX(), player.getY(), player.getZ(), ArsenalSounds.ITEM_SCYTHE_SPEWING, SoundCategory.PLAYERS, 1.0f, 1.0f);
+            return TypedActionResult.success(player.getStackInHand(hand));
         }
-        return super.use(world, user, hand);
+        return super.use(world, player, hand);
     }
 
     @Override
@@ -189,21 +188,20 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
 
     @Override
     public void spawnHitParticles(PlayerEntity player) {
-        WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(player.getMainHandStack());
+        if (player.getWorld() instanceof ServerWorld serverWorld) {
+            WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(player.getMainHandStack());
 
-        Skin skin = Skin.DEFAULT;
-        if (weaponSkinComponent != null) {
-            Skin toSkin = Skin.fromString(weaponSkinComponent.getSkinName());
-            if (toSkin != null) {
-                skin = toSkin;
+            Skin skin = Skin.DEFAULT;
+            if (weaponSkinComponent != null) {
+                Skin toSkin = Skin.fromString(weaponSkinComponent.getSkinName());
+                if (toSkin != null) {
+                    skin = toSkin;
+                }
             }
+
+            Pair<Integer, Integer> colorPair = new Pair<>(skin.color, skin.shadowColor);
+            SweepParticleUtil.sendSweepPacketToClient(serverWorld, colorPair, player.getX() + -MathHelper.sin((float) (player.getYaw() * (Math.PI / 180F))), player.getBodyY(0.5D), player.getZ() + MathHelper.cos((float) (player.getYaw() * (Math.PI / 180F))));
         }
-
-        double deltaX = -MathHelper.sin((float) (player.getYaw() * (Math.PI / 180F)));
-        double deltaZ = MathHelper.cos((float) (player.getYaw() * (Math.PI / 180F)));
-
-        player.getWorld().addParticle(ArsenalParticles.SWEEP_PARTICLE.setData(new ColoredParticleInitialData(skin.color)), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, 0, 0);
-        player.getWorld().addParticle(ArsenalParticles.SWEEP_SHADOW_PARTICLE.setData(new ColoredParticleInitialData(skin.shadowColor)), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, 0, 0);
     }
 
     @Override

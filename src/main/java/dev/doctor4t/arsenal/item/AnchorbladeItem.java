@@ -3,12 +3,11 @@ package dev.doctor4t.arsenal.item;
 import dev.doctor4t.arsenal.Arsenal;
 import dev.doctor4t.arsenal.cca.ArsenalComponents;
 import dev.doctor4t.arsenal.cca.WeaponSkinComponent;
-import dev.doctor4t.arsenal.client.particle.contract.ColoredParticleInitialData;
 import dev.doctor4t.arsenal.entity.AnchorbladeEntity;
 import dev.doctor4t.arsenal.index.ArsenalEnchantments;
-import dev.doctor4t.arsenal.index.ArsenalParticles;
 import dev.doctor4t.arsenal.index.ArsenalSounds;
 import dev.doctor4t.arsenal.util.AnchorOwner;
+import dev.doctor4t.arsenal.util.SweepParticleUtil;
 import dev.doctor4t.ratatouille.util.TextUtils;
 import net.fabricmc.yarn.constants.MiningLevels;
 import net.minecraft.block.BlockState;
@@ -32,7 +31,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.Normalizer;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -146,22 +144,20 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
 
     @Override
     public void spawnHitParticles(PlayerEntity player) {
-        WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(player.getMainHandStack());
+        if (player.getWorld() instanceof ServerWorld serverWorld) {
+            WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(player.getMainHandStack());
 
-        Skin skin = Skin.DEFAULT;
-        if (weaponSkinComponent != null) {
-            Skin toSkin = Skin.fromString(weaponSkinComponent.getSkinName());
-            if (toSkin != null) {
-                skin = toSkin;
+            Skin skin = Skin.DEFAULT;
+            if (weaponSkinComponent != null) {
+                Skin toSkin = Skin.fromString(weaponSkinComponent.getSkinName());
+                if (toSkin != null) {
+                    skin = toSkin;
+                }
             }
+
+            Pair<Integer, Integer> colorPair = skin.getRandomParticleColorPair();
+            SweepParticleUtil.sendSweepPacketToClient(serverWorld, colorPair, player.getX() + -MathHelper.sin((float) (player.getYaw() * (Math.PI / 180F))), player.getBodyY(0.5D), player.getZ() + MathHelper.cos((float) (player.getYaw() * (Math.PI / 180F))));
         }
-
-        double deltaX = -MathHelper.sin((float) (player.getYaw() * (Math.PI / 180F)));
-        double deltaZ = MathHelper.cos((float) (player.getYaw() * (Math.PI / 180F)));
-
-        Pair<Integer, Integer> colorPair = skin.getRandomParticleColorPair();
-        player.getWorld().addParticle(ArsenalParticles.SWEEP_PARTICLE.setData(new ColoredParticleInitialData(colorPair.getLeft())), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, 0, 0);
-        player.getWorld().addParticle(ArsenalParticles.SWEEP_SHADOW_PARTICLE.setData(new ColoredParticleInitialData(colorPair.getRight())), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, 0, 0);
     }
 
     @Override

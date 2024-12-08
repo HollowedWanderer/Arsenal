@@ -24,6 +24,6 @@ public class StunStatusEffect extends StatusEffect {
     public void onRemoved(LivingEntity entity, AttributeContainer attributes, int amplifier) {
         super.onRemoved(entity, attributes, amplifier);
     }
-    
-    
+
+
 }

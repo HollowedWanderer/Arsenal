@@ -9,12 +9,10 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.ShieldItem;
@@ -36,7 +34,7 @@ public class BackWeaponFeatureRenderer extends FeatureRenderer<AbstractClientPla
 
         matrices.push();
 
-        boolean hasCape = abstractClientPlayerEntity.canRenderCapeTexture() && abstractClientPlayerEntity.isPartVisible(PlayerModelPart.CAPE)&& abstractClientPlayerEntity.getCapeTexture() != null && !abstractClientPlayerEntity.getEquippedStack(EquipmentSlot.CHEST).isOf(Items.ELYTRA);
+        boolean hasCape = abstractClientPlayerEntity.canRenderCapeTexture() && abstractClientPlayerEntity.isPartVisible(PlayerModelPart.CAPE) && abstractClientPlayerEntity.getCapeTexture() != null && !abstractClientPlayerEntity.getEquippedStack(EquipmentSlot.CHEST).isOf(Items.ELYTRA);
         boolean hasChestPlate = !abstractClientPlayerEntity.getEquippedStack(EquipmentSlot.CHEST).isEmpty();
         matrices.translate(0.0F, 0.0F, 0.05F + (hasCape ? 0.05f : 0f) + (hasChestPlate ? .05f : 0f));
         double d = MathHelper.lerp(tickDelta, abstractClientPlayerEntity.prevCapeX, abstractClientPlayerEntity.capeX)

@@ -20,6 +20,7 @@ public class Arsenal implements ModInitializer {
     public static final Identifier SERVERBOUND_HOLD_WEAPON_PACKET = id("hold_weapon");
     public static final Identifier SERVERBOUND_SWAP_WEAPON_PACKET = id("swap_weapon");
     public static final Identifier SERVERBOUND_SWAP_INVENTORY_PACKET = id("swap_inventory");
+    public static final Identifier CLIENTBOUND_SWEEP_PACKET = id("sweep");
 
     public static final Identifier WEAPON_SKINS_DATA_ID = id("weapon_skins");
 
