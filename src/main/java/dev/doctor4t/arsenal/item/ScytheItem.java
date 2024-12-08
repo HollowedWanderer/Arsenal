@@ -170,7 +170,7 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
             Skin skin = Skin.fromString(weaponSkinComponent.getSkinName());
 
             if (skin != null) {
-                tooltip.add(Text.literal(TextUtils.formatValueString(weaponSkinComponent.getSkinName())).styled(style -> style.withColor(skin.color)));
+                tooltip.add(Text.literal(TextUtils.formatValueString(skin.tooltipName != null ? skin.tooltipName : skin.getName())).styled(style -> style.withColor(skin.color)));
                 if (skin.lore != null) {
                     if (Screen.hasShiftDown()) {
                         MutableText translatable = Text.translatable(skin.lore);
@@ -216,19 +216,21 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
     }
 
     public enum Skin {
-        DEFAULT(0xFFD9D9D9, 0xFF7F8885, null),
-        CLOWN(0xFFD90420, 0xFF8C0420, "tooltip.arsenal.scythe_clown"),
-        CARRION(0xFFE9DFB8, 0xFF9D806E, null),
-        GILDED(0xFFF1BC5A, 0xFFE28634, null);
+        DEFAULT(0xFFD9D9D9, 0xFF7F8885, null, null),
+        CLOWN(0xFFD90420, 0xFF8C0420, "Grace", "tooltip.arsenal.scythe_clown"),
+        CARRION(0xFFE9DFB8, 0xFF9D806E, null, null),
+        GILDED(0xFFF1BC5A, 0xFFE28634, null, null);
 
         public final int color;
         public final int shadowColor;
         public final @Nullable String lore;
+        public final @Nullable String tooltipName;
 
-        Skin(int color, int shadowColor, @Nullable String lore) {
+        Skin(int color, int shadowColor, @Nullable String tooltipName,@Nullable String lore) {
             this.color = color;
             this.shadowColor = shadowColor;
             this.lore = lore;
+            this.tooltipName = tooltipName;
         }
 
         public String getName() {

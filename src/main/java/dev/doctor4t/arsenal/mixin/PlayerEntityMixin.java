@@ -1,6 +1,7 @@
 package dev.doctor4t.arsenal.mixin;
 
 import dev.doctor4t.arsenal.entity.AnchorbladeEntity;
+import dev.doctor4t.arsenal.index.ArsenalStatusEffects;
 import dev.doctor4t.arsenal.item.AnchorbladeItem;
 import dev.doctor4t.arsenal.item.CustomHitParticleItem;
 import dev.doctor4t.arsenal.item.CustomHitSoundItem;
@@ -13,6 +14,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.util.Hand;
@@ -72,7 +75,9 @@ public abstract class PlayerEntityMixin extends LivingEntity implements AnchorOw
     @Inject(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;addCritParticles(Lnet/minecraft/entity/Entity;)V"))
     private void arsenal$scytheReelTargetOnCrit(Entity target, CallbackInfo ci) {
         if (this.getStackInHand(Hand.MAIN_HAND).getItem() instanceof ScytheItem) {
-            // TODO: Make the scythe reset targeting on entities so that they don't attack the player when reaped
+            if (target instanceof MobEntity mob) {
+                mob.addStatusEffect(new StatusEffectInstance(ArsenalStatusEffects.STUN, 10, 0, false, false, true));
+            }
             target.setVelocity(this.getPos().subtract(target.getPos()).multiply(0.25f));
             target.velocityModified = true;
         }

@@ -34,6 +34,7 @@ public class Arsenal implements ModInitializer {
         ArsenalEnchantments.initialize();
         ArsenalSounds.initialize();
         ArsenalParticles.initialize();
+        ArsenalStatusEffects.initialize();
 
         ServerPlayNetworking.registerGlobalReceiver(SERVERBOUND_HOLD_WEAPON_PACKET, (server, player, handler, buf, responseSender) -> {
             boolean hold = buf.readBoolean();
