@@ -194,8 +194,8 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
                     double deltaX = -MathHelper.sin((float) (player.getYaw() * (Math.PI / 180F)));
                     double deltaZ = MathHelper.cos((float) (player.getYaw() * (Math.PI / 180F)));
 
-                    ColoredParticleInitialData data = new ColoredParticleInitialData(skin.color);
-                    serverWorld.spawnParticles(ArsenalParticles.SWEEP_PARTICLE.setData(data), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
+                    serverWorld.spawnParticles(ArsenalParticles.SWEEP_PARTICLE.setData(new ColoredParticleInitialData(skin.color)), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
+                    serverWorld.spawnParticles(ArsenalParticles.SWEEP_SHADOW_PARTICLE.setData(new ColoredParticleInitialData(skin.shadowColor)), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
                 }
             }
         }
@@ -212,16 +212,18 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
     }
 
     public enum Skin {
-        DEFAULT(0xFFAEB4B4, null),
-        CLOWN(0xFFD90629, "tooltip.arsenal.scythe_clown"),
-        CARRION(0xFFB03E45, null),
-        GILDED(0xFFF1BC5A, null);
+        DEFAULT(0xFFD9D9D9, 0xFF7F8885, null),
+        CLOWN(0xFFD90420, 0xFF8C0420, "tooltip.arsenal.scythe_clown"),
+        CARRION(0xFFE9DFB8, 0xFF9D806E, null),
+        GILDED(0xFFF1BC5A, 0xFFE28634, null);
 
         public final int color;
+        public final int shadowColor;
         public final @Nullable String lore;
 
-        Skin(int color, @Nullable String lore) {
+        Skin(int color, int shadowColor, @Nullable String lore) {
             this.color = color;
+            this.shadowColor = shadowColor;
             this.lore = lore;
         }
 

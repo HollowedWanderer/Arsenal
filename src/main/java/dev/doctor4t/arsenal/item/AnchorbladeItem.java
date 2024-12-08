@@ -31,8 +31,10 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.Normalizer;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleItem, CustomHitSoundItem, CustomNameColorItem, ArsenalWeaponItem {
     public AnchorbladeItem(ToolMaterial material, int attackDamage, float attackSpeed, Settings settings) {
@@ -124,10 +126,10 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
         if (weaponSkinComponent != null && !weaponSkinComponent.getSkinName().equals(Skin.DEFAULT.getName())) {
             Skin skin = Skin.fromString(weaponSkinComponent.getSkinName());
             if (skin != null) {
-                tooltip.add(Text.literal(TextUtils.formatValueString(weaponSkinComponent.getSkinName())).styled(style -> style.withColor(skin.color)));
+                tooltip.add(Text.literal(TextUtils.formatValueString(weaponSkinComponent.getSkinName())).styled(style -> style.withColor(skin.getFirstColor())));
                 if (skin.lore != null) {
                     if (Screen.hasShiftDown()) {
-                        tooltip.add(Text.translatable(skin.lore).styled(style -> style.withColor(skin.color)));
+                        tooltip.add(Text.translatable(skin.lore).styled(style -> style.withColor(Formatting.DARK_GRAY)));
                     } else {
                         tooltip.add(Text.translatable("tooltip.arsenal.hidden").styled(style -> style.withColor(Formatting.DARK_GRAY)));
                     }
@@ -149,8 +151,9 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
                     double deltaX = -MathHelper.sin((float) (player.getYaw() * (Math.PI / 180F)));
                     double deltaZ = MathHelper.cos((float) (player.getYaw() * (Math.PI / 180F)));
 
-                    serverWorld.spawnParticles(ArsenalParticles.SWEEP_PARTICLE.setData(new ColoredParticleInitialData(skin.color)), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
-                    serverWorld.spawnParticles(ArsenalParticles.SWEEP_SHADOW_PARTICLE.setData(new ColoredParticleInitialData(skin.shadowColor)), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
+                    Pair<Integer, Integer> colorPair = skin.getRandomParticleColorPair();
+                    serverWorld.spawnParticles(ArsenalParticles.SWEEP_PARTICLE.setData(new ColoredParticleInitialData(colorPair.getLeft())), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
+                    serverWorld.spawnParticles(ArsenalParticles.SWEEP_SHADOW_PARTICLE.setData(new ColoredParticleInitialData(colorPair.getRight())), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
                 }
             }
         }
@@ -200,29 +203,39 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
         return !miner.isCreative();
     }
 
-
     public enum Skin {
-        DEFAULT(0xFF2B2632, 0xFF2B2632, null),
-        LUX(0xFFD37619, 0xFFD37619, "tooltip.arsenal.anchorblade_lux"),
-        CARRION(0xFFB03E45, 0xFFB03E45, null),
-        GILDED(0xFFF1BC5A, 0xFFF1BC5A, null);
+        DEFAULT(new int[]{0xFF2B2632}, new int[]{0xFF1B1B1B}, null),
+        LUX(new int[]{0xFFFF5E00, 0xFF37965B, 0xFFA51BB7}, new int[]{0xFFC52400, 0xFF115642, 0xFF671081}, "tooltip.arsenal.anchorblade_lux"),
+        CARRION(new int[]{0xFFE9DFB8}, new int[]{0xFF9D806E}, null),
+        GILDED(new int[]{0xFFF1BC5A}, new int[]{0xFFE28634}, null);
 
         public final Identifier chainTexture;
         public final Identifier anchorbladeEntityModel;
-        public final int color;
-        public final int shadowColor;
+        public final int[] colors;
+        public final int[] shadowColors;
         public final @Nullable String lore;
+        public final Random random;
 
-        Skin(int color, int shadowColor, @Nullable String lore) {
+        Skin(int[] colors, int[] shadowColors, @Nullable String lore) {
             this.chainTexture = Arsenal.id(this.getName().equals("default") ? "textures/entity/chain.png" : "textures/entity/chain_" + this.getName() + ".png");
             this.anchorbladeEntityModel = Arsenal.id(this.getName().equals("default") ? "item/anchorblade_in_hand" : "item/anchorblade_" + this.getName() + "_in_hand");
-            this.color = color;
-            this.shadowColor = shadowColor;
+            this.colors = colors;
+            this.shadowColors = shadowColors;
             this.lore = lore;
+            this.random = new Random();
         }
 
         public String getName() {
             return this.name().toLowerCase(Locale.ROOT);
+        }
+
+        public int getFirstColor() {
+            return this.colors[0];
+        }
+
+        public Pair<Integer, Integer> getRandomParticleColorPair() {
+            int i = this.random.nextInt(this.colors.length);
+            return new Pair<>(this.colors[i], this.shadowColors[i]);
         }
 
         @Nullable

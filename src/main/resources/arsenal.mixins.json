@@ -21,6 +21,7 @@
   "client": [
     "HandledScreenMixin",
     "accessors.CreativeSlotAccessor",
+    "client.CapeFeatureRendererMixin",
     "client.CreativeInventoryScreenMixin",
     "client.DrawContextMixin",
     "client.HeldItemFeatureRendererMixin",

@@ -3,71 +3,64 @@ package dev.doctor4t.arsenal.client.render.feature;
 import dev.doctor4t.arsenal.cca.BackWeaponComponent;
 import dev.doctor4t.arsenal.util.WeaponSlotCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.ShieldItem;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
-public class BackWeaponFeatureRenderer<T extends PlayerEntity, M extends EntityModel<T>> extends FeatureRenderer<T, M> {
-    public BackWeaponFeatureRenderer(FeatureRendererContext<T, M> context) {
+public class BackWeaponFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
+
+    public BackWeaponFeatureRenderer(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> context) {
         super(context);
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-        if (BackWeaponComponent.isHoldingBackWeapon(entity)) return;
-        ItemStack stack = BackWeaponComponent.getBackWeapon(entity);
+    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity abstractClientPlayerEntity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
+        if (BackWeaponComponent.isHoldingBackWeapon(abstractClientPlayerEntity)) return;
+        ItemStack stack = BackWeaponComponent.getBackWeapon(abstractClientPlayerEntity);
         if (stack.isEmpty()) return;
 
         matrices.push();
 
-        float scale = 1f;
-        if (stack.getItem() instanceof ShieldItem) {
-            matrices.translate(0.0, 0.5, 0.0);
-            scale = 2f;
-        } else {
-            ActionResult result = WeaponSlotCallback.EVENT.invoker().interact(entity, stack);
-            if (result == ActionResult.FAIL) {
-                matrices.translate(0.0, 0.2, 0.05);
-                scale = 1.5f;
-            } else {
-                matrices.translate(0, 0.25, 0.10);
-            }
-        }
-        matrices.scale(scale, scale, scale);
-
-        matrices.translate(0.0F, 0.0F, 0.15F);
-        double d = MathHelper.lerp(tickDelta, entity.prevCapeX, entity.capeX)
-                - MathHelper.lerp(tickDelta, entity.prevX, entity.getX());
-        double e = MathHelper.lerp(tickDelta, entity.prevCapeY, entity.capeY)
-                - MathHelper.lerp(tickDelta, entity.prevY, entity.getY());
-        double m = MathHelper.lerp(tickDelta, entity.prevCapeZ, entity.capeZ)
-                - MathHelper.lerp(tickDelta, entity.prevZ, entity.getZ());
-        float n = MathHelper.lerpAngleDegrees(tickDelta, entity.prevBodyYaw, entity.bodyYaw);
+        boolean hasCape = abstractClientPlayerEntity.canRenderCapeTexture() && abstractClientPlayerEntity.isPartVisible(PlayerModelPart.CAPE)&& abstractClientPlayerEntity.getCapeTexture() != null && !abstractClientPlayerEntity.getEquippedStack(EquipmentSlot.CHEST).isOf(Items.ELYTRA);
+        boolean hasChestPlate = !abstractClientPlayerEntity.getEquippedStack(EquipmentSlot.CHEST).isEmpty();
+        matrices.translate(0.0F, 0.0F, 0.05F + (hasCape ? 0.05f : 0f) + (hasChestPlate ? .05f : 0f));
+        double d = MathHelper.lerp(tickDelta, abstractClientPlayerEntity.prevCapeX, abstractClientPlayerEntity.capeX)
+                - MathHelper.lerp(tickDelta, abstractClientPlayerEntity.prevX, abstractClientPlayerEntity.getX());
+        double e = MathHelper.lerp(tickDelta, abstractClientPlayerEntity.prevCapeY, abstractClientPlayerEntity.capeY)
+                - MathHelper.lerp(tickDelta, abstractClientPlayerEntity.prevY, abstractClientPlayerEntity.getY());
+        double m = MathHelper.lerp(tickDelta, abstractClientPlayerEntity.prevCapeZ, abstractClientPlayerEntity.capeZ)
+                - MathHelper.lerp(tickDelta, abstractClientPlayerEntity.prevZ, abstractClientPlayerEntity.getZ());
+        float n = MathHelper.lerpAngleDegrees(tickDelta, abstractClientPlayerEntity.prevBodyYaw, abstractClientPlayerEntity.bodyYaw);
         double o = MathHelper.sin(n * (float) (Math.PI / 180.0));
         double p = (-MathHelper.cos(n * (float) (Math.PI / 180.0)));
         float q = (float) e * 10.0F;
-        q = MathHelper.clamp(q, -6.0F, 0.0F);
-        float r = (float) (d * o + m * p) * 40.0F;
-        r = MathHelper.clamp(r, 0.0F, 40.0F);
-        float s = (float) (d * p - m * o) * 50.0F;
+        q = MathHelper.clamp(q, -6.0F, 0f); // max from 32 (cape code) to 0
+        float r = (float) (d * o + m * p) * 100.0F;
+        r = MathHelper.clamp(r, 0.0F, 40.0F); // max from 150 (cape code) to 40
+        float s = (float) (d * p - m * o) * 100.0F;
         s = MathHelper.clamp(s, -20.0F, 20.0F);
         if (r < 0.0F) {
             r = 0.0F;
         }
 
-        float t = MathHelper.lerp(tickDelta, entity.prevStrideDistance, entity.strideDistance);
-        q += MathHelper.sin(MathHelper.lerp(tickDelta, entity.prevHorizontalSpeed, entity.horizontalSpeed) * 6.0F) * 32.0F * t;
-        if (entity.isInSneakingPose()) {
+        float t = MathHelper.lerp(tickDelta, abstractClientPlayerEntity.prevStrideDistance, abstractClientPlayerEntity.strideDistance);
+        q += MathHelper.sin(MathHelper.lerp(tickDelta, abstractClientPlayerEntity.prevHorizontalSpeed, abstractClientPlayerEntity.horizontalSpeed) * 6.0F) * 32.0F * t;
+        if (abstractClientPlayerEntity.isInSneakingPose()) {
             q += 25.0F;
         }
 
@@ -75,7 +68,22 @@ public class BackWeaponFeatureRenderer<T extends PlayerEntity, M extends EntityM
         matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(s / 2.0F));
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F - s / 2.0F));
 
-        MinecraftClient.getInstance().getItemRenderer().renderItem(entity, stack, ModelTransformationMode.FIXED, false, matrices, vertexConsumers, entity.getWorld(), light, OverlayTexture.DEFAULT_UV, 0);
+        float scale = 1f;
+        if (stack.getItem() instanceof ShieldItem) {
+            matrices.translate(0.0, 0.5, 0.0);
+            scale = 2f;
+        } else {
+            ActionResult result = WeaponSlotCallback.EVENT.invoker().interact(abstractClientPlayerEntity, stack);
+            if (result == ActionResult.FAIL) {
+                matrices.translate(0.0, 0.2, -0.15);
+                scale = 1.5f;
+            } else {
+                matrices.translate(0, 0.25, -0.20);
+            }
+        }
+        matrices.scale(scale, scale, scale);
+
+        MinecraftClient.getInstance().getItemRenderer().renderItem(abstractClientPlayerEntity, stack, ModelTransformationMode.FIXED, false, matrices, vertexConsumers, abstractClientPlayerEntity.getWorld(), light, OverlayTexture.DEFAULT_UV, 0);
         matrices.pop();
     }
 }

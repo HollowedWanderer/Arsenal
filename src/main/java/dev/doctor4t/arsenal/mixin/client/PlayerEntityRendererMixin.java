@@ -38,6 +38,6 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
 
     @Inject(method = "<init>", at = @At("TAIL"))
     public void arsenal$backBlade(EntityRendererFactory.Context ctx, boolean slim, CallbackInfo ci) {
-        this.addFeature(new BackWeaponFeatureRenderer<>(this));
+        this.addFeature(new BackWeaponFeatureRenderer(this));
     }
 }

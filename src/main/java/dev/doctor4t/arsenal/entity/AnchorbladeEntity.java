@@ -170,7 +170,7 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
                 this.onHit(hitLivingEntity);
             }
 
-            if (this.getOwner() instanceof PlayerEntity player) {
+            if (this.getOwner() instanceof PlayerEntity player && !player.isCreative()) {
                 player.getItemCooldownManager().set(ArsenalItems.ANCHORBLADE, 40);
             }
         }
