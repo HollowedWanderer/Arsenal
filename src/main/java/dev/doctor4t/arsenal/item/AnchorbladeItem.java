@@ -146,21 +146,22 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
 
     @Override
     public void spawnHitParticles(PlayerEntity player) {
-        if (player.getWorld() instanceof ServerWorld serverWorld) {
-            WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(player.getMainHandStack());
-            if (weaponSkinComponent != null) {
-                Skin skin = Skin.fromString(weaponSkinComponent.getSkinName());
+        WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(player.getMainHandStack());
 
-                if (skin != null) {
-                    double deltaX = -MathHelper.sin((float) (player.getYaw() * (Math.PI / 180F)));
-                    double deltaZ = MathHelper.cos((float) (player.getYaw() * (Math.PI / 180F)));
-
-                    Pair<Integer, Integer> colorPair = skin.getRandomParticleColorPair();
-                    serverWorld.spawnParticles(ArsenalParticles.SWEEP_PARTICLE.setData(new ColoredParticleInitialData(colorPair.getLeft())), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
-                    serverWorld.spawnParticles(ArsenalParticles.SWEEP_SHADOW_PARTICLE.setData(new ColoredParticleInitialData(colorPair.getRight())), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
-                }
+        Skin skin = Skin.DEFAULT;
+        if (weaponSkinComponent != null) {
+            Skin toSkin = Skin.fromString(weaponSkinComponent.getSkinName());
+            if (toSkin != null) {
+                skin = toSkin;
             }
         }
+
+        double deltaX = -MathHelper.sin((float) (player.getYaw() * (Math.PI / 180F)));
+        double deltaZ = MathHelper.cos((float) (player.getYaw() * (Math.PI / 180F)));
+
+        Pair<Integer, Integer> colorPair = skin.getRandomParticleColorPair();
+        player.getWorld().addParticle(ArsenalParticles.SWEEP_PARTICLE.setData(new ColoredParticleInitialData(colorPair.getLeft())), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, 0, 0);
+        player.getWorld().addParticle(ArsenalParticles.SWEEP_SHADOW_PARTICLE.setData(new ColoredParticleInitialData(colorPair.getRight())), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, 0, 0);
     }
 
     @Override

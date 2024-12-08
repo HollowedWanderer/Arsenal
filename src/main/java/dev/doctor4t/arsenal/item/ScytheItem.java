@@ -30,7 +30,6 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.MiningToolItem;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
@@ -145,16 +144,17 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
 
                 world.spawnEntity(bloodScythe);
 
-                if (world instanceof ServerWorld serverWorld) {
-                    double d = -MathHelper.sin(user.getYaw() * ((float) Math.PI / 180));
-                    double e = MathHelper.cos(user.getYaw() * ((float) Math.PI / 180));
-                    double pitch = user.getPitch() * -0.02;
+                WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(user.getMainHandStack());
+                if (weaponSkinComponent != null) {
+                    Skin skin = Skin.fromString(weaponSkinComponent.getSkinName());
 
-                    double deltaX = -MathHelper.sin((float) (user.getYaw() * (Math.PI / 180F)));
-                    double deltaZ = MathHelper.cos((float) (user.getYaw() * (Math.PI / 180F)));
+                    if (skin != null) {
+                        double deltaX = -MathHelper.sin((float) (user.getYaw() * (Math.PI / 180F)));
+                        double deltaZ = MathHelper.cos((float) (user.getYaw() * (Math.PI / 180F)));
 
-                    ColoredParticleInitialData data = new ColoredParticleInitialData(0xFFAEB4B4);
-                    serverWorld.spawnParticles(ArsenalParticles.SWEEP_PARTICLE.setData(data), user.getX() + deltaX, user.getBodyY(0.5D), user.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
+                        user.getWorld().addParticle(ArsenalParticles.SWEEP_PARTICLE.setData(new ColoredParticleInitialData(skin.color)), user.getX() + deltaX, user.getBodyY(0.5D), user.getZ() + deltaZ, 0, 0, 0);
+                        user.getWorld().addParticle(ArsenalParticles.SWEEP_SHADOW_PARTICLE.setData(new ColoredParticleInitialData(skin.shadowColor)), user.getX() + deltaX, user.getBodyY(0.5D), user.getZ() + deltaZ, 0, 0, 0);
+                    }
                 }
             }
             world.playSound(null, user.getX(), user.getY(), user.getZ(), ArsenalSounds.ITEM_SCYTHE_SPEWING, SoundCategory.PLAYERS, 1.0f, 1.0f);
@@ -189,20 +189,21 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
 
     @Override
     public void spawnHitParticles(PlayerEntity player) {
-        if (player.getWorld() instanceof ServerWorld serverWorld) {
-            WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(player.getMainHandStack());
-            if (weaponSkinComponent != null) {
-                Skin skin = Skin.fromString(weaponSkinComponent.getSkinName());
+        WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(player.getMainHandStack());
 
-                if (skin != null) {
-                    double deltaX = -MathHelper.sin((float) (player.getYaw() * (Math.PI / 180F)));
-                    double deltaZ = MathHelper.cos((float) (player.getYaw() * (Math.PI / 180F)));
-
-                    serverWorld.spawnParticles(ArsenalParticles.SWEEP_PARTICLE.setData(new ColoredParticleInitialData(skin.color)), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
-                    serverWorld.spawnParticles(ArsenalParticles.SWEEP_SHADOW_PARTICLE.setData(new ColoredParticleInitialData(skin.shadowColor)), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, deltaX, 0.0D, deltaZ, 0.0D);
-                }
+        Skin skin = Skin.DEFAULT;
+        if (weaponSkinComponent != null) {
+            Skin toSkin = Skin.fromString(weaponSkinComponent.getSkinName());
+            if (toSkin != null) {
+                skin = toSkin;
             }
         }
+
+        double deltaX = -MathHelper.sin((float) (player.getYaw() * (Math.PI / 180F)));
+        double deltaZ = MathHelper.cos((float) (player.getYaw() * (Math.PI / 180F)));
+
+        player.getWorld().addParticle(ArsenalParticles.SWEEP_PARTICLE.setData(new ColoredParticleInitialData(skin.color)), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, 0, 0);
+        player.getWorld().addParticle(ArsenalParticles.SWEEP_SHADOW_PARTICLE.setData(new ColoredParticleInitialData(skin.shadowColor)), player.getX() + deltaX, player.getBodyY(0.5D), player.getZ() + deltaZ, 0, 0, 0);
     }
 
     @Override
@@ -227,7 +228,7 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
         public final @Nullable String lore;
         public final @Nullable String tooltipName;
 
-        Skin(int color, int shadowColor, @Nullable String tooltipName,@Nullable String lore) {
+        Skin(int color, int shadowColor, @Nullable String tooltipName, @Nullable String lore) {
             this.color = color;
             this.shadowColor = shadowColor;
             this.lore = lore;

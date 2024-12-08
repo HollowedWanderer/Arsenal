@@ -30,14 +30,15 @@ import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.util.ActionResult;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.Locale;
+
 @SuppressWarnings("unused")
 public class ArsenalClient implements ClientModInitializer {
     public static ModelTransformationMode currentMode = ModelTransformationMode.NONE;
 
-
     static {
         for (var mode : ModelTransformationMode.values()) {
-            ModelPredicateProviderRegistry.register(Arsenal.id(mode.name().toLowerCase()), (stack, world, entity, seed) -> mode == currentMode ? 1.0F : 0.0F);
+            ModelPredicateProviderRegistry.register(Arsenal.id(mode.name().toLowerCase(Locale.ROOT)), (stack, world, entity, seed) -> mode == currentMode ? 1.0F : 0.0F);
         }
     }
 
