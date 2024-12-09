@@ -8,7 +8,6 @@
     "EntityMixin",
     "FireChargeItemMixin",
     "ItemMixin",
-    "ItemStackMixin",
     "MobEntityMixin",
     "PersistentProjectileEntityMixin",
     "PlayerEntityMixin",

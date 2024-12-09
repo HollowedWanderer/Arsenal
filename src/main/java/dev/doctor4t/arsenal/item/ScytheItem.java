@@ -11,6 +11,8 @@ import dev.doctor4t.arsenal.index.ArsenalDamageTypes;
 import dev.doctor4t.arsenal.index.ArsenalEnchantments;
 import dev.doctor4t.arsenal.index.ArsenalSounds;
 import dev.doctor4t.arsenal.util.SweepParticleUtil;
+import dev.doctor4t.ratatouille.item.CustomHitParticleItem;
+import dev.doctor4t.ratatouille.item.CustomHitSoundItem;
 import dev.doctor4t.ratatouille.util.TextUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -45,7 +47,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-public class ScytheItem extends MiningToolItem implements CustomHitParticleItem, CustomHitSoundItem, CustomNameColorItem, ArsenalWeaponItem {
+public class ScytheItem extends MiningToolItem implements CustomHitParticleItem, CustomHitSoundItem, ArsenalWeaponItem {
     private static final EntityAttributeModifier REACH_MODIFIER = new EntityAttributeModifier(UUID.fromString("911af262-067d-4da2-854c-20f03cc2dd8b"), "Weapon modifier", 0.5, EntityAttributeModifier.Operation.ADDITION);
 
     public ScytheItem(ToolMaterial material, float damage, float speed, Settings settings) {

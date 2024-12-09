@@ -3,10 +3,9 @@ package dev.doctor4t.arsenal.mixin;
 import dev.doctor4t.arsenal.entity.AnchorbladeEntity;
 import dev.doctor4t.arsenal.index.ArsenalStatusEffects;
 import dev.doctor4t.arsenal.item.AnchorbladeItem;
-import dev.doctor4t.arsenal.item.CustomHitParticleItem;
-import dev.doctor4t.arsenal.item.CustomHitSoundItem;
 import dev.doctor4t.arsenal.item.ScytheItem;
 import dev.doctor4t.arsenal.util.AnchorOwner;
+import dev.doctor4t.ratatouille.item.CustomHitParticleItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -51,18 +50,6 @@ public abstract class PlayerEntityMixin extends LivingEntity implements AnchorOw
     private void arsenal$initDataTracker(CallbackInfo ci) {
         this.dataTracker.startTracking(BASIC_ANCHOR, -1);
         this.dataTracker.startTracking(REELING_ANCHOR, -1);
-    }
-
-    @Inject(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;getAttackCooldownProgress(F)F"))
-    private void arsenal$spawnCustomHitParticlesAndPlayCustomHitSound(Entity target, CallbackInfo ci) {
-        if (this.getAttackCooldownProgress(0.5F) > 0.9F) {
-            if (this.getMainHandStack().getItem() instanceof CustomHitParticleItem customHitParticleItem) {
-                customHitParticleItem.spawnHitParticles((PlayerEntity) (Object) this);
-            }
-            if (this.getMainHandStack().getItem() instanceof CustomHitSoundItem customHitSoundItem) {
-                customHitSoundItem.playHitSound((PlayerEntity) (Object) this);
-            }
-        }
     }
 
     @Inject(method = "getBlockBreakingSpeed", at = @At("RETURN"), cancellable = true)

@@ -5,7 +5,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.doctor4t.arsenal.cca.BackWeaponComponent;
-import dev.doctor4t.arsenal.item.CustomNameColorItem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -77,16 +76,5 @@ public abstract class InGameHudMixin {
             return;
         }
         original.call(instance, texture, x, y, u, v, width, height);
-    }
-
-    @ModifyExpressionValue(
-            method = "renderHeldItemTooltip",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/text/MutableText;formatted(Lnet/minecraft/util/Formatting;)Lnet/minecraft/text/MutableText;", ordinal = 0)
-    )
-    private MutableText arsenal$heldTooltipChangeItemNameColor(MutableText mutableText) {
-        if (this.currentStack.getItem() instanceof CustomNameColorItem colorItem) {
-            return mutableText.setStyle(mutableText.getStyle().withColor(colorItem.getNameColor()));
-        }
-        return mutableText;
     }
 }
