@@ -20,8 +20,10 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.RangedWeaponItem;
+import net.minecraft.item.ShieldItem;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
@@ -81,7 +83,22 @@ public class WeaponRackEntityRenderer<T extends WeaponRackEntity> extends Entity
         }
 
         if (!itemStack.isEmpty()) {
-            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(itemStack.getItem() instanceof RangedWeaponItem ? 45f : 135f));
+            Item item = itemStack.getItem();
+
+            float zRot = 135f;
+            float scale = .85f;
+            if (item instanceof ArsenalWeaponItem) {
+                scale = 1.6f;
+            }
+            if (item instanceof RangedWeaponItem) {
+                zRot = 45f;
+            }
+            if (item instanceof ShieldItem) {
+                scale = 1.8f;
+                zRot = 0f;
+            }
+
+            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(zRot));
 
             float offset = MathHelper.hashCode(itemFrameEntity.getBlockX(), itemFrameEntity.getBlockY(), itemFrameEntity.getBlockZ()) * 0.00000000000000001f; // offset to avoid z fighting
             if (bl) {
@@ -91,8 +108,9 @@ public class WeaponRackEntityRenderer<T extends WeaponRackEntity> extends Entity
             }
 
             int light = this.getLight(itemFrameEntity, LightmapTextureManager.MAX_LIGHT_COORDINATE, i);
-            float scale = itemStack.getItem() instanceof ArsenalWeaponItem ? 1.6f : .85f;
+
             matrices.scale(scale, scale, scale);
+
             this.itemRenderer
                     .renderItem(
                             itemStack,

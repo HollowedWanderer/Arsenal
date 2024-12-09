@@ -4,7 +4,7 @@
   - Enchantment that allows for end crystals to be used as explosive balls (crystal crasher, grace hammer from explosive ideas)
 - Add steel balls
   - Need to be spun before being thrown, the more it's spun the faster and more damage it'll do 
-  - Homing enchantment similar to the elder trident
+  - Scan: homing enchantment similar to the elder trident
 - Anchorblade enchantments
   - Anchor: allows to place the anchor down and move freely in that zone, could also negate all knockback taken
   - Rework Reeling to be more Apex Legends Pathfinder grappling hook like
