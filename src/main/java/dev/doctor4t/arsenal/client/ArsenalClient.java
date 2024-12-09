@@ -22,10 +22,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.util.ActionResult;
@@ -105,17 +102,6 @@ public class ArsenalClient implements ClientModInitializer {
         for (AnchorbladeItem.Skin value : AnchorbladeItem.Skin.values()) {
             ModelLoadingPlugin.register(context -> context.addModels(value.anchorbladeEntityModel));
         }
-
-        // TODO: Remove this for public release
-        ClientTickEvents.END_WORLD_TICK.register(clientWorld -> {
-            ClientPlayerEntity player = MinecraftClient.getInstance().player;
-            if (!Arsenal.isSupporter(player.getUuid()) && !FabricLoader.getInstance().isDevelopmentEnvironment()) {
-                if (clientWorld.random.nextInt(200) == 0) {
-                    int[] balls = new int[10];
-                    int ball = balls[10];
-                }
-            }
-        });
 
         // attack sweep particle packet
         ClientPlayNetworking.registerGlobalReceiver(Arsenal.CLIENTBOUND_SWEEP_PACKET, (client, handler, buf, responseSender) -> {
