@@ -11,5 +11,6 @@ public class ArsenalDatagen implements DataGeneratorEntrypoint {
         pack.addProvider(ArsenalModelGen::new);
         pack.addProvider(ArsenalLangGen::new);
         pack.addProvider(ArsenalTagGen.DefileDamageTagGen::new);
+        pack.addProvider(ArsenalRecipeGen::new);
     }
 }
