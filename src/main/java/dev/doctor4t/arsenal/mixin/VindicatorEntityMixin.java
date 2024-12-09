@@ -3,10 +3,8 @@ package dev.doctor4t.arsenal.mixin;
 import dev.doctor4t.arsenal.index.ArsenalItems;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.mob.DrownedEntity;
 import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.entity.mob.VindicatorEntity;
-import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
@@ -24,7 +22,7 @@ public abstract class VindicatorEntityMixin extends IllagerEntity {
 
     @Inject(method = "initEquipment", at = @At(value = "TAIL"))
     protected void arsenal$equipScytheOnVindicators(Random random, LocalDifficulty localDifficulty, CallbackInfo ci) {
-        if ((double)random.nextFloat() > 0.9) {
+        if ((double) random.nextFloat() > 0.9) {
             int i = random.nextInt(16);
             if (i < 10) {
                 this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(ArsenalItems.SCYTHE));

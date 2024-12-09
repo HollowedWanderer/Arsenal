@@ -37,7 +37,7 @@ public class WeaponRackEntity extends ItemFrameEntity {
 
         ItemStack stackInHand = player.getStackInHand(hand);
         Item item = stackInHand.getItem();
-        if (!this.getHeldItemStack().isEmpty() || (this.getHeldItemStack().isEmpty() && (item instanceof ToolItem || item instanceof RangedWeaponItem || item instanceof ArsenalWeaponItem|| item instanceof ShieldItem))) {
+        if (!this.getHeldItemStack().isEmpty() || (this.getHeldItemStack().isEmpty() && (item instanceof ToolItem || item instanceof RangedWeaponItem || item instanceof ArsenalWeaponItem || item instanceof ShieldItem || item instanceof TridentItem))) {
             return super.interact(player, hand);
         }
 

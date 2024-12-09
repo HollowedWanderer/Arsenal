@@ -7,22 +7,16 @@ import dev.doctor4t.arsenal.item.WeaponRackItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.yarn.constants.MiningLevels;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.Items;
-import net.minecraft.item.ToolMaterial;
-import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Lazy;
 import net.minecraft.util.Rarity;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
 public interface ArsenalItems {
     Map<Item, Identifier> ITEMS = new LinkedHashMap<>();

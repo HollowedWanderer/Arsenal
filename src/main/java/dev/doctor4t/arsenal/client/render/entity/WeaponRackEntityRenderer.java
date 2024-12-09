@@ -20,10 +20,7 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.RangedWeaponItem;
-import net.minecraft.item.ShieldItem;
+import net.minecraft.item.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
@@ -96,6 +93,9 @@ public class WeaponRackEntityRenderer<T extends WeaponRackEntity> extends Entity
             if (item instanceof ShieldItem) {
                 scale = 1.8f;
                 zRot = 0f;
+            }
+            if (item instanceof TridentItem) {
+                zRot = -45f;
             }
 
             matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(zRot));

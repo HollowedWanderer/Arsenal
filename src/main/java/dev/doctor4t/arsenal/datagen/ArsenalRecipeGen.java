@@ -1,13 +1,13 @@
 package dev.doctor4t.arsenal.datagen;
 
 import dev.doctor4t.arsenal.index.ArsenalItems;
-import dev.doctor4t.ratatouille.index.RatatouilleBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.book.RecipeCategory;
+
 import java.util.function.Consumer;
 
 public class ArsenalRecipeGen extends FabricRecipeProvider {
