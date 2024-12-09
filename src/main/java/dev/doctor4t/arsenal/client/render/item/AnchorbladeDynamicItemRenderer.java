@@ -57,6 +57,7 @@ public class AnchorbladeDynamicItemRenderer implements BuiltinItemRendererRegist
     @Override
     public void render(ItemStack stack, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         boolean inHand = mode.isFirstPerson() || mode == ModelTransformationMode.THIRD_PERSON_LEFT_HAND || mode == ModelTransformationMode.THIRD_PERSON_RIGHT_HAND || mode == ModelTransformationMode.HEAD || mode == ModelTransformationMode.FIXED;
+        boolean inInventory = mode == ModelTransformationMode.GUI;
 
         matrices.push();
         matrices.translate(.5, .5, .5);
@@ -64,14 +65,14 @@ public class AnchorbladeDynamicItemRenderer implements BuiltinItemRendererRegist
         Pair<ModelIdentifier, ModelIdentifier> modelIdentifierPair = getModelIdentifierModelIdentifierPair(stack);
         BakedModel model = MinecraftClient.getInstance().getBakedModelManager().getModel(!inHand ? modelIdentifierPair.getLeft() : modelIdentifierPair.getRight());
 
-        if (!inHand) {
+        if (inInventory) {
             DiffuseLighting.disableGuiDepthLighting();
         }
 
         MinecraftClient.getInstance().getItemRenderer().renderItem(stack, mode, false, matrices, vertexConsumers, light, overlay, model);
         ((VertexConsumerProvider.Immediate) vertexConsumers).draw();
 
-        if (!inHand) {
+        if (inInventory) {
             DiffuseLighting.enableGuiDepthLighting();
         }
 
