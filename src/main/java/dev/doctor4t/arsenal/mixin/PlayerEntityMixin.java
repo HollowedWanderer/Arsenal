@@ -5,7 +5,6 @@ import dev.doctor4t.arsenal.index.ArsenalStatusEffects;
 import dev.doctor4t.arsenal.item.AnchorbladeItem;
 import dev.doctor4t.arsenal.item.ScytheItem;
 import dev.doctor4t.arsenal.util.AnchorOwner;
-import dev.doctor4t.ratatouille.item.CustomHitParticleItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
