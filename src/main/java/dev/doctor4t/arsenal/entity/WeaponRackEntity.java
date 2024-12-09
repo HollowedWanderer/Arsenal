@@ -2,10 +2,15 @@ package dev.doctor4t.arsenal.entity;
 
 import dev.doctor4t.arsenal.index.ArsenalEntities;
 import dev.doctor4t.arsenal.index.ArsenalItems;
+import dev.doctor4t.arsenal.item.ArsenalWeaponItem;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.RangedWeaponItem;
+import net.minecraft.item.ToolItem;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -33,7 +38,13 @@ public class WeaponRackEntity extends ItemFrameEntity {
             return ActionResult.SUCCESS;
         }
 
-        return super.interact(player, hand);
+        ItemStack stackInHand = player.getStackInHand(hand);
+        Item item = stackInHand.getItem();
+        if (!this.getHeldItemStack().isEmpty() || (this.getHeldItemStack().isEmpty() && (item instanceof ToolItem || item instanceof RangedWeaponItem || item instanceof ArsenalWeaponItem))) {
+            return super.interact(player, hand);
+        }
+
+        return ActionResult.PASS;
     }
 
     @Override
@@ -48,5 +59,10 @@ public class WeaponRackEntity extends ItemFrameEntity {
 
     protected ItemStack getAsItemStack() {
         return new ItemStack(ArsenalItems.WEAPON_RACK);
+    }
+
+    @Override
+    public boolean isInvulnerableTo(DamageSource damageSource) {
+        return damageSource.getSource() instanceof PlayerEntity player && this.getHeldItemStack().isEmpty() && !player.isSneaking();
     }
 }
