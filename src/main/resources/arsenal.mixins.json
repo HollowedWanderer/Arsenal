@@ -16,7 +16,8 @@
     "PlayerScreenHandlerMixin",
     "ProjectileEntityMixin",
     "ServerPlayNetworkHandlerMixin",
-    "TridentItemMixin"
+    "TridentItemMixin",
+    "VindicatorEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

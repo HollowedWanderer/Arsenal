@@ -5,6 +5,7 @@ import dev.doctor4t.arsenal.cca.ArsenalComponents;
 import dev.doctor4t.arsenal.cca.WeaponSkinComponent;
 import dev.doctor4t.arsenal.entity.AnchorbladeEntity;
 import dev.doctor4t.arsenal.index.ArsenalEnchantments;
+import dev.doctor4t.arsenal.index.ArsenalItems;
 import dev.doctor4t.arsenal.index.ArsenalSounds;
 import dev.doctor4t.arsenal.util.AnchorOwner;
 import dev.doctor4t.arsenal.util.SweepParticleUtil;
@@ -163,40 +164,6 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
     @Override
     public void playHitSound(PlayerEntity player) {
         player.playSound(ArsenalSounds.ITEM_ANCHORBLADE_HIT, 1.0F, (float) (1.0F + player.getRandom().nextGaussian() / 10f));
-    }
-
-    public static class AnchorBladeToolMaterial implements ToolMaterial {
-        public static final AnchorBladeToolMaterial INSTANCE = new AnchorBladeToolMaterial();
-
-        @Override
-        public int getDurability() {
-            return 2560;
-        }
-
-        @Override
-        public float getMiningSpeedMultiplier() {
-            return 9.0F;
-        }
-
-        @Override
-        public float getAttackDamage() {
-            return 4.0F;
-        }
-
-        @Override
-        public int getMiningLevel() {
-            return MiningLevels.NETHERITE;
-        }
-
-        @Override
-        public int getEnchantability() {
-            return 28;
-        }
-
-        @Override
-        public Ingredient getRepairIngredient() {
-            return Ingredient.ofItems(Items.COPPER_BLOCK);
-        }
     }
 
     @Override
