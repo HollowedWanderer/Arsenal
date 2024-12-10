@@ -31,6 +31,7 @@ public class DrownedEntityMixin extends ZombieEntity {
             int i = random.nextInt(16);
             if (i < 10) {
                 this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(ArsenalItems.ANCHORBLADE));
+                this.updateDropChances(EquipmentSlot.MAINHAND);
             }
         }
     }
