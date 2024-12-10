@@ -13,7 +13,6 @@ import dev.doctor4t.arsenal.index.ArsenalEntities;
 import dev.doctor4t.arsenal.index.ArsenalItems;
 import dev.doctor4t.arsenal.index.ArsenalParticles;
 import dev.doctor4t.arsenal.item.AnchorbladeItem;
-import dev.doctor4t.arsenal.util.WeaponSlotCallback;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -25,7 +24,6 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
-import net.minecraft.util.ActionResult;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Locale;
@@ -64,17 +62,6 @@ public class ArsenalClient implements ClientModInitializer {
 
         // particle renderers registration
         ArsenalParticles.registerFactories();
-
-        // amy's bullshit sick ass custom weapon slot
-        WeaponSlotCallback.EVENT.register((player, stack) -> {
-            if (stack.getItem() == ArsenalItems.ANCHORBLADE) {
-                return ActionResult.FAIL;
-            }
-            if (stack.getItem() == ArsenalItems.SCYTHE) {
-                return ActionResult.FAIL;
-            }
-            return ActionResult.PASS;
-        });
 
         // keybindings
         weaponKeybind = KeyBindingHelper.registerKeyBinding(new KeyBinding(

@@ -2,7 +2,7 @@ package dev.doctor4t.arsenal.client.render.entity;
 
 import dev.doctor4t.arsenal.Arsenal;
 import dev.doctor4t.arsenal.entity.WeaponRackEntity;
-import dev.doctor4t.arsenal.item.ArsenalWeaponItem;
+import dev.doctor4t.arsenal.index.ArsenalTags;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -20,7 +20,7 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
@@ -80,21 +80,19 @@ public class WeaponRackEntityRenderer<T extends WeaponRackEntity> extends Entity
         }
 
         if (!itemStack.isEmpty()) {
-            Item item = itemStack.getItem();
-
             float zRot = 135f;
             float scale = .85f;
-            if (item instanceof ArsenalWeaponItem) {
+            if (itemStack.isIn(ArsenalTags.BIG_WEAPONS)) {
                 scale = 1.6f;
             }
-            if (item instanceof RangedWeaponItem) {
+            if (itemStack.isIn(ArsenalTags.RANGED_WEAPONS)) {
                 zRot = 45f;
             }
-            if (item instanceof ShieldItem) {
+            if (itemStack.isIn(ArsenalTags.SHIELDS)) {
                 scale = 1.8f;
                 zRot = 0f;
             }
-            if (item instanceof TridentItem) {
+            if (itemStack.isIn(ArsenalTags.TRIDENTS)) {
                 zRot = -45f;
             }
 

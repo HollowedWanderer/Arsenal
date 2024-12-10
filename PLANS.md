@@ -1,3 +1,4 @@
+- Add backslot / display weapon tags instead of using instanceof XItem class
 - Merge impaled's sincere loyalty and maybe hellfork
 - Add rocket hammer
   - Right click allows a boost forward 

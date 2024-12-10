@@ -1,7 +1,7 @@
 package dev.doctor4t.arsenal.client.render.feature;
 
 import dev.doctor4t.arsenal.cca.BackWeaponComponent;
-import dev.doctor4t.arsenal.util.WeaponSlotCallback;
+import dev.doctor4t.arsenal.index.ArsenalTags;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
@@ -15,8 +15,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.ShieldItem;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
@@ -66,19 +64,18 @@ public class BackWeaponFeatureRenderer extends FeatureRenderer<AbstractClientPla
         matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(s / 2.0F));
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F - s / 2.0F));
 
-        float scale = 1f;
-        if (stack.getItem() instanceof ShieldItem) {
-            matrices.translate(0.0, 0.5, 0.0);
-            scale = 2f;
+        float scale = .85f;
+        if (stack.isIn(ArsenalTags.BIG_WEAPONS)) {
+            scale = 1.6f;
+            matrices.translate(0.0, 0.2, -0.15);
         } else {
-            ActionResult result = WeaponSlotCallback.EVENT.invoker().interact(abstractClientPlayerEntity, stack);
-            if (result == ActionResult.FAIL) {
-                matrices.translate(0.0, 0.2, -0.15);
-                scale = 1.5f;
-            } else {
-                matrices.translate(0, 0.25, -0.20);
-            }
+            matrices.translate(0, 0.3, -0.1);
         }
+        if (stack.isIn(ArsenalTags.SHIELDS)) {
+            scale = 1.8f;
+            matrices.translate(0.0, 0.2, 0.0);
+        }
+
         matrices.scale(scale, scale, scale);
 
         MinecraftClient.getInstance().getItemRenderer().renderItem(abstractClientPlayerEntity, stack, ModelTransformationMode.FIXED, false, matrices, vertexConsumers, abstractClientPlayerEntity.getWorld(), light, OverlayTexture.DEFAULT_UV, 0);

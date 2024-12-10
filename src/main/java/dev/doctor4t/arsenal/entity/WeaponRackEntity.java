@@ -2,12 +2,12 @@ package dev.doctor4t.arsenal.entity;
 
 import dev.doctor4t.arsenal.index.ArsenalEntities;
 import dev.doctor4t.arsenal.index.ArsenalItems;
-import dev.doctor4t.arsenal.item.ArsenalWeaponItem;
+import dev.doctor4t.arsenal.index.ArsenalTags;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -36,8 +36,7 @@ public class WeaponRackEntity extends ItemFrameEntity {
         }
 
         ItemStack stackInHand = player.getStackInHand(hand);
-        Item item = stackInHand.getItem();
-        if (!this.getHeldItemStack().isEmpty() || (this.getHeldItemStack().isEmpty() && (item instanceof ToolItem || item instanceof RangedWeaponItem || item instanceof ArsenalWeaponItem || item instanceof ShieldItem || item instanceof TridentItem))) {
+        if (!this.getHeldItemStack().isEmpty() || (this.getHeldItemStack().isEmpty() && stackInHand.isIn(ArsenalTags.DISPLAYABLE))) {
             return super.interact(player, hand);
         }
 
