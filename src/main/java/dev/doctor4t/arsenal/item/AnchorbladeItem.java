@@ -178,7 +178,8 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
         DEFAULT(new int[]{0xFF2B2632}, new int[]{0xFF1B1B1B}, null, null),
         LANCRE(new int[]{0xFFE7761F, 0xFF37965B, 0xFFA51BB7}, new int[]{0xFFA84701, 0xFF115642, 0xFF671081}, "L'Ancre", "tooltip.arsenal.anchorblade_lancre"),
         CARRION(new int[]{0xFFE9DFB8}, new int[]{0xFF9D806E}, null, null),
-        GILDED(new int[]{0xFFF1BC5A}, new int[]{0xFFE28634}, null, null);
+        GILDED(new int[]{0xFFF1BC5A}, new int[]{0xFFE28634}, null, null),
+        WINSWEEP(new int[]{0xFFFFDC00, 0xFFC676F1}, new int[]{0xFFBE5F00, 0xFF7546A0}, "Wanchorblade", null);
 
         public final Identifier chainTexture;
         public final Identifier anchorbladeEntityModel;
