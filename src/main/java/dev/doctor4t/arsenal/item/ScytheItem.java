@@ -3,10 +3,10 @@ package dev.doctor4t.arsenal.item;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.jamieswhiteshirt.reachentityattributes.ReachEntityAttributes;
-import dev.doctor4t.arsenal.Arsenal;
 import dev.doctor4t.arsenal.cca.ArsenalComponents;
-import dev.doctor4t.arsenal.cca.WeaponSkinComponent;
+import dev.doctor4t.arsenal.cca.WeaponOwnerComponent;
 import dev.doctor4t.arsenal.entity.BloodScytheEntity;
+import dev.doctor4t.arsenal.index.ArsenalCosmetics;
 import dev.doctor4t.arsenal.index.ArsenalDamageTypes;
 import dev.doctor4t.arsenal.index.ArsenalEnchantments;
 import dev.doctor4t.arsenal.index.ArsenalSounds;
@@ -64,43 +64,23 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-        super.inventoryTick(stack, world, entity, slot, selected);
-
-        WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(stack);
-        if (weaponSkinComponent != null && !weaponSkinComponent.getSkinName().equals(Skin.DEFAULT.getName()) && entity instanceof PlayerEntity player) {
-            if (!Arsenal.isSupporter(player.getUuid())) {
-                if (world.isClient) {
-                    player.sendMessage(Text.translatable("tooltip.supporter_only").styled(style -> style.withColor(0xCC0000)));
-                    player.playSound(SoundEvents.ITEM_SHIELD_BREAK, 0.5f, 1.0f);
-                }
-
-                weaponSkinComponent.setSkin(Skin.DEFAULT.getName());
-            }
-        }
-    }
-
-    @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
         BlockState blockStateClicked = context.getWorld().getBlockState(context.getBlockPos());
         PlayerEntity user = context.getPlayer();
-        if (user != null && user.isSneaking() && (blockStateClicked.isIn(BlockTags.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE))) {
-            if (Arsenal.isSupporter(user.getUuid())) {
-                WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(user.getStackInHand(context.getHand()));
-                if (weaponSkinComponent != null) {
-                    Skin currentSkin = Skin.fromString(weaponSkinComponent.getSkinName());
+        if (user != null && user.isSneaking() && (blockStateClicked.isIn(BlockTags.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE)) && context.getWorld().isClient) {
+            if (ArsenalCosmetics.isSupporter(user.getUuid())) {
+                WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(user.getStackInHand(context.getHand()));
+                Skin currentSkin = Skin.fromString(ArsenalCosmetics.getSkin(weaponOwnerComponent.getOwner(), context.getStack().getName().getString()));
 
-                    if (currentSkin == null) {
-                        currentSkin = Skin.DEFAULT;
-                    }
-
-                    Skin nextSkin = Skin.getNext(currentSkin);
-                    weaponSkinComponent.setSkin(nextSkin.getName());
-
-                    context.getPlayer().playSound(SoundEvents.BLOCK_SMITHING_TABLE_USE, 0.5f, 1.0f);
-
-                    return ActionResult.SUCCESS;
+                if (currentSkin == null) {
+                    currentSkin = Skin.DEFAULT;
                 }
+
+                ArsenalCosmetics.setSkin(weaponOwnerComponent.getOwner(), context.getStack().getName().getString(), Skin.getNext(currentSkin).getName());
+
+                context.getPlayer().playSound(SoundEvents.BLOCK_SMITHING_TABLE_USE, 0.5f, 1.0f);
+
+                return ActionResult.SUCCESS;
             } else {
                 if (context.getWorld().isClient) {
                     user.sendMessage(Text.translatable("tooltip.supporter_only").styled(style -> style.withColor(0xCC0000)));
@@ -144,14 +124,12 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
                 world.spawnEntity(bloodScythe);
 
                 if (player.getWorld() instanceof ServerWorld serverWorld) {
-                    WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(player.getMainHandStack());
+                    WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(player.getMainHandStack());
 
                     Skin skin = Skin.DEFAULT;
-                    if (weaponSkinComponent != null) {
-                        Skin toSkin = Skin.fromString(weaponSkinComponent.getSkinName());
-                        if (toSkin != null) {
-                            skin = toSkin;
-                        }
+                    Skin toSkin = Skin.fromString(ArsenalCosmetics.getSkinFromStack(player.getMainHandStack(), weaponOwnerComponent));
+                    if (toSkin != null) {
+                        skin = toSkin;
                     }
 
                     Pair<Integer, Integer> colorPair = new Pair<>(skin.color, skin.shadowColor);
@@ -166,21 +144,19 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(stack);
-        if (weaponSkinComponent != null && !weaponSkinComponent.getSkinName().equals(Skin.DEFAULT.getName())) {
-            Skin skin = Skin.fromString(weaponSkinComponent.getSkinName());
+        WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(stack);
+        Skin skin = Skin.fromString(ArsenalCosmetics.getSkinFromStack(stack, weaponOwnerComponent));
 
-            if (skin != null) {
-                tooltip.add(Text.literal(skin.tooltipName != null ? skin.tooltipName : TextUtils.formatValueString(skin.getName())).styled(style -> style.withColor(skin.color)));
-                if (skin.lore != null) {
-                    if (Screen.hasShiftDown()) {
-                        MutableText translatable = Text.translatable(skin.lore);
-                        for (String line : translatable.getString().split("\n")) {
-                            tooltip.add(Text.literal(line).styled(style -> style.withColor(Formatting.DARK_GRAY)));
-                        }
-                    } else {
-                        tooltip.add(Text.translatable("tooltip.arsenal.hidden").styled(style -> style.withColor(Formatting.DARK_GRAY)));
+        if (skin != null && skin != Skin.DEFAULT) {
+            tooltip.add(Text.literal(skin.tooltipName != null ? skin.tooltipName : TextUtils.formatValueString(skin.getName())).styled(style -> style.withColor(skin.color)));
+            if (skin.lore != null) {
+                if (Screen.hasShiftDown()) {
+                    MutableText translatable = Text.translatable(skin.lore);
+                    for (String line : translatable.getString().split("\n")) {
+                        tooltip.add(Text.literal(line).styled(style -> style.withColor(Formatting.DARK_GRAY)));
                     }
+                } else {
+                    tooltip.add(Text.translatable("tooltip.arsenal.hidden").styled(style -> style.withColor(Formatting.DARK_GRAY)));
                 }
             }
         }
@@ -191,14 +167,12 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
     @Override
     public void spawnHitParticles(PlayerEntity player) {
         if (player.getWorld() instanceof ServerWorld serverWorld) {
-            WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(player.getMainHandStack());
+            WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(player.getMainHandStack());
 
             Skin skin = Skin.DEFAULT;
-            if (weaponSkinComponent != null) {
-                Skin toSkin = Skin.fromString(weaponSkinComponent.getSkinName());
-                if (toSkin != null) {
-                    skin = toSkin;
-                }
+            Skin toSkin = Skin.fromString(ArsenalCosmetics.getSkinFromStack(player.getMainHandStack(), weaponOwnerComponent));
+            if (toSkin != null) {
+                skin = toSkin;
             }
 
             Pair<Integer, Integer> colorPair = new Pair<>(skin.color, skin.shadowColor);
@@ -216,9 +190,19 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
         return !miner.isCreative();
     }
 
+    @Override
+    public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
+        super.inventoryTick(stack, world, entity, slot, selected);
+
+        if (entity instanceof PlayerEntity player) {
+            WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(stack);
+            weaponOwnerComponent.setOwner(player.getUuid());
+        }
+    }
+
     public enum Skin {
         DEFAULT(0xFFD9D9D9, 0xFF7F8885, null, null),
-        GRACE(0xFFD90420, 0xFF8C0420, null, "tooltip.arsenal.scythe_grace"),
+        CLOWN(0xFFD90420, 0xFF8C0420, null, "tooltip.arsenal.scythe_clown"),
         CARRION(0xFFE9DFB8, 0xFF9D806E, null, null),
         GILDED(0xFFF1BC5A, 0xFFE28634, null, null),
         ROZE(0xFFB70066, 0xFF710949, null, null),
@@ -246,7 +230,6 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
             return null;
         }
 
-        @Nullable
         public static Skin getNext(Skin skin) {
             Skin[] values = Skin.values();
             return values[(skin.ordinal() + 1) % values.length];

@@ -13,7 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 
 public class ArsenalComponents implements EntityComponentInitializer, ItemComponentInitializer {
     public static final ComponentKey<BackWeaponComponent> BACK_WEAPON_COMPONENT = ComponentRegistry.getOrCreate(Arsenal.id("back_weapon"), BackWeaponComponent.class);
-    public static final ComponentKey<WeaponSkinComponent> WEAPON_SKIN_COMPONENT = ComponentRegistry.getOrCreate(Arsenal.id("weapon_skin"), WeaponSkinComponent.class);
+    public static final ComponentKey<WeaponOwnerComponent> WEAPON_OWNER_COMPONENT = ComponentRegistry.getOrCreate(Arsenal.id("weapon_skin"), WeaponOwnerComponent.class);
 
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
@@ -22,6 +22,6 @@ public class ArsenalComponents implements EntityComponentInitializer, ItemCompon
 
     @Override
     public void registerItemComponentFactories(ItemComponentFactoryRegistry registry) {
-        registry.register(item -> item instanceof ArsenalWeaponItem, WEAPON_SKIN_COMPONENT, WeaponSkinComponent::new);
+        registry.register(item -> item instanceof ArsenalWeaponItem, WEAPON_OWNER_COMPONENT, WeaponOwnerComponent::new);
     }
 }

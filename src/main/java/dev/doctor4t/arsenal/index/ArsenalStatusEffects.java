@@ -10,12 +10,12 @@ import net.minecraft.util.Identifier;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class ArsenalStatusEffects {
-    private static final Map<StatusEffect, Identifier> EFFECTS = new LinkedHashMap<>();
+public interface ArsenalStatusEffects {
+    Map<StatusEffect, Identifier> EFFECTS = new LinkedHashMap<>();
 
-    public static final StatusEffect STUN = create("stun", new StunStatusEffect());
+    StatusEffect STUN = create("stun", new StunStatusEffect());
 
-    public static void initialize() {
+    static void initialize() {
         EFFECTS.keySet().forEach(effect -> Registry.register(Registries.STATUS_EFFECT, EFFECTS.get(effect), effect));
     }
 

@@ -2,8 +2,10 @@ package dev.doctor4t.arsenal.client.render.item;
 
 import dev.doctor4t.arsenal.Arsenal;
 import dev.doctor4t.arsenal.cca.ArsenalComponents;
-import dev.doctor4t.arsenal.cca.WeaponSkinComponent;
+import dev.doctor4t.arsenal.cca.WeaponOwnerComponent;
+import dev.doctor4t.arsenal.index.ArsenalCosmetics;
 import dev.doctor4t.arsenal.item.AnchorbladeItem;
+import dev.doctor4t.arsenal.item.ScytheItem;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.DiffuseLighting;
@@ -23,10 +25,10 @@ public class AnchorbladeDynamicItemRenderer implements BuiltinItemRendererRegist
     public static final List<ModelIdentifier> MODELS_TO_REGISTER = new ArrayList<>();
 
     public static final Pair<ModelIdentifier, ModelIdentifier> DEFAULT_MODEL_IDENTIFIER = registerVariantModelPair("");
-    public static final Pair<ModelIdentifier, ModelIdentifier> LANCRE_MODEL_IDENTIFIER = registerVariantModelPair("lancre");
-    public static final Pair<ModelIdentifier, ModelIdentifier> CARRION_MODEL_IDENTIFIER = registerVariantModelPair("carrion");
-    public static final Pair<ModelIdentifier, ModelIdentifier> GILDED_MODEL_IDENTIFIER = registerVariantModelPair("gilded");
-    public static final Pair<ModelIdentifier, ModelIdentifier> WINSWEEP_MODEL_IDENTIFIER = registerVariantModelPair("winsweep");
+    public static final Pair<ModelIdentifier, ModelIdentifier> LUXINTRUS_MODEL_IDENTIFIER = registerVariantModelPair(AnchorbladeItem.Skin.LUXINTRUS.getName());
+    public static final Pair<ModelIdentifier, ModelIdentifier> CARRION_MODEL_IDENTIFIER = registerVariantModelPair(AnchorbladeItem.Skin.CARRION.getName());
+    public static final Pair<ModelIdentifier, ModelIdentifier> GILDED_MODEL_IDENTIFIER = registerVariantModelPair(AnchorbladeItem.Skin.GILDED.getName());
+    public static final Pair<ModelIdentifier, ModelIdentifier> WINSWEEP_MODEL_IDENTIFIER = registerVariantModelPair(AnchorbladeItem.Skin.WINSWEEP.getName());
 
     private static @NotNull Pair<ModelIdentifier, ModelIdentifier> registerVariantModelPair(String name) {
         String s = "anchorblade" + (name.isEmpty() ? "" : "_") + name;
@@ -42,16 +44,14 @@ public class AnchorbladeDynamicItemRenderer implements BuiltinItemRendererRegist
 
     private static @NotNull Pair<ModelIdentifier, ModelIdentifier> getModelIdentifierModelIdentifierPair(ItemStack stack) {
         Pair<ModelIdentifier, ModelIdentifier> modelIdentifierPair = DEFAULT_MODEL_IDENTIFIER;
-        WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(stack);
-        if (weaponSkinComponent != null) {
-            if (AnchorbladeItem.Skin.fromString(weaponSkinComponent.getSkinName()) == AnchorbladeItem.Skin.LANCRE) {
-                modelIdentifierPair = LANCRE_MODEL_IDENTIFIER;
-            } else if (AnchorbladeItem.Skin.fromString(weaponSkinComponent.getSkinName()) == AnchorbladeItem.Skin.CARRION) {
-                modelIdentifierPair = CARRION_MODEL_IDENTIFIER;
-            } else if (AnchorbladeItem.Skin.fromString(weaponSkinComponent.getSkinName()) == AnchorbladeItem.Skin.GILDED) {
-                modelIdentifierPair = GILDED_MODEL_IDENTIFIER;
-            } else if (AnchorbladeItem.Skin.fromString(weaponSkinComponent.getSkinName()) == AnchorbladeItem.Skin.WINSWEEP) {
-                modelIdentifierPair = WINSWEEP_MODEL_IDENTIFIER;
+        WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(stack);
+        AnchorbladeItem.Skin skin = AnchorbladeItem.Skin.fromString(ArsenalCosmetics.getSkin(weaponOwnerComponent.getOwner(), stack.getName().getString()));
+        if (skin != null) {
+            switch (skin) {
+                case LUXINTRUS -> modelIdentifierPair = LUXINTRUS_MODEL_IDENTIFIER;
+                case CARRION -> modelIdentifierPair = CARRION_MODEL_IDENTIFIER;
+                case GILDED -> modelIdentifierPair = GILDED_MODEL_IDENTIFIER;
+                case WINSWEEP -> modelIdentifierPair = WINSWEEP_MODEL_IDENTIFIER;
             }
         }
         return modelIdentifierPair;

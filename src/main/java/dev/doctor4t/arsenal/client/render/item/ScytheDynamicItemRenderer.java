@@ -2,7 +2,8 @@ package dev.doctor4t.arsenal.client.render.item;
 
 import dev.doctor4t.arsenal.Arsenal;
 import dev.doctor4t.arsenal.cca.ArsenalComponents;
-import dev.doctor4t.arsenal.cca.WeaponSkinComponent;
+import dev.doctor4t.arsenal.cca.WeaponOwnerComponent;
+import dev.doctor4t.arsenal.index.ArsenalCosmetics;
 import dev.doctor4t.arsenal.item.ScytheItem;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.MinecraftClient;
@@ -23,11 +24,11 @@ public class ScytheDynamicItemRenderer implements BuiltinItemRendererRegistry.Dy
     public static final List<ModelIdentifier> MODELS_TO_REGISTER = new ArrayList<>();
 
     public static final Pair<ModelIdentifier, ModelIdentifier> DEFAULT_MODEL_IDENTIFIER = registerVariantModelPair("");
-    public static final Pair<ModelIdentifier, ModelIdentifier> GRACE_MODEL_IDENTIFIER = registerVariantModelPair("grace");
-    public static final Pair<ModelIdentifier, ModelIdentifier> CARRION_MODEL_IDENTIFIER = registerVariantModelPair("carrion");
-    public static final Pair<ModelIdentifier, ModelIdentifier> GILDED_MODEL_IDENTIFIER = registerVariantModelPair("gilded");
-    public static final Pair<ModelIdentifier, ModelIdentifier> ROZE_MODEL_IDENTIFIER = registerVariantModelPair("roze");
-    public static final Pair<ModelIdentifier, ModelIdentifier> FOLLY_MODEL_IDENTIFIER = registerVariantModelPair("folly");
+    public static final Pair<ModelIdentifier, ModelIdentifier> CLOWN_MODEL_IDENTIFIER = registerVariantModelPair(ScytheItem.Skin.CLOWN.getName());
+    public static final Pair<ModelIdentifier, ModelIdentifier> CARRION_MODEL_IDENTIFIER = registerVariantModelPair(ScytheItem.Skin.CARRION.getName());
+    public static final Pair<ModelIdentifier, ModelIdentifier> GILDED_MODEL_IDENTIFIER = registerVariantModelPair(ScytheItem.Skin.GILDED.getName());
+    public static final Pair<ModelIdentifier, ModelIdentifier> ROZE_MODEL_IDENTIFIER = registerVariantModelPair(ScytheItem.Skin.ROZE.getName());
+    public static final Pair<ModelIdentifier, ModelIdentifier> FOLLY_MODEL_IDENTIFIER = registerVariantModelPair(ScytheItem.Skin.FOLLY.getName());
 
     private static @NotNull Pair<ModelIdentifier, ModelIdentifier> registerVariantModelPair(String name) {
         String s = "scythe" + (name.isEmpty() ? "" : "_") + name;
@@ -43,18 +44,15 @@ public class ScytheDynamicItemRenderer implements BuiltinItemRendererRegistry.Dy
 
     private static @NotNull Pair<ModelIdentifier, ModelIdentifier> getModelIdentifierModelIdentifierPair(ItemStack stack) {
         Pair<ModelIdentifier, ModelIdentifier> modelIdentifierPair = DEFAULT_MODEL_IDENTIFIER;
-        WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(stack);
-        if (weaponSkinComponent != null) {
-            if (ScytheItem.Skin.fromString(weaponSkinComponent.getSkinName()) == ScytheItem.Skin.GRACE) {
-                modelIdentifierPair = GRACE_MODEL_IDENTIFIER;
-            } else if (ScytheItem.Skin.fromString(weaponSkinComponent.getSkinName()) == ScytheItem.Skin.CARRION) {
-                modelIdentifierPair = CARRION_MODEL_IDENTIFIER;
-            } else if (ScytheItem.Skin.fromString(weaponSkinComponent.getSkinName()) == ScytheItem.Skin.GILDED) {
-                modelIdentifierPair = GILDED_MODEL_IDENTIFIER;
-            } else if (ScytheItem.Skin.fromString(weaponSkinComponent.getSkinName()) == ScytheItem.Skin.ROZE) {
-                modelIdentifierPair = ROZE_MODEL_IDENTIFIER;
-            } else if (ScytheItem.Skin.fromString(weaponSkinComponent.getSkinName()) == ScytheItem.Skin.FOLLY) {
-                modelIdentifierPair = FOLLY_MODEL_IDENTIFIER;
+        WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(stack);
+        ScytheItem.Skin skin = ScytheItem.Skin.fromString(ArsenalCosmetics.getSkin(weaponOwnerComponent.getOwner(), stack.getName().getString()));
+        if (skin != null) {
+            switch (skin) {
+                case CLOWN -> modelIdentifierPair = CLOWN_MODEL_IDENTIFIER;
+                case CARRION -> modelIdentifierPair = CARRION_MODEL_IDENTIFIER;
+                case GILDED -> modelIdentifierPair = GILDED_MODEL_IDENTIFIER;
+                case ROZE -> modelIdentifierPair = ROZE_MODEL_IDENTIFIER;
+                case FOLLY -> modelIdentifierPair = FOLLY_MODEL_IDENTIFIER;
             }
         }
         return modelIdentifierPair;

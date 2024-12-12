@@ -1,8 +1,9 @@
 package dev.doctor4t.arsenal.client.render.entity;
 
 import dev.doctor4t.arsenal.cca.ArsenalComponents;
-import dev.doctor4t.arsenal.cca.WeaponSkinComponent;
+import dev.doctor4t.arsenal.cca.WeaponOwnerComponent;
 import dev.doctor4t.arsenal.entity.AnchorbladeEntity;
+import dev.doctor4t.arsenal.index.ArsenalCosmetics;
 import dev.doctor4t.arsenal.item.AnchorbladeItem;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -44,15 +45,13 @@ public class AnchorbladeEntityRenderer extends EntityRenderer<AnchorbladeEntity>
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(yawAngle + 90));
         matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-pitchAngle + 45));
 
-        WeaponSkinComponent weaponSkinComponent = ArsenalComponents.WEAPON_SKIN_COMPONENT.getNullable(anchorbladeEntity.getStack());
+        WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(anchorbladeEntity.getStack());
         BakedModel model = this.bakedModelManager.getModel(AnchorbladeItem.Skin.DEFAULT.anchorbladeEntityModel);
         RenderLayer chainLayer = RenderLayer.getEntitySmoothCutout(AnchorbladeItem.Skin.DEFAULT.chainTexture);
-        if (weaponSkinComponent != null) {
-            AnchorbladeItem.Skin skin = AnchorbladeItem.Skin.fromString(weaponSkinComponent.getSkinName());
-            if (skin != null) {
-                model = this.bakedModelManager.getModel(skin.anchorbladeEntityModel);
-                chainLayer = RenderLayer.getEntitySmoothCutout(skin.chainTexture);
-            }
+        AnchorbladeItem.Skin skin = AnchorbladeItem.Skin.fromString(ArsenalCosmetics.getSkin(weaponOwnerComponent.getOwner(), anchorbladeEntity.getStack().getName().getString()));
+        if (skin != null) {
+            model = this.bakedModelManager.getModel(skin.anchorbladeEntityModel);
+            chainLayer = RenderLayer.getEntitySmoothCutout(skin.chainTexture);
         }
         this.itemRenderer.renderItem(anchorbladeEntity.getStack(), ModelTransformationMode.FIXED, false, matrices, vertexConsumers, light, OverlayTexture.DEFAULT_UV, model);
 

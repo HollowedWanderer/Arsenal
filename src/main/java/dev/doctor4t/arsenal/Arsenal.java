@@ -22,8 +22,6 @@ public class Arsenal implements ModInitializer {
     public static final Identifier SERVERBOUND_SWAP_INVENTORY_PACKET = id("swap_inventory");
     public static final Identifier CLIENTBOUND_SWEEP_PACKET = id("sweep");
 
-    public static final Identifier WEAPON_SKINS_DATA_ID = id("weapon_skins");
-
     public static Identifier id(String path) {
         return new Identifier(MOD_ID, path);
     }
@@ -70,10 +68,5 @@ public class Arsenal implements ModInitializer {
                 }
             }
         });
-    }
-
-    public static boolean isSupporter(UUID uuid) {
-        Optional<Entitlements> entitlements = Entitlements.token().get(uuid);
-        return entitlements.map(value -> value.keys().stream().anyMatch(identifier -> identifier.equals(WEAPON_SKINS_DATA_ID))).orElse(false);
     }
 }
