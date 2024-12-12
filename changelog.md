@@ -1,12 +1,23 @@
 ------------------------------------------------------
+Arsenal 0.1.2 - 1.20.1
+------------------------------------------------------
+- Added a Winsweep themed Anchorblade skin (Wanchorblade)
+- Added an Arcane Ambessa themed Anchorblade skin (Crescent Blade)
+- Reworked the cosmetics system:
+  - Skins are no longer stored per individual item stack but instead per item stack name, meaning they are synchronized across worlds.
+  - For example, if you have a Scythe named "Bingle" with a Guilded skin, any Scythe named "Bingle" you pick up or display in any world will have the Guilded skin (and change if you select another skin for it).
+  - This also means that if you change the skin of a weapon with no name, you will be changing the default skin you are seen with for that weapon, meaning you will not have to visit an anvil / smithing table to get that skin the moment you pick up any unnamed weapon of that type.
+  - As a result, if you give a skinned weapon to a non-supporter, the cosmetics will not show for them, but will show for you the moment you get it back.
+
+------------------------------------------------------
 Arsenal 0.1.1 - 1.20.1
 ------------------------------------------------------
 - Added item tags to dictate what items can be displayed (for weapon racks) and how they should be displayed (for back slot and weapon racks):
-    - "displayable": What items can be displayed in a weapon rack. By default, contains the "tools" Vanilla tag and "big_weapons", "tridents", "shields" and "ranged_weapons" Arsenal tags.
-    - "big_weapons": Weapons that have a 32x32 handheld sprite and therefore should be displayed bigger. By default, contains the Scythe and Anchorblade.
-    - "tridents": Tridents. By default, contains the Minecraft Trident item.
-    - "shields": Shields. By default, contains the Minecraft Shield item.
-    - "ranged_weapons": Ranged weapons. By default, contains the Minecraft Bow and Crossbow items.
+  - "displayable": What items can be displayed in a weapon rack. By default, contains the "tools" Vanilla tag and "big_weapons", "tridents", "shields" and "ranged_weapons" Arsenal tags.
+  - "big_weapons": Weapons that have a 32x32 handheld sprite and therefore should be displayed bigger. By default, contains the Scythe and Anchorblade.
+  - "tridents": Tridents. By default, contains the Minecraft Trident item.
+  - "shields": Shields. By default, contains the Minecraft Shield item.
+  - "ranged_weapons": Ranged weapons. By default, contains the Minecraft Bow and Crossbow items.
 - Added a new "Folly Tree Branch" Scythe skin for supporters
 - Fixed some issues with the back slot and Trinkets
 - Supporter cosmetic switching now checks for the anvil tag instead of anvil blocks, fixing switching cosmetics not working on damaged and modded anvils
