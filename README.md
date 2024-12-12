@@ -1,6 +1,7 @@
 # Arsenal
 ### A weapons mod focused on adding few but qualitative weapons
 
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/7ZNKNmoNTsQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/RUHAG4fT9CA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/s4POfzRYx3s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
@@ -41,8 +42,13 @@
 
 ### Supporter Bonuses
 For Ko-Fi and YouTube members, you get weapon cosmetics:
-- Can be changed per item by sneak-right-clicking an Arsenal weapon on either an anvil or smithing table
-- Each weapon skin comes with its own custom colored hits
+- Your selected cosmetics are visible to other players.
+- Can be changed by sneak-right-clicking an Arsenal weapon on either an anvil or smithing table
+- Cosmetics are set per item and name, not item stack, meaning they are synchronized across worlds
+    - For example, if you have a Scythe named "Bingle" with a Guilded skin, any Scythe named "Bingle" you pick up or display (in any world) will have the Guilded skin and change if you select another skin for it.
+    - This also means that if you change the skin of a weapon with no name, you will be changing the default skin you are seen with for that weapon (meaning you will not have to visit an anvil / smithing table and get that skin the moment you pick up any unnamed weapon of that type).
+    - As a result, if you give a skinned weapon to a non-supporter, the cosmetics will not show for them, but will show again the moment you get it back.
+- Each weapon skin comes with its own custom colored hits (as well as chain for the Anchorblades)
 
 ### Compatibility
 If you want your weapon mod to be compatible and have your items display properly on weapon racks and back slots, Arsenal provides some tags to which you can add them:
@@ -55,4 +61,4 @@ If you want your weapon mod to be compatible and have your items display properl
 ## Gallery
 ![An Anchorblade in the back slot of a player holding a Scythe](https://cdn.modrinth.com/data/SQhWMwht/images/3d0779885e1c8cd87fdd62b4f736db4aa72d0726.png)
 ![Weapon Racks](https://cdn.modrinth.com/data/SQhWMwht/images/3af641eb41ffd23ca8184075513617398fcc3231.png)
-![Some of the weapon cosmetics](https://cdn.modrinth.com/data/SQhWMwht/images/e1989afb1c739b9b61075433dfe8867ee64544f5.png)
+![Some of the weapon cosmetics](https://cdn.modrinth.com/data/SQhWMwht/images/e1e01e1f80ba8ba96dcd952781c7793b7a6065dd.png)

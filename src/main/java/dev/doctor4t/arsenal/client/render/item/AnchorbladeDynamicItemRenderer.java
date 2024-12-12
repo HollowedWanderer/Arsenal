@@ -45,8 +45,7 @@ public class AnchorbladeDynamicItemRenderer implements BuiltinItemRendererRegist
 
     private static @NotNull Pair<ModelIdentifier, ModelIdentifier> getModelIdentifierModelIdentifierPair(ItemStack stack) {
         Pair<ModelIdentifier, ModelIdentifier> modelIdentifierPair = DEFAULT_MODEL_IDENTIFIER;
-        WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(stack);
-        AnchorbladeItem.Skin skin = AnchorbladeItem.Skin.fromString(ArsenalCosmetics.getSkin(weaponOwnerComponent.getOwner(), stack.getName().getString()));
+        AnchorbladeItem.Skin skin = AnchorbladeItem.Skin.fromString(ArsenalCosmetics.getSkin(stack));
         if (skin != null) {
             switch (skin) {
                 case LUXINTRUS -> modelIdentifierPair = LUXINTRUS_MODEL_IDENTIFIER;

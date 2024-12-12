@@ -70,13 +70,13 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
         if (user != null && user.isSneaking() && (blockStateClicked.isIn(BlockTags.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE)) && context.getWorld().isClient) {
             if (ArsenalCosmetics.isSupporter(user.getUuid())) {
                 WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(user.getStackInHand(context.getHand()));
-                Skin currentSkin = Skin.fromString(ArsenalCosmetics.getSkin(weaponOwnerComponent.getOwner(), context.getStack().getName().getString()));
+                Skin currentSkin = Skin.fromString(ArsenalCosmetics.getSkin(context.getStack()));
 
                 if (currentSkin == null) {
                     currentSkin = Skin.DEFAULT;
                 }
 
-                ArsenalCosmetics.setSkin(weaponOwnerComponent.getOwner(), context.getStack().getName().getString(), Skin.getNext(currentSkin).getName());
+                ArsenalCosmetics.setSkin(weaponOwnerComponent.getOwner(), context.getStack(), Skin.getNext(currentSkin).getName());
 
                 context.getPlayer().playSound(SoundEvents.BLOCK_SMITHING_TABLE_USE, 0.5f, 1.0f);
 
@@ -124,10 +124,8 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
                 world.spawnEntity(bloodScythe);
 
                 if (player.getWorld() instanceof ServerWorld serverWorld) {
-                    WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(player.getMainHandStack());
-
                     Skin skin = Skin.DEFAULT;
-                    Skin toSkin = Skin.fromString(ArsenalCosmetics.getSkinFromStack(player.getMainHandStack(), weaponOwnerComponent));
+                    Skin toSkin = Skin.fromString(ArsenalCosmetics.getSkin(player.getMainHandStack()));
                     if (toSkin != null) {
                         skin = toSkin;
                     }
@@ -145,7 +143,7 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(stack);
-        Skin skin = Skin.fromString(ArsenalCosmetics.getSkinFromStack(stack, weaponOwnerComponent));
+        Skin skin = Skin.fromString(ArsenalCosmetics.getSkin(stack));
 
         if (skin != null && skin != Skin.DEFAULT) {
             tooltip.add(Text.literal(skin.tooltipName != null ? skin.tooltipName : TextUtils.formatValueString(skin.getName())).styled(style -> style.withColor(skin.color)));
@@ -170,7 +168,7 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
             WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(player.getMainHandStack());
 
             Skin skin = Skin.DEFAULT;
-            Skin toSkin = Skin.fromString(ArsenalCosmetics.getSkinFromStack(player.getMainHandStack(), weaponOwnerComponent));
+            Skin toSkin = Skin.fromString(ArsenalCosmetics.getSkin(player.getMainHandStack()));
             if (toSkin != null) {
                 skin = toSkin;
             }

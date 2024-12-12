@@ -44,8 +44,7 @@ public class ScytheDynamicItemRenderer implements BuiltinItemRendererRegistry.Dy
 
     private static @NotNull Pair<ModelIdentifier, ModelIdentifier> getModelIdentifierModelIdentifierPair(ItemStack stack) {
         Pair<ModelIdentifier, ModelIdentifier> modelIdentifierPair = DEFAULT_MODEL_IDENTIFIER;
-        WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(stack);
-        ScytheItem.Skin skin = ScytheItem.Skin.fromString(ArsenalCosmetics.getSkin(weaponOwnerComponent.getOwner(), stack.getName().getString()));
+        ScytheItem.Skin skin = ScytheItem.Skin.fromString(ArsenalCosmetics.getSkin(stack));
         if (skin != null) {
             switch (skin) {
                 case CLOWN -> modelIdentifierPair = CLOWN_MODEL_IDENTIFIER;

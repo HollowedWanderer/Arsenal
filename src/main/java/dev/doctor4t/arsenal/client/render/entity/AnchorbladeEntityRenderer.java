@@ -45,10 +45,9 @@ public class AnchorbladeEntityRenderer extends EntityRenderer<AnchorbladeEntity>
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(yawAngle + 90));
         matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-pitchAngle + 45));
 
-        WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(anchorbladeEntity.getStack());
         BakedModel model = this.bakedModelManager.getModel(AnchorbladeItem.Skin.DEFAULT.anchorbladeEntityModel);
         RenderLayer chainLayer = RenderLayer.getEntitySmoothCutout(AnchorbladeItem.Skin.DEFAULT.chainTexture);
-        AnchorbladeItem.Skin skin = AnchorbladeItem.Skin.fromString(ArsenalCosmetics.getSkin(weaponOwnerComponent.getOwner(), anchorbladeEntity.getStack().getName().getString()));
+        AnchorbladeItem.Skin skin = AnchorbladeItem.Skin.fromString(ArsenalCosmetics.getSkin(anchorbladeEntity.getStack()));
         if (skin != null) {
             model = this.bakedModelManager.getModel(skin.anchorbladeEntityModel);
             chainLayer = RenderLayer.getEntitySmoothCutout(skin.chainTexture);
