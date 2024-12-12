@@ -60,7 +60,7 @@ public class AnchorbladeEntityRenderer extends EntityRenderer<AnchorbladeEntity>
         if (anchorbladeEntity.getOwner() instanceof LivingEntity owner) {
             matrices.push();
             Vec3d pos = anchorbladeEntity.getLerpedPos(tickDelta);
-            Vec3d ringPos = new Vec3d(1, 0, 0).rotateZ(pitchAngle * MathHelper.RADIANS_PER_DEGREE).rotateY((yawAngle + 90) * MathHelper.RADIANS_PER_DEGREE).add(0, anchorbladeEntity.getHeight() / 2f, 0);
+            Vec3d ringPos = new Vec3d((skin == AnchorbladeItem.Skin.AMBESSA ? 0f : 1f), 0, 0).rotateZ(pitchAngle * MathHelper.RADIANS_PER_DEGREE).rotateY((yawAngle + 90) * MathHelper.RADIANS_PER_DEGREE).add(0, anchorbladeEntity.getHeight() / 2f, 0);
             Vec3d ownerPos = owner.getLeashPos(tickDelta).subtract(pos);
             float length = (float) ringPos.distanceTo(ownerPos);
             MatrixStack.Entry matrixEntry = matrices.peek();
