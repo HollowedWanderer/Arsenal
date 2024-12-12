@@ -165,7 +165,7 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
         CARRION(new int[]{0xFFE9DFB8}, new int[]{0xFF9D806E}, null, null),
         GILDED(new int[]{0xFFF1BC5A}, new int[]{0xFFE28634}, null, null),
         WINSWEEP(new int[]{0xFFFFDC00, 0xFFC676F1}, new int[]{0xFFBE5F00, 0xFF7546A0}, "Wanchorblade", null),
-        AMBESSA(new int[]{0xFFFFDC00, 0xFFC676F1}, new int[]{0xFFBE5F00, 0xFF7546A0}, null, null);
+        AMBESSA(new int[]{0xFFA9A9A7}, new int[]{0xFF6A6D66}, "Crescent Blade", null);
 
         public final Identifier chainTexture;
         public final Identifier anchorbladeEntityModel;
