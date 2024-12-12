@@ -44,7 +44,7 @@
 For Ko-Fi and YouTube members, you get weapon cosmetics:
 - Your selected cosmetics are visible to other players.
 - Can be changed by sneak-right-clicking an Arsenal weapon on either an anvil or smithing table
-- Cosmetics are set per item and name, not item stack, meaning they are synchronized across worlds.
+- Cosmetics are set per item stack name, not individual item stack, meaning they are synchronized across worlds.
     - For example, if you have a Scythe named "Bingle" with a Guilded skin, any Scythe named "Bingle" you pick up or display in any world will have the Guilded skin (and change if you select another skin for it).
     - This also means that if you change the skin of a weapon with no name, you will be changing the default skin you are seen with for that weapon, meaning you will not have to visit an anvil / smithing table to get that skin the moment you pick up any unnamed weapon of that type.
     - As a result, if you give a skinned weapon to a non-supporter, the cosmetics will not show for them, but will show for you the moment you get it back.
