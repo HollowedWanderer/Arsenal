@@ -5,7 +5,6 @@ import dev.doctor4t.arsenal.entity.WeaponRackEntity;
 import dev.doctor4t.arsenal.index.ArsenalTags;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.TexturedRenderLayers;
@@ -142,19 +141,6 @@ public class WeaponRackEntityRenderer<T extends WeaponRackEntity> extends Entity
     }
 
     protected boolean hasLabel(T itemFrameEntity) {
-        if (MinecraftClient.isHudEnabled()
-                && !itemFrameEntity.getHeldItemStack().isEmpty()
-                && itemFrameEntity.getHeldItemStack().hasCustomName()
-                && this.dispatcher.targetedEntity == itemFrameEntity) {
-            double d = this.dispatcher.getSquaredDistanceToCamera(itemFrameEntity);
-            float f = itemFrameEntity.isSneaky() ? 32.0F : 64.0F;
-            return d < (double) (f * f);
-        } else {
-            return false;
-        }
-    }
-
-    protected void renderLabelIfPresent(T itemFrameEntity, Text text, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
-        super.renderLabelIfPresent(itemFrameEntity, itemFrameEntity.getHeldItemStack().getName(), matrixStack, vertexConsumerProvider, i);
+        return false;
     }
 }
