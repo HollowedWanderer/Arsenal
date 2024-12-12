@@ -35,7 +35,11 @@ public class ArsenalModelGen extends FabricModelProvider {
 
         registerBuiltinModel(ArsenalItems.ANCHORBLADE, generator);
         for (AnchorbladeItem.Skin value : AnchorbladeItem.Skin.values()) {
-            registerBigWeapon(value == AnchorbladeItem.Skin.DEFAULT ? null : value.getName(), ArsenalItems.ANCHORBLADE, generator);
+            if (value == AnchorbladeItem.Skin.AMBESSA) {
+                registerBigWeaponInventory(value.getName(), ArsenalItems.ANCHORBLADE, generator);
+            } else {
+                registerBigWeapon(value == AnchorbladeItem.Skin.DEFAULT ? null : value.getName(), ArsenalItems.ANCHORBLADE, generator);
+            }
         }
 
         generator.register(ArsenalItems.WEAPON_RACK, Models.GENERATED);
@@ -50,13 +54,22 @@ public class ArsenalModelGen extends FabricModelProvider {
     }
 
     private void registerBigWeapon(@Nullable String name, Item item, ItemModelGenerator generator) {
+        this.registerBigWeaponHandheld(name, item, generator);
+        this.registerBigWeaponInventory(name, item, generator);
+    }
+
+    private void registerBigWeaponHandheld(@Nullable String name, Item item, ItemModelGenerator generator) {
         Identifier handheldModelName = (name == null ? ModelIds.getItemSubModelId(item, "_in_hand") : ModelIds.getItemSubModelId(item, "_" + name + "_in_hand"));
-        Identifier inventoryModelName = (name == null ? ModelIds.getItemSubModelId(item, "_inventory") : ModelIds.getItemSubModelId(item, "_" + name + "_inventory"));
         Identifier handheldTexture = (name == null ? TextureMap.getId(item) : TextureMap.getSubId(item, "_" + name));
+
+        BIG_WEAPON_IN_HAND.upload(handheldModelName, TextureMap.layer0(handheldTexture), generator.writer); // this is the actual handheld model
+    }
+
+    private void registerBigWeaponInventory(@Nullable String name, Item item, ItemModelGenerator generator) {
+        Identifier inventoryModelName = (name == null ? ModelIds.getItemSubModelId(item, "_inventory") : ModelIds.getItemSubModelId(item, "_" + name + "_inventory"));
         Identifier inventoryTexture = (name == null ? TextureMap.getSubId(item, "_inventory") : TextureMap.getSubId(item, "_" + name + "_inventory"));
 
         Models.HANDHELD.upload(inventoryModelName, TextureMap.layer0(inventoryTexture), generator.writer); // this is actually the inventory model
-        BIG_WEAPON_IN_HAND.upload(handheldModelName, TextureMap.layer0(handheldTexture), generator.writer); // this is the actual handheld model
     }
 
     private void registerBuiltinModel(Item item, ItemModelGenerator generator) {

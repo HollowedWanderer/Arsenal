@@ -29,6 +29,7 @@ public class AnchorbladeDynamicItemRenderer implements BuiltinItemRendererRegist
     public static final Pair<ModelIdentifier, ModelIdentifier> CARRION_MODEL_IDENTIFIER = registerVariantModelPair(AnchorbladeItem.Skin.CARRION.getName());
     public static final Pair<ModelIdentifier, ModelIdentifier> GILDED_MODEL_IDENTIFIER = registerVariantModelPair(AnchorbladeItem.Skin.GILDED.getName());
     public static final Pair<ModelIdentifier, ModelIdentifier> WINSWEEP_MODEL_IDENTIFIER = registerVariantModelPair(AnchorbladeItem.Skin.WINSWEEP.getName());
+    public static final Pair<ModelIdentifier, ModelIdentifier> AMBESSA_MODEL_IDENTIFIER = registerVariantModelPair(AnchorbladeItem.Skin.AMBESSA.getName());
 
     private static @NotNull Pair<ModelIdentifier, ModelIdentifier> registerVariantModelPair(String name) {
         String s = "anchorblade" + (name.isEmpty() ? "" : "_") + name;
@@ -52,6 +53,7 @@ public class AnchorbladeDynamicItemRenderer implements BuiltinItemRendererRegist
                 case CARRION -> modelIdentifierPair = CARRION_MODEL_IDENTIFIER;
                 case GILDED -> modelIdentifierPair = GILDED_MODEL_IDENTIFIER;
                 case WINSWEEP -> modelIdentifierPair = WINSWEEP_MODEL_IDENTIFIER;
+                case AMBESSA -> modelIdentifierPair = AMBESSA_MODEL_IDENTIFIER;
             }
         }
         return modelIdentifierPair;

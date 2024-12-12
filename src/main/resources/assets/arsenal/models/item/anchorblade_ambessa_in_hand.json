@@ -1,0 +1,76 @@
+{
+  "parent": "arsenal:item/template_big_weapon_in_hand",
+  "textures": {
+    "layer0": "arsenal:item/anchorblade_ambessa"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        -90,
+        135
+      ],
+      "translation": [
+        0,
+        -2,
+        2
+      ],
+      "scale": [
+        1.6,
+        1.6,
+        1.6
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        -90,
+        135
+      ],
+      "translation": [
+        0,
+        -2,
+        2
+      ],
+      "scale": [
+        1.6,
+        1.6,
+        1.6
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        -90,
+        115
+      ],
+      "translation": [
+        1.13,
+        3.2,
+        5.13
+      ],
+      "scale": [
+        1.1,
+        1.1,
+        1.1
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        -90,
+        115
+      ],
+      "translation": [
+        -1.13,
+        3.2,
+        5.13
+      ],
+      "scale": [
+        1.1,
+        1.1,
+        1.1
+      ]
+    }
+  }
+}
