@@ -9,6 +9,7 @@ import dev.doctor4t.arsenal.client.render.entity.ModEntityModelLayers;
 import dev.doctor4t.arsenal.client.render.entity.WeaponRackEntityRenderer;
 import dev.doctor4t.arsenal.client.render.item.AnchorbladeDynamicItemRenderer;
 import dev.doctor4t.arsenal.client.render.item.ScytheDynamicItemRenderer;
+import dev.doctor4t.arsenal.client.render.item.TridentDynamicItemRenderer;
 import dev.doctor4t.arsenal.index.ArsenalEntities;
 import dev.doctor4t.arsenal.index.ArsenalItems;
 import dev.doctor4t.arsenal.index.ArsenalParticles;
@@ -27,6 +28,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
@@ -56,10 +58,12 @@ public class ArsenalClient implements ClientModInitializer {
         // Builtin Item Renderers
         BuiltinItemRendererRegistry.INSTANCE.register(ArsenalItems.SCYTHE, new ScytheDynamicItemRenderer());
         BuiltinItemRendererRegistry.INSTANCE.register(ArsenalItems.ANCHORBLADE, new AnchorbladeDynamicItemRenderer());
+        BuiltinItemRendererRegistry.INSTANCE.register(Items.TRIDENT, new TridentDynamicItemRenderer());
 
         // Force load the weapon models (otherwise since they're never called they wouldn't be loaded by default)
         ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(ScytheDynamicItemRenderer.MODELS_TO_REGISTER));
         ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(AnchorbladeDynamicItemRenderer.MODELS_TO_REGISTER));
+        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(TridentDynamicItemRenderer.MODELS_TO_REGISTER));
         ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(WeaponRackEntityRenderer.MODEL));
 
         // model layers initialization

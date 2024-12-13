@@ -8,10 +8,13 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.client.*;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.Nullable;
 
+import java.rmi.registry.Registry;
 import java.util.Optional;
 
 public class ArsenalModelGen extends FabricModelProvider {
@@ -42,6 +45,10 @@ public class ArsenalModelGen extends FabricModelProvider {
             }
         }
 
+        registerBuiltinModel(Items.TRIDENT, generator);
+        registerBigWeaponHandheld(null, Arsenal.id("trident"), generator);
+        registerBigWeaponInventory(null, Arsenal.id("trident"), ModelIds.getItemModelId(Items.TRIDENT), generator);
+
         generator.register(ArsenalItems.WEAPON_RACK, Models.GENERATED);
     }
 
@@ -58,16 +65,33 @@ public class ArsenalModelGen extends FabricModelProvider {
         this.registerBigWeaponInventory(name, item, generator);
     }
 
+    private void registerBigWeapon(@Nullable String name, Identifier itemId, ItemModelGenerator generator) {
+        this.registerBigWeaponHandheld(name, itemId, generator);
+        this.registerBigWeaponInventory(name, itemId, generator);
+    }
+
     private void registerBigWeaponHandheld(@Nullable String name, Item item, ItemModelGenerator generator) {
-        Identifier handheldModelName = (name == null ? ModelIds.getItemSubModelId(item, "_in_hand") : ModelIds.getItemSubModelId(item, "_" + name + "_in_hand"));
-        Identifier handheldTexture = (name == null ? TextureMap.getId(item) : TextureMap.getSubId(item, "_" + name));
+        registerBigWeaponHandheld(name, Registries.ITEM.getId(item), generator);
+    }
+
+    private void registerBigWeaponHandheld(@Nullable String name, Identifier itemId, ItemModelGenerator generator) {
+        Identifier handheldModelName = (name == null ? getItemSubId(itemId, "_in_hand") : getItemSubId(itemId, "_" + name + "_in_hand"));
+        Identifier handheldTexture = (name == null ? getItemId(itemId) : getItemSubId(itemId, "_" + name));
 
         BIG_WEAPON_IN_HAND.upload(handheldModelName, TextureMap.layer0(handheldTexture), generator.writer); // this is the actual handheld model
     }
 
     private void registerBigWeaponInventory(@Nullable String name, Item item, ItemModelGenerator generator) {
-        Identifier inventoryModelName = (name == null ? ModelIds.getItemSubModelId(item, "_inventory") : ModelIds.getItemSubModelId(item, "_" + name + "_inventory"));
-        Identifier inventoryTexture = (name == null ? TextureMap.getSubId(item, "_inventory") : TextureMap.getSubId(item, "_" + name + "_inventory"));
+        registerBigWeaponInventory(name, Registries.ITEM.getId(item), generator);
+    }
+
+    private void registerBigWeaponInventory(@Nullable String name, Identifier itemId, ItemModelGenerator generator) {
+        Identifier inventoryTexture = (name == null ? getItemSubId(itemId, "_inventory") : getItemSubId(itemId, "_" + name + "_inventory"));
+        registerBigWeaponInventory(name, itemId, inventoryTexture, generator);
+    }
+
+    private void registerBigWeaponInventory(@Nullable String name, Identifier itemModelId, Identifier inventoryTexture, ItemModelGenerator generator) {
+        Identifier inventoryModelName = (name == null ? getItemSubId(itemModelId, "_inventory") : getItemSubId(itemModelId, "_" + name + "_inventory"));
 
         Models.HANDHELD.upload(inventoryModelName, TextureMap.layer0(inventoryTexture), generator.writer); // this is actually the inventory model
     }
@@ -110,5 +134,13 @@ public class ArsenalModelGen extends FabricModelProvider {
             case Y -> variant.put(VariantSettings.X, VariantSettings.Rotation.R90);
             case Z -> variant;
         };
+    }
+
+    public static Identifier getItemId(Identifier itemId) {
+        return itemId.withPrefixedPath("item/");
+    }
+
+    public static Identifier getItemSubId(Identifier itemId, String suffix) {
+        return itemId.withPath(path -> "item/" + path + suffix);
     }
 }
