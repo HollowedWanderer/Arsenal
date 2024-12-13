@@ -1,6 +1,7 @@
 package dev.doctor4t.arsenal.index;
 
 import net.fabricmc.yarn.constants.MiningLevels;
+import net.minecraft.item.Items;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Lazy;
@@ -8,8 +9,8 @@ import net.minecraft.util.Lazy;
 import java.util.function.Supplier;
 
 public enum ArsenalToolMaterials implements ToolMaterial {
-    SCYTHE(MiningLevels.NETHERITE, 2031, 9.0F, 4.0F, 28, () -> Ingredient.ofItems(ArsenalItems.SCYTHE)),
-    ANCHORBLADE(MiningLevels.NETHERITE, 2031, 9.0F, 4.0F, 28, () -> Ingredient.ofItems(ArsenalItems.ANCHORBLADE));
+    SCYTHE(MiningLevels.NETHERITE, 2031, 9.0F, 4.0F, 28, () -> Ingredient.ofItems(Items.IRON_INGOT)),
+    ANCHORBLADE(MiningLevels.NETHERITE, 2031, 9.0F, 4.0F, 28, () -> Ingredient.ofItems(Items.IRON_INGOT));
 
     private final int miningLevel;
     private final int itemDurability;
