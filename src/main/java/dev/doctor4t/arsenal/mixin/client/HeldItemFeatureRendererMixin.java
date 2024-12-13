@@ -11,6 +11,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
+import net.minecraft.util.Hand;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,7 +23,7 @@ public abstract class HeldItemFeatureRendererMixin {
     private void arsenal$thrown(LivingEntity entity, ItemStack stack, ModelTransformationMode transformationMode, Arm arm, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
         if (stack.isOf(ArsenalItems.ANCHORBLADE)) {
             boolean reeling = EnchantmentHelper.getLevel(ArsenalEnchantments.REELING, stack) > 0;
-            if (entity instanceof AnchorOwner owner && owner.arsenal$isAnchorActive(reeling)) {
+            if (entity instanceof AnchorOwner owner && owner.arsenal$isAnchorActive(entity.getMainHandStack().equals(stack) ? Hand.MAIN_HAND : Hand.OFF_HAND, reeling)) {
                 ci.cancel();
             }
         }

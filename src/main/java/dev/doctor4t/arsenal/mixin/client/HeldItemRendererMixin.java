@@ -22,7 +22,7 @@ public abstract class HeldItemRendererMixin {
         ItemStack stack = player.getStackInHand(hand);
         if (stack.isOf(ArsenalItems.ANCHORBLADE)) {
             boolean reeling = EnchantmentHelper.getLevel(ArsenalEnchantments.REELING, stack) > 0;
-            if (player instanceof AnchorOwner owner && owner.arsenal$isAnchorActive(reeling)) {
+            if (player instanceof AnchorOwner owner && owner.arsenal$isAnchorActive(hand, reeling)) {
                 ci.cancel();
             }
         }

@@ -79,8 +79,8 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
         ItemStack stack = user.getStackInHand(hand);
         if (user instanceof AnchorOwner owner) {
             boolean reeling = EnchantmentHelper.getLevel(ArsenalEnchantments.REELING, stack) > 0;
-            if (owner.arsenal$isAnchorActive(reeling)) {
-                owner.arsenal$getAnchor(reeling).setRecalled(true);
+            if (owner.arsenal$isAnchorActive(hand, reeling)) {
+                owner.arsenal$getAnchor(hand, reeling).setRecalled(user.getStackInHand(hand == Hand.MAIN_HAND ? Hand.OFF_HAND : Hand.MAIN_HAND).isEmpty());
                 return TypedActionResult.fail(stack);
             }
             int riptide = EnchantmentHelper.getRiptide(stack);
@@ -90,7 +90,7 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
                     if (riptide == 0) {
                         AnchorbladeEntity anchorbladeEntity = new AnchorbladeEntity(world, user, stack);
                         anchorbladeEntity.setVelocity(user, user.getPitch(), user.getYaw(), 0.0F, 2.5F + (float) riptide * 0.5F, 1.0F);
-                        owner.arsenal$setAnchor(anchorbladeEntity);
+                        owner.arsenal$setAnchor(hand, anchorbladeEntity);
                         world.spawnEntity(anchorbladeEntity);
                         world.playSoundFromEntity(null, anchorbladeEntity, ArsenalSounds.ITEM_ANCHORBLADE_THROW, SoundCategory.PLAYERS, 1.0F, 1.0F);
 
@@ -100,12 +100,11 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
                 user.incrementStat(Stats.USED.getOrCreateStat(this));
             }
         }
-        return TypedActionResult.pass(user.getStackInHand(hand));
+        return TypedActionResult.success(user.getStackInHand(hand));
     }
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(stack);
         Skin skin = Skin.fromString(ArsenalCosmetics.getSkin(stack));
 
         if (skin != null && skin != Skin.DEFAULT) {

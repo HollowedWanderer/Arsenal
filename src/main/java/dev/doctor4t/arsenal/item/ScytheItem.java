@@ -142,7 +142,6 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(stack);
         Skin skin = Skin.fromString(ArsenalCosmetics.getSkin(stack));
 
         if (skin != null && skin != Skin.DEFAULT) {
@@ -165,7 +164,6 @@ public class ScytheItem extends MiningToolItem implements CustomHitParticleItem,
     @Override
     public void spawnHitParticles(PlayerEntity player) {
         if (player.getWorld() instanceof ServerWorld serverWorld) {
-            WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(player.getMainHandStack());
 
             Skin skin = Skin.DEFAULT;
             Skin toSkin = Skin.fromString(ArsenalCosmetics.getSkin(player.getMainHandStack()));

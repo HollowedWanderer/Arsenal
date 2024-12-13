@@ -31,9 +31,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class PlayerEntityMixin extends LivingEntity implements AnchorOwner {
 
     @Unique
-    private static final TrackedData<Integer> BASIC_ANCHOR = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    private static final TrackedData<Integer> BASIC_ANCHOR_MAIN = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.INTEGER);
     @Unique
-    private static final TrackedData<Integer> REELING_ANCHOR = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    private static final TrackedData<Integer> REELING_ANCHOR_MAIN = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    @Unique
+    private static final TrackedData<Integer> BASIC_ANCHOR_OFF = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    @Unique
+    private static final TrackedData<Integer> REELING_ANCHOR_OFF = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.INTEGER);
 
     protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
@@ -47,8 +51,10 @@ public abstract class PlayerEntityMixin extends LivingEntity implements AnchorOw
 
     @Inject(method = "initDataTracker", at = @At("TAIL"))
     private void arsenal$initDataTracker(CallbackInfo ci) {
-        this.dataTracker.startTracking(BASIC_ANCHOR, -1);
-        this.dataTracker.startTracking(REELING_ANCHOR, -1);
+        this.dataTracker.startTracking(BASIC_ANCHOR_MAIN, -1);
+        this.dataTracker.startTracking(REELING_ANCHOR_MAIN, -1);
+        this.dataTracker.startTracking(BASIC_ANCHOR_OFF, -1);
+        this.dataTracker.startTracking(REELING_ANCHOR_OFF, -1);
     }
 
     @Inject(method = "getBlockBreakingSpeed", at = @At("RETURN"), cancellable = true)
@@ -79,19 +85,27 @@ public abstract class PlayerEntityMixin extends LivingEntity implements AnchorOw
     }
 
     @Override
-    public void arsenal$setAnchor(AnchorbladeEntity anchor) {
+    public void arsenal$setAnchor(Hand hand, AnchorbladeEntity anchor) {
         boolean reeling = anchor.hasReeling();
-        this.dataTracker.set(reeling ? REELING_ANCHOR : BASIC_ANCHOR, anchor.getId());
+        if (hand == Hand.MAIN_HAND) {
+            this.dataTracker.set(reeling ? REELING_ANCHOR_MAIN : BASIC_ANCHOR_MAIN, anchor.getId());
+        } else {
+            this.dataTracker.set(reeling ? REELING_ANCHOR_OFF : BASIC_ANCHOR_OFF, anchor.getId());
+        }
     }
 
     @Override
-    public AnchorbladeEntity arsenal$getAnchor(boolean reeling) {
-        return this.getWorld().getEntityById(reeling ? this.dataTracker.get(REELING_ANCHOR) : this.dataTracker.get(BASIC_ANCHOR)) instanceof AnchorbladeEntity anchor ? anchor : null;
+    public AnchorbladeEntity arsenal$getAnchor(Hand hand, boolean reeling) {
+        if (hand == Hand.MAIN_HAND) {
+            return this.getWorld().getEntityById(reeling ? this.dataTracker.get(REELING_ANCHOR_MAIN) : this.dataTracker.get(BASIC_ANCHOR_MAIN)) instanceof AnchorbladeEntity anchor ? anchor : null;
+        } else {
+            return this.getWorld().getEntityById(reeling ? this.dataTracker.get(REELING_ANCHOR_OFF) : this.dataTracker.get(BASIC_ANCHOR_OFF)) instanceof AnchorbladeEntity anchor ? anchor : null;
+        }
     }
 
     @Override
-    public boolean arsenal$isAnchorActive(boolean reeling) {
-        AnchorbladeEntity anchor = this.arsenal$getAnchor(reeling);
+    public boolean arsenal$isAnchorActive(Hand hand, boolean reeling) {
+        AnchorbladeEntity anchor = this.arsenal$getAnchor(hand, reeling);
         return anchor != null && anchor.isAlive();
     }
 }
