@@ -1,6 +1,7 @@
-// 1.20.1	2024-12-12T14:24:20.9066676	Arsenal/Model Definitions
+// 1.20.1	2024-12-13T11:30:00.4222962	Arsenal/Model Definitions
 e0f7b66a84e6588f01abbbce75b1803ffe5d46e2 assets\arsenal\models\item\anchorblade.json
 a81bf3ef0681df721936c605e97a72f2bdc3ab0e assets\arsenal\models\item\anchorblade_carrion_inventory.json
+c28529242677fca881866b436c08485c06ebefdf assets\arsenal\models\item\scythe_scissors_inventory.json
 7a61bf4082b0a4f26695900fb25f92e57c881bb1 assets\arsenal\models\item\scythe_folly_in_hand.json
 ceda8896b35ace4dab795e2ca1477014dd1813d4 assets\arsenal\models\item\anchorblade_winsweep_in_hand.json
 4da226c9a910c5b8b2d7d7e0969b9465f4910039 assets\arsenal\models\item\anchorblade_luxintrus_in_hand.json
@@ -10,6 +11,7 @@ fc017ed3f79cb1670ca187ba6b2bfc3fae9bf5d1 assets\arsenal\models\item\anchorblade_
 37bebe966c3562a0e3967f584f1175338f79a8b8 assets\arsenal\models\item\scythe_carrion_in_hand.json
 e0f7b66a84e6588f01abbbce75b1803ffe5d46e2 assets\arsenal\models\item\scythe.json
 c7180e5bedf0218164733d3e219d04983a7e4b24 assets\arsenal\models\item\scythe_clown_inventory.json
+7786191f60fc247996b2c0253fc1574ae874ebea assets\arsenal\models\item\scythe_scissors_in_hand.json
 d66b24be3cb6102c879744d3d779ab91ae47ed9a assets\arsenal\models\item\scythe_inventory.json
 28121a7e413a91a88bd1befb4801a2c4ed695f16 assets\arsenal\models\item\scythe_folly_inventory.json
 624cf371ed34d991f6efb295d4e7da9c7fcf9e35 assets\arsenal\models\item\scythe_clown_in_hand.json

@@ -29,6 +29,7 @@ public class ScytheDynamicItemRenderer implements BuiltinItemRendererRegistry.Dy
     public static final Pair<ModelIdentifier, ModelIdentifier> GILDED_MODEL_IDENTIFIER = registerVariantModelPair(ScytheItem.Skin.GILDED.getName());
     public static final Pair<ModelIdentifier, ModelIdentifier> ROZE_MODEL_IDENTIFIER = registerVariantModelPair(ScytheItem.Skin.ROZE.getName());
     public static final Pair<ModelIdentifier, ModelIdentifier> FOLLY_MODEL_IDENTIFIER = registerVariantModelPair(ScytheItem.Skin.FOLLY.getName());
+    public static final Pair<ModelIdentifier, ModelIdentifier> SCISSORS_MODEL_IDENTIFIER = registerVariantModelPair(ScytheItem.Skin.SCISSORS.getName());
 
     private static @NotNull Pair<ModelIdentifier, ModelIdentifier> registerVariantModelPair(String name) {
         String s = "scythe" + (name.isEmpty() ? "" : "_") + name;
@@ -52,6 +53,7 @@ public class ScytheDynamicItemRenderer implements BuiltinItemRendererRegistry.Dy
                 case GILDED -> modelIdentifierPair = GILDED_MODEL_IDENTIFIER;
                 case ROZE -> modelIdentifierPair = ROZE_MODEL_IDENTIFIER;
                 case FOLLY -> modelIdentifierPair = FOLLY_MODEL_IDENTIFIER;
+                case SCISSORS -> modelIdentifierPair = SCISSORS_MODEL_IDENTIFIER;
             }
         }
         return modelIdentifierPair;
