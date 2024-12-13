@@ -18,7 +18,7 @@ public interface ArsenalEnchantments {
 
     Enchantment SPEWING = createEnchantment("spewing", new SpewingEnchantment(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND));
     Enchantment REELING = createEnchantment("reeling", new ReelingEnchantment(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND));
-    Enchantment HEFT = createEnchantment("heft", new HeftEnchantment(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND));
+//    Enchantment HEFT = createEnchantment("heft", new HeftEnchantment(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND));
 
     private static Enchantment createEnchantment(String name, Enchantment enchantment) {
         ENCHANTMENTS.put(enchantment, new Identifier(Arsenal.MOD_ID, name));
