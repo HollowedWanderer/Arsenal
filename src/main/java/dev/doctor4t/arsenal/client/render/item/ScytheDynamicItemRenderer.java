@@ -75,7 +75,9 @@ public class ScytheDynamicItemRenderer implements BuiltinItemRendererRegistry.Dy
         }
 
         MinecraftClient.getInstance().getItemRenderer().renderItem(stack, mode, false, matrices, vertexConsumers, light, overlay, model);
-        ((VertexConsumerProvider.Immediate) vertexConsumers).draw();
+        if (vertexConsumers instanceof VertexConsumerProvider.Immediate immediate) {
+            immediate.draw();
+        }
 
         if (inInventory) {
             DiffuseLighting.enableGuiDepthLighting();
