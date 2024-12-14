@@ -1,4 +1,19 @@
 ------------------------------------------------------
+Arsenal 0.1.4 - 1.20.1
+------------------------------------------------------
+- Changed the Anchorblade knockback logic
+  - Now adds velocity instead of setting it
+  - Makes pogo-jumping harder yet still possible
+  - Makes using two Anchorblades in a short time (e.g. when dual wielding them) actually knock you further
+- Reduced the Anchorblade knockback strength
+  - Shockwave strength divided by 2
+  - Direct hit strength divided by 3
+  - This is to make the Anchorblade a little less obnoxious and strong in PvP, but if you liked its previous kick, don't fret, just keep an eye out
+- Fixed Tridents duplicating when thrown from the back slot
+- Fixed the Blood Scythe bypassing invulnerability ticks when used with Enchancement
+- Fixed the back slot display widget being darker than the off hand display widget
+
+------------------------------------------------------
 Arsenal 0.1.3 - 1.20.1
 ------------------------------------------------------
 - Fixed weapon rendering crashing with Iris shaders
