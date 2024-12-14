@@ -14,11 +14,14 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class BloodScytheEntity extends PersistentProjectileEntity {
     private final Set<StatusEffectInstance> effects = Sets.newHashSet();
     public int ticksUntilRemove = 5;
+    public final List<LivingEntity> hitEntities = new ArrayList<>();
 
     public BloodScytheEntity(EntityType<? extends PersistentProjectileEntity> entityType, World world) {
         super(entityType, world);
@@ -41,7 +44,7 @@ public class BloodScytheEntity extends PersistentProjectileEntity {
     public void tick() {
         super.tick();
 
-        for (float x = -3; x <= 3; x += 0.1) {
+        for (float x = -3; x <= 3; x += 0.1f) {
             this.getWorld().addParticle(ArsenalParticles.BLOOD_BUBBLE, this.getX() + x * Math.cos(this.getYaw()), this.getY(), this.getZ() + x * Math.sin(this.getYaw()), this.getVelocity().getX(), this.getVelocity().getY(), this.getVelocity().getZ());
         }
 
@@ -58,9 +61,12 @@ public class BloodScytheEntity extends PersistentProjectileEntity {
 
         if (!this.getWorld().isClient) {
             for (LivingEntity livingEntity : this.getWorld().getEntitiesByClass(LivingEntity.class, this.getBoundingBox(), livingEntity -> this.getOwner() != livingEntity)) {
-                livingEntity.damage(this.getWorld().getDamageSources().create(ArsenalDamageTypes.BLOOD_SCYTHE, this, this.getOwner()), 12.0f);
-                for (StatusEffectInstance effect : this.effects) {
-                    livingEntity.addStatusEffect(effect);
+                if (!hitEntities.contains(livingEntity)) {
+                    livingEntity.damage(this.getWorld().getDamageSources().create(ArsenalDamageTypes.BLOOD_SCYTHE, this, this.getOwner()), 12.0f);
+                    for (StatusEffectInstance effect : this.effects) {
+                        livingEntity.addStatusEffect(effect);
+                    }
+                    hitEntities.add(livingEntity);
                 }
             }
         }
