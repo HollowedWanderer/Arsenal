@@ -2,7 +2,9 @@ package dev.doctor4t.arsenal.client.render.entity;
 
 import dev.doctor4t.arsenal.entity.AnchorbladeEntity;
 import dev.doctor4t.arsenal.index.ArsenalCosmetics;
+import dev.doctor4t.arsenal.index.ArsenalEnchantments;
 import dev.doctor4t.arsenal.item.AnchorbladeItem;
+import dev.doctor4t.arsenal.util.AnchorOwner;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -11,8 +13,12 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
@@ -45,20 +51,33 @@ public class AnchorbladeEntityRenderer extends EntityRenderer<AnchorbladeEntity>
 
         BakedModel model = this.bakedModelManager.getModel(AnchorbladeItem.Skin.DEFAULT.anchorbladeEntityModel);
         RenderLayer chainLayer = RenderLayer.getEntitySmoothCutout(AnchorbladeItem.Skin.DEFAULT.chainTexture);
-        AnchorbladeItem.Skin skin = AnchorbladeItem.Skin.fromString(ArsenalCosmetics.getSkin(anchorbladeEntity.getStack()));
+        ItemStack stack = anchorbladeEntity.getStack();
+        AnchorbladeItem.Skin skin = AnchorbladeItem.Skin.fromString(ArsenalCosmetics.getSkin(stack));
         if (skin != null) {
             model = this.bakedModelManager.getModel(skin.anchorbladeEntityModel);
             chainLayer = RenderLayer.getEntitySmoothCutout(skin.chainTexture);
         }
-        this.itemRenderer.renderItem(anchorbladeEntity.getStack(), ModelTransformationMode.FIXED, false, matrices, vertexConsumers, light, OverlayTexture.DEFAULT_UV, model);
+        this.itemRenderer.renderItem(stack, ModelTransformationMode.FIXED, false, matrices, vertexConsumers, light, OverlayTexture.DEFAULT_UV, model);
 
         matrices.pop();
 
-        if (anchorbladeEntity.getOwner() instanceof LivingEntity owner) {
+        if (anchorbladeEntity.getOwner() instanceof LivingEntity livingOwner) {
             matrices.push();
             Vec3d pos = anchorbladeEntity.getLerpedPos(tickDelta);
             Vec3d ringPos = new Vec3d((skin == AnchorbladeItem.Skin.AMBESSA ? 0f : 1f), 0, 0).rotateZ(pitchAngle * MathHelper.RADIANS_PER_DEGREE).rotateY((yawAngle + 90) * MathHelper.RADIANS_PER_DEGREE).add(0, anchorbladeEntity.getHeight() / 2f, 0);
-            Vec3d ownerPos = owner.getLeashPos(tickDelta).subtract(pos);
+            Vec3d leashPos = livingOwner.getLeashPos(tickDelta);
+
+            // TODO: Offset off hand chain but I can't figure it out rn
+//            if (livingOwner instanceof AnchorOwner anchorOwner) {
+//                boolean reeling = EnchantmentHelper.getLevel(ArsenalEnchantments.REELING, stack) > 0;
+//                Hand hand = Hand.OFF_HAND;
+//                if (anchorOwner.arsenal$isAnchorActive(hand, reeling) && anchorOwner.arsenal$getAnchor(hand, reeling).equals(anchorbladeEntity)) {
+//                    leashPos = leashPos.offset(Direction.EAST, 1f);
+//                }
+//            }
+
+            Vec3d ownerPos = leashPos.subtract(pos);
+
             float length = (float) ringPos.distanceTo(ownerPos);
             MatrixStack.Entry matrixEntry = matrices.peek();
             Matrix4f modelMatrix = matrixEntry.getPositionMatrix();
@@ -69,11 +88,12 @@ public class AnchorbladeEntityRenderer extends EntityRenderer<AnchorbladeEntity>
             float maxV = length / 8f;
             VertexConsumer vertexConsumer = vertexConsumers.getBuffer(chainLayer);
             Vec3d offset = ownerPos.subtract(ringPos).normalize().multiply(0.25, 0, 0.25).rotateY((float) (Math.PI / 2));
+
             Vec3d vert1 = ringPos.add(offset);
             Vec3d vert2 = ownerPos.add(offset);
             Vec3d vert3 = ownerPos.subtract(offset);
             Vec3d vert4 = ringPos.subtract(offset);
-            int chainLight = LightmapTextureManager.pack(this.getBlockLight(anchorbladeEntity, owner.getBlockPos()), this.getSkyLight(anchorbladeEntity, owner.getBlockPos()));
+            int chainLight = LightmapTextureManager.pack(this.getBlockLight(anchorbladeEntity, livingOwner.getBlockPos()), this.getSkyLight(anchorbladeEntity, livingOwner.getBlockPos()));
             this.vertex(vert1, vertexConsumer, minU, minV, modelMatrix, normal, light);
             this.vertex(vert2, vertexConsumer, minU, maxV, modelMatrix, normal, chainLight);
             this.vertex(vert3, vertexConsumer, maxU, maxV, modelMatrix, normal, chainLight);

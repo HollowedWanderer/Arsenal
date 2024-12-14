@@ -3,6 +3,7 @@ package dev.doctor4t.arsenal.mixin;
 import dev.doctor4t.arsenal.cca.ArsenalComponents;
 import dev.doctor4t.arsenal.cca.WeaponOwnerComponent;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.SmallFireballEntity;
 import net.minecraft.item.Item;
@@ -39,18 +40,10 @@ public class ItemMixin {
     }
 
     @Inject(method = "inventoryTick", at = @At("HEAD"))
-    private void arsenal$throw(ItemStack stack, World world, Entity entity, int slot, boolean selected, CallbackInfo ci) {
+    private void arsenal$setTridentOwner(ItemStack stack, World world, Entity entity, int slot, boolean selected, CallbackInfo ci) {
         if (stack.isOf(Items.TRIDENT) && entity instanceof PlayerEntity player) {
             WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(stack);
             weaponOwnerComponent.setOwner(player.getUuid());
         }
     }
-
-//    @Inject(method = "finishUsing", at = @At("HEAD"))
-//    private void arsenal$removeFromBackslot(ItemStack stack, World world, Entity entity, int slot, boolean selected, CallbackInfo ci) {
-//        if (stack.isOf(Items.TRIDENT) && entity instanceof PlayerEntity player) {
-//            WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(stack);
-//            weaponOwnerComponent.setOwner(player.getUuid());
-//        }
-//    }
 }

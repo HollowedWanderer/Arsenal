@@ -100,19 +100,19 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
                 float radius = 5f;
                 // impact
                 this.getWorld().addParticle(ArsenalParticles.SHOCKWAVE, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
-                for (LivingEntity hitEntity : this.getWorld().getEntitiesByClass(LivingEntity.class, this.getBoundingBox().expand(radius), LivingEntity::isAlive)) {
-                    float strength = (float) (1f * (1.0 - hitEntity.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE)));
+                for (LivingEntity hitLivingEntity : this.getWorld().getEntitiesByClass(LivingEntity.class, this.getBoundingBox().expand(radius), LivingEntity::isAlive)) {
+                    float strength = this.getKnockbackForEntity(hitLivingEntity);
                     if (!(strength <= 0.0)) {
                         this.velocityDirty = true;
-                        Vec3d distance = hitEntity.getPos().add(0, hitEntity.getHeight() / 2f, 0).subtract(this.getPos());
-                        Vec3d footDistance = hitEntity.getPos().subtract(this.getPos());
+                        Vec3d distance = hitLivingEntity.getPos().add(0, hitLivingEntity.getHeight() / 2f, 0).subtract(this.getPos());
+                        Vec3d footDistance = hitLivingEntity.getPos().subtract(this.getPos());
                         if (footDistance.y > distance.y) {
                             distance = footDistance;
                         }
                         float proximity = (float) MathHelper.lerp(MathHelper.clamp(distance.length() / radius, 0, 1), 1, 0);
                         Vec3d direction = distance.normalize().multiply(proximity * strength);
-                        hitEntity.addVelocity(direction.x, direction.y, direction.z);
-                        hitEntity.fallDistance = 0;
+                        hitLivingEntity.addVelocity(direction.x, direction.y, direction.z);
+                        hitLivingEntity.fallDistance = 0;
                     }
                 }
                 this.setDealtDamage(true);
@@ -157,7 +157,7 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
                     EnchantmentHelper.onUserDamaged(hitLivingEntity, owner);
                     EnchantmentHelper.onTargetDamaged((LivingEntity) owner, hitLivingEntity);
                     // knockback or reel in
-                    float strength = (float) (1f * (1.0 - hitLivingEntity.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE)));
+                    float strength = this.getKnockbackForEntity(hitLivingEntity);
                     if (!(strength <= 0.0)) {
                         this.velocityDirty = true;
                         Vec3d dir = hitLivingEntity.getPos().subtract(owner.getPos()).normalize().multiply(strength);
@@ -176,6 +176,10 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
         }
         this.setVelocity(this.getVelocity().multiply(-0.01, -0.1, -0.01));
         this.playSound(soundEvent, 1.0f, 1.0f);
+    }
+
+    private float getKnockbackForEntity(LivingEntity hitLivingEntity) {
+        return (float) (1f * (1.0 - hitLivingEntity.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE)));
     }
 
     @Override
