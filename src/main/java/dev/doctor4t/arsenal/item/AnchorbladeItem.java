@@ -6,6 +6,7 @@ import dev.doctor4t.arsenal.cca.WeaponOwnerComponent;
 import dev.doctor4t.arsenal.entity.AnchorbladeEntity;
 import dev.doctor4t.arsenal.index.ArsenalCosmetics;
 import dev.doctor4t.arsenal.index.ArsenalEnchantments;
+import dev.doctor4t.arsenal.index.ArsenalItems;
 import dev.doctor4t.arsenal.index.ArsenalSounds;
 import dev.doctor4t.arsenal.util.AnchorOwner;
 import dev.doctor4t.arsenal.util.SweepParticleUtil;
@@ -80,7 +81,7 @@ public class AnchorbladeItem extends PickaxeItem implements CustomHitParticleIte
         if (user instanceof AnchorOwner owner) {
             boolean reeling = EnchantmentHelper.getLevel(ArsenalEnchantments.REELING, stack) > 0;
             if (owner.arsenal$isAnchorActive(hand, reeling)) {
-                owner.arsenal$getAnchor(hand, reeling).setRecalled(user.getStackInHand(hand == Hand.MAIN_HAND ? Hand.OFF_HAND : Hand.MAIN_HAND).isEmpty());
+                owner.arsenal$getAnchor(hand, reeling).setRecalled(user.getStackInHand(hand == Hand.MAIN_HAND ? Hand.OFF_HAND : Hand.MAIN_HAND).isOf(ArsenalItems.ANCHORBLADE));
                 return TypedActionResult.fail(stack);
             }
             int riptide = EnchantmentHelper.getRiptide(stack);
