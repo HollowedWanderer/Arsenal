@@ -1,15 +1,13 @@
 package dev.doctor4t.arsenal.cca;
 
-import dev.doctor4t.arsenal.Arsenal;
-import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
+import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
 public class BackWeaponComponent implements AutoSyncedComponent {
     private final PlayerEntity player;
@@ -21,15 +19,15 @@ public class BackWeaponComponent implements AutoSyncedComponent {
     }
 
     @Override
-    public void readFromNbt(@NotNull NbtCompound tag) {
-        this.backWeapon.setStack(0, ItemStack.fromNbt(tag.getCompound("backWeapon")));
-        this.holdingBackWeapon = tag.getBoolean("holdingBackWeapon");
+    public void readData(ReadView readView) {
+        this.backWeapon.setStack(0, readView.read("backWeapon", ItemStack.CODEC).orElse(ItemStack.EMPTY));
+        this.holdingBackWeapon = readView.getBoolean("holdingBackWeapon", false);
     }
 
     @Override
-    public void writeToNbt(@NotNull NbtCompound tag) {
-        tag.put("backWeapon", this.backWeapon.getStack(0).writeNbt(new NbtCompound()));
-        tag.putBoolean("holdingBackWeapon", this.holdingBackWeapon);
+    public void writeData(WriteView writeView) {
+        writeView.put("backWeapon", ItemStack.CODEC, this.backWeapon.getStack(0));
+        writeView.putBoolean("holdingBackWeapon", this.holdingBackWeapon);
     }
 
     public ItemStack getBackWeapon() {
@@ -75,7 +73,8 @@ public class BackWeaponComponent implements AutoSyncedComponent {
         if (player.getWorld().isClient()) {
             PacketByteBuf buf = PacketByteBufs.create();
             buf.writeBoolean(holdingBackWeapon);
-            ClientPlayNetworking.send(Arsenal.SERVERBOUND_HOLD_WEAPON_PACKET, buf);
+            //ClientPlayNetworking.send(Arsenal.SERVERBOUND_HOLD_WEAPON_PACKET, buf);
+            // PACKET
             return;
         }
         ArsenalComponents.BACK_WEAPON_COMPONENT.get(player).setHoldingBackWeapon(holdingBackWeapon);

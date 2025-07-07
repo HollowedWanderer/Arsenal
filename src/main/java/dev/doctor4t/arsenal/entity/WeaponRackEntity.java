@@ -1,13 +1,14 @@
 package dev.doctor4t.arsenal.entity;
 
-import dev.doctor4t.arsenal.index.ArsenalEntities;
 import dev.doctor4t.arsenal.index.ArsenalItems;
 import dev.doctor4t.arsenal.index.ArsenalTags;
+import dev.doctor4t.arsenal.util.DecorationEntityAttachmentSetter;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -20,12 +21,14 @@ public class WeaponRackEntity extends ItemFrameEntity {
         super(entityType, world);
     }
 
-    public WeaponRackEntity(World world, BlockPos pos, Direction facing) {
-        this(ArsenalEntities.WEAPON_RACK, world, pos, facing);
+    public void setFacingAccess(Direction direction) {
+        this.setFacing(direction);
     }
 
-    public WeaponRackEntity(EntityType<? extends WeaponRackEntity> type, World world, BlockPos pos, Direction facing) {
-        super(type, world, pos, facing);
+    public void setAttachedPos(BlockPos pos) {
+        if (this instanceof DecorationEntityAttachmentSetter access) {
+            access.arsenal$setPos(pos);
+        }
     }
 
     @Override
@@ -58,7 +61,10 @@ public class WeaponRackEntity extends ItemFrameEntity {
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource damageSource) {
-        return damageSource.getSource() instanceof PlayerEntity player && this.getHeldItemStack().isEmpty() && !player.isSneaking();
+    public boolean damage(ServerWorld world, DamageSource source, float amount) {
+        if (source.getSource() instanceof PlayerEntity player && this.getHeldItemStack().isEmpty() && !player.isSneaking()) {
+            return false;
+        }
+        return super.damage(world, source, amount);
     }
 }

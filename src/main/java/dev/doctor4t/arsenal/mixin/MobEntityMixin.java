@@ -5,6 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,7 +19,7 @@ public abstract class MobEntityMixin extends LivingEntity {
     }
 
     @Inject(method = "tryAttack", at = @At("HEAD"), cancellable = true)
-    public void arsenal$preventStunnedMobsFromAttacking(Entity target, CallbackInfoReturnable<Boolean> cir) {
+    public void arsenal$preventStunnedMobsFromAttacking(ServerWorld world, Entity target, CallbackInfoReturnable<Boolean> cir) {
         if (this.hasStatusEffect(ArsenalStatusEffects.STUN)) {
             cir.setReturnValue(false);
         }

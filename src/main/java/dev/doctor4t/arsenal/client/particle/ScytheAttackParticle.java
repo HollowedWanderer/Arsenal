@@ -4,7 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.particle.SimpleParticleType;
 
 @Environment(EnvType.CLIENT)
 public class ScytheAttackParticle extends SpriteBillboardParticle {
@@ -29,9 +29,9 @@ public class ScytheAttackParticle extends SpriteBillboardParticle {
 
     @Override
     public void tick() {
-        this.prevPosX = this.x;
-        this.prevPosY = this.y;
-        this.prevPosZ = this.z;
+        this.lastX = this.x;
+        this.lastY = this.y;
+        this.lastZ = this.z;
         if (this.age++ >= this.maxAge) {
             this.markDead();
         } else {
@@ -41,13 +41,13 @@ public class ScytheAttackParticle extends SpriteBillboardParticle {
 
     @Override
     public ParticleTextureSheet getType() {
-        return ParticleTextureSheet.PARTICLE_SHEET_LIT;
+        return ParticleTextureSheet.PARTICLE_SHEET_OPAQUE;
     }
 
     @Environment(EnvType.CLIENT)
-    public record Factory(SpriteProvider spriteSet) implements ParticleFactory<DefaultParticleType> {
+    public record Factory(SpriteProvider spriteSet) implements ParticleFactory<SimpleParticleType> {
         @Override
-        public Particle createParticle(DefaultParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
+        public Particle createParticle(SimpleParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
             return new ScytheAttackParticle(world, x, y, z, velocityX, this.spriteSet);
         }
     }

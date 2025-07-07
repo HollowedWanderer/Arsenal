@@ -22,7 +22,7 @@ public class DrownedEntityMixin extends ZombieEntity {
 
     @Inject(method = "initEquipment", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/DrownedEntity;equipStack(Lnet/minecraft/entity/EquipmentSlot;Lnet/minecraft/item/ItemStack;)V", ordinal = 0, shift = At.Shift.AFTER))
     protected void arsenal$guaranteeDrownedTridentDrop(Random random, LocalDifficulty localDifficulty, CallbackInfo ci) {
-        this.updateDropChances(EquipmentSlot.MAINHAND);
+        this.setEquipmentDropChance(EquipmentSlot.MAINHAND, 100);
     }
 
     @Inject(method = "initEquipment", at = @At(value = "TAIL"))
@@ -31,7 +31,7 @@ public class DrownedEntityMixin extends ZombieEntity {
             int i = random.nextInt(16);
             if (i < 10) {
                 this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(ArsenalItems.ANCHORBLADE));
-                this.updateDropChances(EquipmentSlot.MAINHAND);
+                this.setEquipmentDropChance(EquipmentSlot.MAINHAND, 100);
             }
         }
     }

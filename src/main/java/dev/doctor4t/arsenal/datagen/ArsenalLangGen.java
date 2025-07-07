@@ -5,22 +5,25 @@ import dev.doctor4t.arsenal.index.ArsenalItems;
 import dev.doctor4t.arsenal.index.ArsenalStatusEffects;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
+import net.minecraft.registry.RegistryWrapper;
+
+import java.util.concurrent.CompletableFuture;
 
 public class ArsenalLangGen extends FabricLanguageProvider {
 
-    protected ArsenalLangGen(FabricDataOutput dataOutput) {
-        super(dataOutput);
+    protected ArsenalLangGen(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+        super(dataOutput, registryLookup);
     }
 
     @Override
-    public void generateTranslations(TranslationBuilder builder) {
+    public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder builder) {
         builder.add(ArsenalItems.ANCHORBLADE, "Anchorblade");
         builder.add(ArsenalEntities.ANCHORBLADE, "Anchorblade");
         builder.add(ArsenalItems.SCYTHE, "Scythe");
         builder.add(ArsenalEntities.BLOOD_SCYTHE, "Blood Scythe");
         builder.add(ArsenalItems.WEAPON_RACK, "Weapon Rack");
         builder.add(ArsenalEntities.WEAPON_RACK, "Weapon Rack");
-        builder.add(ArsenalStatusEffects.STUN, "Stun");
+        builder.add(ArsenalStatusEffects.STUN.value(), "Stun");
         builder.add("tooltip.supporter_only", "Cosmetics are reserved to Ko-Fi and YouTube members only.\nIf you want access to them (and other cool perks), consider supporting!");
         builder.add("tooltip.arsenal.anchorblade_luxintrus", "Originally designed by Diansu and forged by RAT to be gifted\nto Lux in a distant universe, this weapon has seen many worlds.\nAfter this Lux saw her own die, she travelled to another one\nto hand it to this new world's Lux. Since then, it has been\npassed on for generations, almost as a tradition,\none coral fan growing for every Lux who owned it.");
         builder.add("tooltip.arsenal.scythe_clown", "The mother of all Scythes and Arsenal. Originally forged by RAT\non Content SMP, as both a reward and a tool for the job,\nthis scythe was made for spilling blood, specifically the one shed\nduring the Easter Slaughter, where RAT and Clown hunted everyone\nwho hid The Mason's infamous Netherite spawn rate changes.");

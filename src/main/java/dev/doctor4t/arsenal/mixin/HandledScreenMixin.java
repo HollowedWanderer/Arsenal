@@ -1,8 +1,6 @@
 package dev.doctor4t.arsenal.mixin;
 
-import dev.doctor4t.arsenal.Arsenal;
 import dev.doctor4t.arsenal.client.ArsenalClient;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.network.PacketByteBuf;
@@ -33,7 +31,7 @@ public class HandledScreenMixin<T extends ScreenHandler> {
                 int slotId = this.focusedSlot.id;
                 PacketByteBuf buf = PacketByteBufs.create();
                 buf.writeInt(slotId);
-                ClientPlayNetworking.send(Arsenal.SERVERBOUND_SWAP_INVENTORY_PACKET, buf);
+                //ClientPlayNetworking.send(Arsenal.SERVERBOUND_SWAP_INVENTORY_PACKET, buf);
                 ci.cancel();
             }
         }
@@ -46,7 +44,7 @@ public class HandledScreenMixin<T extends ScreenHandler> {
                 int slotId = this.focusedSlot.id;
                 PacketByteBuf buf = PacketByteBufs.create();
                 buf.writeInt(slotId);
-                ClientPlayNetworking.send(Arsenal.SERVERBOUND_SWAP_INVENTORY_PACKET, buf);
+                //ClientPlayNetworking.send(Arsenal.SERVERBOUND_SWAP_INVENTORY_PACKET, buf);
                 cir.setReturnValue(true);
             }
         }

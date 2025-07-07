@@ -3,8 +3,8 @@
   "package": "dev.doctor4t.arsenal.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "AbstractDecorationEntityMixin",
     "DrownedEntityMixin",
-    "EnchantmentHelperMixin",
     "EntityMixin",
     "FireChargeItemMixin",
     "ItemMixin",
@@ -24,17 +24,14 @@
   "client": [
     "HandledScreenMixin",
     "accessors.CreativeSlotAccessor",
-    "client.BuiltinModelItemRendererMixin",
-    "client.CapeFeatureRendererMixin",
+    "client.ArmedEntityRenderStateMixin",
     "client.CreativeInventoryScreenMixin",
-    "client.DrawContextMixin",
     "client.HeldItemFeatureRendererMixin",
     "client.HeldItemRendererMixin",
     "client.InGameHudMixin",
     "client.InventoryScreenMixin",
-    "client.ItemEntityRendererMixin",
-    "client.ItemRendererMixin",
     "client.MinecraftClientMixin",
+    "client.PlayerCapeModelMixin",
     "client.PlayerEntityRendererMixin"
   ]
 }

@@ -1,9 +1,11 @@
 package dev.doctor4t.arsenal.mixin.client;
 
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.client.gui.screen.ingame.RecipeBookScreen;
+import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.text.Text;
@@ -13,9 +15,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InventoryScreen.class)
-public abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreenHandler> {
-    public InventoryScreenMixin(PlayerScreenHandler screenHandler, PlayerInventory playerInventory, Text text) {
-        super(screenHandler, playerInventory, text);
+public abstract class InventoryScreenMixin extends RecipeBookScreen<PlayerScreenHandler> {
+    public InventoryScreenMixin(PlayerScreenHandler handler, RecipeBookWidget<?> recipeBook, PlayerInventory inventory, Text title) {
+        super(handler, recipeBook, inventory, title);
     }
 
 //	@Unique private static final Identifier SLOT_TEXTURE = Arsenal.id("textures/item/weapon_slot.png");
@@ -32,7 +34,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
     private void arsenal$drawSlots(DrawContext context, float delta, int mouseX, int mouseY, CallbackInfo ci) {
         int i = this.x + 76;
         int j = this.y + 43;
-        context.drawTexture(HandledScreen.BACKGROUND_TEXTURE, i, j, 76, 61, 18, 18);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, HandledScreen.BACKGROUND_TEXTURE, i, j, 76, 61, 18, 18, 256, 256);
 //		if (this.inventory.arsenal$getWeapon().isEmpty()) {					fixme: I don't know why, I don't want to know why, the texture won't render in the slot
 //			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 //			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);

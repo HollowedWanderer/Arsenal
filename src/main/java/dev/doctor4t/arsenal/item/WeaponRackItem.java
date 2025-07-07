@@ -1,13 +1,12 @@
 package dev.doctor4t.arsenal.item;
 
 import dev.doctor4t.arsenal.entity.WeaponRackEntity;
-import net.minecraft.entity.EntityType;
+import dev.doctor4t.arsenal.index.ArsenalEntities;
 import net.minecraft.entity.decoration.AbstractDecorationEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -30,13 +29,10 @@ public class WeaponRackItem extends Item {
             return ActionResult.FAIL;
         } else {
             World world = context.getWorld();
-            AbstractDecorationEntity abstractDecorationEntity;
-            abstractDecorationEntity = new WeaponRackEntity(world, blockPos2, direction);
-
-            NbtCompound nbtCompound = itemStack.getNbt();
-            if (nbtCompound != null) {
-                EntityType.loadFromEntityNbt(world, playerEntity, abstractDecorationEntity, nbtCompound);
-            }
+            WeaponRackEntity abstractDecorationEntity;
+            abstractDecorationEntity = new WeaponRackEntity(ArsenalEntities.WEAPON_RACK, world);
+            abstractDecorationEntity.setFacingAccess(direction);
+            abstractDecorationEntity.setAttachedPos(blockPos2);
 
             if (abstractDecorationEntity.canStayAttached()) {
                 if (!world.isClient) {
@@ -46,7 +42,7 @@ public class WeaponRackItem extends Item {
                 }
 
                 itemStack.decrement(1);
-                return ActionResult.success(world.isClient);
+                return ActionResult.SUCCESS;
             } else {
                 return ActionResult.CONSUME;
             }

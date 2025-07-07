@@ -6,6 +6,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.entity.mob.VindicatorEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.World;
@@ -28,7 +29,7 @@ public abstract class VindicatorEntityMixin extends IllagerEntity {
             int i = random.nextInt(16);
             if (i < 10) {
                 this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(ArsenalItems.SCYTHE));
-                this.updateDropChances(EquipmentSlot.MAINHAND);
+                this.setEquipmentDropChance(EquipmentSlot.MAINHAND, 100);
             }
         }
     }
@@ -39,7 +40,7 @@ public abstract class VindicatorEntityMixin extends IllagerEntity {
     }
 
     @Inject(method = "addBonusForWave", at = @At(value = "TAIL"))
-    public void arsenal$equipScytheOnRaidVindicators(int wave, boolean unused, CallbackInfo ci) {
+    public void arsenal$equipScytheOnRaidVindicators(ServerWorld world, int wave, boolean unused, CallbackInfo ci) {
         this.randomlyGiveScythe(random);
     }
 

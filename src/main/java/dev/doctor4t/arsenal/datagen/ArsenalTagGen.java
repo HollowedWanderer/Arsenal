@@ -10,7 +10,6 @@ import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.registry.tag.ItemTags;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -22,14 +21,17 @@ public class ArsenalTagGen {
 
         @Override
         protected void configure(RegistryWrapper.WrapperLookup arg) {
-            this.getOrCreateTagBuilder(DamageTypeTags.IS_PROJECTILE)
+            this.builder(DamageTypeTags.IS_PROJECTILE)
                     .addOptional(ArsenalDamageTypes.ANCHOR)
                     .addOptional(ArsenalDamageTypes.BLOOD_SCYTHE);
 
-            this.getOrCreateTagBuilder(DamageTypeTags.BYPASSES_ENCHANTMENTS)
+            this.builder(DamageTypeTags.BYPASSES_ENCHANTMENTS)
                     .addOptional(ArsenalDamageTypes.SPEWING);
 
-            this.getOrCreateTagBuilder(DamageTypeTags.BYPASSES_ARMOR)
+            this.builder(DamageTypeTags.BYPASSES_ARMOR)
+                    .addOptional(ArsenalDamageTypes.SPEWING);
+
+            this.builder(DamageTypeTags.NO_KNOCKBACK)
                     .addOptional(ArsenalDamageTypes.SPEWING);
 
         }
@@ -42,31 +44,30 @@ public class ArsenalTagGen {
 
         @Override
         protected void configure(RegistryWrapper.WrapperLookup arg) { // TODO: Replace some of these with conventional tags
-            this.getOrCreateTagBuilder(ArsenalTags.DISPLAYABLE)
-                    .addOptionalTag(ItemTags.TOOLS)
+            this.builder(ArsenalTags.DISPLAYABLE)
                     .addTag(ArsenalTags.BIG_WEAPONS)
                     .addTag(ArsenalTags.SHIELDS)
                     .addTag(ArsenalTags.RANGED_WEAPONS)
                     .addTag(ArsenalTags.TRIDENTS)
             ;
 
-            this.getOrCreateTagBuilder(ArsenalTags.BIG_WEAPONS)
-                    .add(ArsenalItems.SCYTHE)
-                    .add(ArsenalItems.ANCHORBLADE)
+            this.builder(ArsenalTags.BIG_WEAPONS)
+                    .add(ArsenalItems.SCYTHE.getDefaultStack().getRegistryEntry().getKey().stream())
+                    .add(ArsenalItems.ANCHORBLADE.getDefaultStack().getRegistryEntry().getKey().stream())
                     .addTag(ArsenalTags.TRIDENTS)
             ;
 
-            this.getOrCreateTagBuilder(ArsenalTags.TRIDENTS)
-                    .add(Items.TRIDENT)
+            this.builder(ArsenalTags.TRIDENTS)
+                    .add(Items.TRIDENT.getDefaultStack().getRegistryEntry().getKey().stream())
             ;
 
-            this.getOrCreateTagBuilder(ArsenalTags.SHIELDS)
-                    .add(Items.SHIELD)
+            this.builder(ArsenalTags.SHIELDS)
+                    .add(Items.SHIELD.getDefaultStack().getRegistryEntry().getKey().stream())
             ;
 
-            this.getOrCreateTagBuilder(ArsenalTags.RANGED_WEAPONS)
-                    .add(Items.BOW)
-                    .add(Items.CROSSBOW)
+            this.builder(ArsenalTags.RANGED_WEAPONS)
+                    .add(Items.BOW.getDefaultStack().getRegistryEntry().getKey().stream())
+                    .add(Items.CROSSBOW.getDefaultStack().getRegistryEntry().getKey().stream())
             ;
         }
     }

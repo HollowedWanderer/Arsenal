@@ -2,48 +2,41 @@ package dev.doctor4t.arsenal.client;
 
 import dev.doctor4t.arsenal.Arsenal;
 import dev.doctor4t.arsenal.cca.BackWeaponComponent;
-import dev.doctor4t.arsenal.client.particle.contract.ColoredParticleInitialData;
+import dev.doctor4t.arsenal.client.item.AnchorbladeSkinProperty;
+import dev.doctor4t.arsenal.client.item.ScytheSkinProperty;
+import dev.doctor4t.arsenal.client.particle.BloodBubbleParticle;
+import dev.doctor4t.arsenal.client.particle.BloodBubbleSplatterParticle;
+import dev.doctor4t.arsenal.client.particle.ShockwaveParticle;
+import dev.doctor4t.arsenal.client.particle.SweepAttackParticle;
 import dev.doctor4t.arsenal.client.render.entity.*;
-import dev.doctor4t.arsenal.client.render.item.AnchorbladeDynamicItemRenderer;
-import dev.doctor4t.arsenal.client.render.item.ScytheDynamicItemRenderer;
-import dev.doctor4t.arsenal.client.render.item.TridentDynamicItemRenderer;
 import dev.doctor4t.arsenal.index.ArsenalEntities;
-import dev.doctor4t.arsenal.index.ArsenalItems;
 import dev.doctor4t.arsenal.index.ArsenalParticles;
-import dev.doctor4t.arsenal.item.AnchorbladeItem;
 import dev.doctor4t.arsenal.util.ArsenalConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.client.render.item.property.select.SelectProperties;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.Locale;
-
 @SuppressWarnings("unused")
 public class ArsenalClient implements ClientModInitializer {
-    public static ModelTransformationMode currentMode = ModelTransformationMode.NONE;
-
-    static {
-        for (var mode : ModelTransformationMode.values()) {
-            ModelPredicateProviderRegistry.register(Arsenal.id(mode.name().toLowerCase(Locale.ROOT)), (stack, world, entity, seed) -> mode == currentMode ? 1.0F : 0.0F);
-        }
-
-        ModelPredicateProviderRegistry.register(new Identifier("vanilla"), (stack, world, entity, seed) -> ArsenalConfig.CUSTOM_TRIDENT_RENDERING ? 0f : 1f);
-    }
+//    public static ModelTransformationMode currentMode = ModelTransformationMode.NONE;
+//
+//    static {
+//        for (var mode : ModelTransformationMode.values()) {
+//            ModelPredicateProviderRegistry.register(Arsenal.id(mode.name().toLowerCase(Locale.ROOT)), (stack, world, entity, seed) -> mode == currentMode ? 1.0F : 0.0F);
+//        }
+//
+//        ModelPredicateProviderRegistry.register(new Identifier("vanilla"), (stack, world, entity, seed) -> ArsenalConfig.CUSTOM_TRIDENT_RENDERING ? 0f : 1f);
+//    }
 
     public static KeyBinding weaponKeybind;
     public static KeyBinding swapKeybind;
@@ -53,21 +46,21 @@ public class ArsenalClient implements ClientModInitializer {
 
         // Register integrated resource pack
         FabricLoader.getInstance().getModContainer(Arsenal.MOD_ID).ifPresent(modContainer -> {
-            ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(Arsenal.MOD_ID, "classic"), modContainer, ResourcePackActivationType.NORMAL);
+            ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of(Arsenal.MOD_ID, "classic"), modContainer, ResourcePackActivationType.NORMAL);
         });
 
         // Built-in Item Renderers
-        BuiltinItemRendererRegistry.INSTANCE.register(ArsenalItems.SCYTHE, new ScytheDynamicItemRenderer());
-        BuiltinItemRendererRegistry.INSTANCE.register(ArsenalItems.ANCHORBLADE, new AnchorbladeDynamicItemRenderer());
-        if (ArsenalConfig.CUSTOM_TRIDENT_RENDERING)
-            BuiltinItemRendererRegistry.INSTANCE.register(Items.TRIDENT, new TridentDynamicItemRenderer());
+//        BuiltinItemRendererRegistry.INSTANCE.register(ArsenalItems.SCYTHE, new ScytheDynamicItemRenderer());
+//        BuiltinItemRendererRegistry.INSTANCE.register(ArsenalItems.ANCHORBLADE, new AnchorbladeDynamicItemRenderer());
+//        if (ArsenalConfig.CUSTOM_TRIDENT_RENDERING)
+//            BuiltinItemRendererRegistry.INSTANCE.register(Items.TRIDENT, new TridentDynamicItemRenderer());
 
         // Force load the weapon models (otherwise since they're never called they wouldn't be loaded by default)
-        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(ScytheDynamicItemRenderer.MODELS_TO_REGISTER));
-        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(AnchorbladeDynamicItemRenderer.MODELS_TO_REGISTER));
-        if (ArsenalConfig.CUSTOM_TRIDENT_RENDERING)
-            ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(TridentDynamicItemRenderer.MODELS_TO_REGISTER));
-        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(WeaponRackEntityRenderer.MODEL));
+//        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(ScytheDynamicItemRenderer.MODELS_TO_REGISTER));
+//        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(AnchorbladeDynamicItemRenderer.MODELS_TO_REGISTER));
+//        if (ArsenalConfig.CUSTOM_TRIDENT_RENDERING)
+//            ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(TridentDynamicItemRenderer.MODELS_TO_REGISTER));
+//        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(WeaponRackEntityRenderer.MODEL));
 
         // model layers initialization
         ModEntityModelLayers.initialize();
@@ -79,8 +72,16 @@ public class ArsenalClient implements ClientModInitializer {
             EntityRendererRegistry.register(EntityType.TRIDENT, ArsenalTridentEntityRenderer::new);
         EntityRendererRegistry.register(ArsenalEntities.WEAPON_RACK, WeaponRackEntityRenderer::new);
 
+        SelectProperties.ID_MAPPER.put(Arsenal.id("anchorblade_skin"), AnchorbladeSkinProperty.TYPE);
+        SelectProperties.ID_MAPPER.put(Arsenal.id("scythe_skin"), ScytheSkinProperty.TYPE);
+
+
+
         // particle renderers registration
-        ArsenalParticles.registerFactories();
+        ParticleFactoryRegistry.getInstance().register(ArsenalParticles.SWEEP_PARTICLE, SweepAttackParticle.Factory::new);
+        ParticleFactoryRegistry.getInstance().register(ArsenalParticles.BLOOD_BUBBLE, BloodBubbleParticle.Factory::new);
+        ParticleFactoryRegistry.getInstance().register(ArsenalParticles.BLOOD_BUBBLE_SPLATTER, BloodBubbleSplatterParticle.Factory::new);
+        ParticleFactoryRegistry.getInstance().register(ArsenalParticles.SHOCKWAVE, ShockwaveParticle.Factory::new);
 
         // keybindings
         weaponKeybind = KeyBindingHelper.registerKeyBinding(new KeyBinding(
@@ -100,30 +101,30 @@ public class ArsenalClient implements ClientModInitializer {
                 BackWeaponComponent.setHoldingBackWeapon(client.player, !BackWeaponComponent.isHoldingBackWeapon(client.player));
             }
             if (swapKeybind.wasPressed()) {
-                ClientPlayNetworking.send(Arsenal.SERVERBOUND_SWAP_WEAPON_PACKET, PacketByteBufs.empty());
+                //ClientPlayNetworking.send(Arsenal.SERVERBOUND_SWAP_WEAPON_PACKET, PacketByteBufs.empty());
             }
         });
 
         // Anchorblade entity model init
-        for (AnchorbladeItem.Skin value : AnchorbladeItem.Skin.values()) {
-            ModelLoadingPlugin.register(context -> context.addModels(value.anchorbladeEntityModel));
-        }
-
-        // attack sweep particle packet
-        ClientPlayNetworking.registerGlobalReceiver(Arsenal.CLIENTBOUND_SWEEP_PACKET, (client, handler, buf, responseSender) -> {
-            int color = buf.readInt();
-            int shadowColor = buf.readInt();
-            double x = buf.readDouble();
-            double y = buf.readDouble();
-            double z = buf.readDouble();
-
-            client.execute(() -> {
-                if (client.world != null) {
-                    client.world.addParticle(ArsenalParticles.SWEEP_PARTICLE.setData(new ColoredParticleInitialData(color)), x, y, z, 0, 0, 0);
-                    client.world.addParticle(ArsenalParticles.SWEEP_SHADOW_PARTICLE.setData(new ColoredParticleInitialData(shadowColor)), x, y, z, 0, 0, 0);
-                }
-            });
-        });
+//        for (AnchorbladeItem.Skin value : AnchorbladeItem.Skin.values()) {
+//            ModelLoadingPlugin.register(context -> context.addModels(value.anchorbladeEntityModel));
+//        }
+//
+//        // attack sweep particle packet
+//        ClientPlayNetworking.registerGlobalReceiver(Arsenal.CLIENTBOUND_SWEEP_PACKET, (client, handler, buf, responseSender) -> {
+//            int color = buf.readInt();
+//            int shadowColor = buf.readInt();
+//            double x = buf.readDouble();
+//            double y = buf.readDouble();
+//            double z = buf.readDouble();
+//
+//            client.execute(() -> {
+//                if (client.world != null) {
+//                    client.world.addParticle(ArsenalParticles.SWEEP_PARTICLE.setData(new ColoredParticleInitialData(color)), x, y, z, 0, 0, 0);
+//                    client.world.addParticle(ArsenalParticles.SWEEP_SHADOW_PARTICLE.setData(new ColoredParticleInitialData(shadowColor)), x, y, z, 0, 0, 0);
+//                }
+//            });
+//        });
 
     }
 }

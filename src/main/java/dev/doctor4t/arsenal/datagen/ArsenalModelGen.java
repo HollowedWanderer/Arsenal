@@ -1,25 +1,31 @@
 package dev.doctor4t.arsenal.datagen;
 
 import dev.doctor4t.arsenal.Arsenal;
+import dev.doctor4t.arsenal.client.item.AnchorbladeSkinProperty;
+import dev.doctor4t.arsenal.client.item.ScytheSkinProperty;
 import dev.doctor4t.arsenal.index.ArsenalItems;
-import dev.doctor4t.arsenal.item.AnchorbladeItem;
-import dev.doctor4t.arsenal.item.ScytheItem;
+import dev.doctor4t.arsenal.item.skin.AnchorbladeSkin;
+import dev.doctor4t.arsenal.item.skin.ScytheSkin;
+import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
-import net.minecraft.data.client.*;
+import net.minecraft.client.data.*;
+import net.minecraft.client.render.item.model.ItemModel;
+import net.minecraft.client.render.item.model.SelectItemModel;
+import net.minecraft.client.render.item.property.select.SelectProperty;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.StringIdentifiable;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class ArsenalModelGen extends FabricModelProvider {
     public static final Model BIG_WEAPON_IN_HAND = model("item/template_big_weapon_in_hand", "_in_hand", TextureKey.LAYER0);
     public static final Model TRIDENT_IN_HAND = model("item/template_trident_in_hand", "_in_hand", TextureKey.LAYER0);
-
 
     public ArsenalModelGen(FabricDataOutput output) {
         super(output);
@@ -27,28 +33,47 @@ public class ArsenalModelGen extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator generator) {
+
     }
 
     @Override
     public void generateItemModels(ItemModelGenerator generator) {
-        registerBuiltinModel(ArsenalItems.SCYTHE, generator);
-        for (ScytheItem.Skin value : ScytheItem.Skin.values()) {
-            registerTemplateWeapon(BIG_WEAPON_IN_HAND, value == ScytheItem.Skin.DEFAULT ? null : value.getName(), ArsenalItems.SCYTHE, generator);
-        }
-
-        registerBuiltinModel(ArsenalItems.ANCHORBLADE, generator);
-        for (AnchorbladeItem.Skin value : AnchorbladeItem.Skin.values()) {
-            if (value == AnchorbladeItem.Skin.AMBESSA) {
-                registerTemplateWeaponInventory(BIG_WEAPON_IN_HAND, value.getName(), ArsenalItems.ANCHORBLADE, generator);
-            } else {
-                registerTemplateWeapon(BIG_WEAPON_IN_HAND, value == AnchorbladeItem.Skin.DEFAULT ? null : value.getName(), ArsenalItems.ANCHORBLADE, generator);
-            }
-        }
+        this.registerWeapon(generator, ArsenalItems.ANCHORBLADE, BIG_WEAPON_IN_HAND, AnchorbladeSkinProperty.INSTANCE, AnchorbladeSkin.values(), AnchorbladeSkin.DEFAULT, List.of(AnchorbladeSkin.AMBESSA));
+        this.registerWeapon(generator, ArsenalItems.SCYTHE, BIG_WEAPON_IN_HAND, ScytheSkinProperty.INSTANCE, ScytheSkin.values(), ScytheSkin.DEFAULT, List.of());
 
         registerTemplateWeaponHandheld(TRIDENT_IN_HAND, null, Arsenal.id("trident"), generator);
         registerTemplateWeaponInventory(TRIDENT_IN_HAND, null, Arsenal.id("trident"), ModelIds.getItemModelId(Items.TRIDENT), generator);
 
         generator.register(ArsenalItems.WEAPON_RACK, Models.GENERATED);
+    }
+
+    private <T extends StringIdentifiable, P extends SelectProperty<T>> void registerWeapon(ItemModelGenerator generator, Item item, Model handModel, P property, T[] skins, T defaultSkin, List<T> excludeFromHandModelGen) {
+        List<SelectItemModel.SwitchCase<T>> cases = new ArrayList<>();
+        for (T skin : skins) {
+            if (excludeFromHandModelGen.contains(skin)) {
+                registerTemplateWeaponInventory(handModel, skin == defaultSkin ? null : skin.asString(), item, generator);
+            } else {
+                registerTemplateWeapon(handModel, skin == defaultSkin ? null : skin.asString(), item, generator);
+            }
+            if (skin != defaultSkin) {
+                cases.add(ItemModels.switchCase(skin, this.createWeaponModel(item, skin.asString())));
+            }
+        }
+        generator.output.accept(
+                item,
+                ItemModels.select(
+                        property,
+                        this.createWeaponModel(item, null),
+                        cases
+                )
+        );
+    }
+
+    private ItemModel.Unbaked createWeaponModel(Item item, @Nullable String name) {
+        String suffix = name == null ? "" : "_" + name;
+        Identifier handModelId = ModelIds.getItemSubModelId(item, suffix + "_in_hand");
+        Identifier inventoryModelId = ModelIds.getItemSubModelId(item, suffix + "_inventory");
+        return ItemModelGenerator.createModelWithInHandVariant(ItemModels.basic(inventoryModelId), ItemModels.basic(handModelId));
     }
 
     private static Model model(String parent, @Nullable String variant, TextureKey... keys) {
@@ -77,7 +102,7 @@ public class ArsenalModelGen extends FabricModelProvider {
         Identifier handheldModelName = (name == null ? getItemSubId(itemId, "_in_hand") : getItemSubId(itemId, "_" + name + "_in_hand"));
         Identifier handheldTexture = (name == null ? getItemId(itemId) : getItemSubId(itemId, "_" + name));
 
-        templateModel.upload(handheldModelName, TextureMap.layer0(handheldTexture), generator.writer); // this is the actual handheld model
+        templateModel.upload(handheldModelName, TextureMap.layer0(handheldTexture), generator.modelCollector); // this is the actual handheld model
     }
 
     private void registerTemplateWeaponInventory(Model templateModel, @Nullable String name, Item item, ItemModelGenerator generator) {
@@ -92,47 +117,7 @@ public class ArsenalModelGen extends FabricModelProvider {
     private void registerTemplateWeaponInventory(Model templateModel, @Nullable String name, Identifier itemModelId, Identifier inventoryTexture, ItemModelGenerator generator) {
         Identifier inventoryModelName = (name == null ? getItemSubId(itemModelId, "_inventory") : getItemSubId(itemModelId, "_" + name + "_inventory"));
 
-        Models.HANDHELD.upload(inventoryModelName, TextureMap.layer0(inventoryTexture), generator.writer); // this is actually the inventory model
-    }
-
-    private void registerBuiltinModel(Item item, ItemModelGenerator generator) {
-        generator.writer.accept(ModelIds.getItemModelId(item), new SimpleModelSupplier(new Identifier("builtin/entity")));
-    }
-
-    protected BlockStateVariant variant() {
-        return BlockStateVariant.create();
-    }
-
-    protected <T> BlockStateVariant variant(VariantSetting<T> variantSetting, T value) {
-        return this.variant().put(variantSetting, value);
-    }
-
-    protected <T> BlockStateVariant variant(Identifier model, VariantSetting<T> variantSetting, T value) {
-        return this.model(model).put(variantSetting, value);
-    }
-
-    protected BlockStateVariant model(Identifier model) {
-        return this.variant(VariantSettings.MODEL, model);
-    }
-
-    protected BlockStateVariant rotateForFace(BlockStateVariant variant, Direction direction, boolean uvlock) {
-        if (uvlock) variant.put(VariantSettings.UVLOCK, true);
-        switch (direction) {
-            case EAST -> variant.put(VariantSettings.Y, VariantSettings.Rotation.R90);
-            case SOUTH -> variant.put(VariantSettings.Y, VariantSettings.Rotation.R180);
-            case WEST -> variant.put(VariantSettings.Y, VariantSettings.Rotation.R270);
-            case UP -> variant.put(VariantSettings.X, VariantSettings.Rotation.R270);
-            case DOWN -> variant.put(VariantSettings.X, VariantSettings.Rotation.R90);
-        }
-        return variant;
-    }
-
-    protected BlockStateVariant rotateForAxis(BlockStateVariant variant, Direction.Axis axis) {
-        return switch (axis) {
-            case X -> variant.put(VariantSettings.Y, VariantSettings.Rotation.R270);
-            case Y -> variant.put(VariantSettings.X, VariantSettings.Rotation.R90);
-            case Z -> variant;
-        };
+        Models.HANDHELD.upload(inventoryModelName, TextureMap.layer0(inventoryTexture), generator.modelCollector); // this is actually the inventory model
     }
 
     public static Identifier getItemId(Identifier itemId) {

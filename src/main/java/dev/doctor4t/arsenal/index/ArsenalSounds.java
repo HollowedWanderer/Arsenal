@@ -24,8 +24,8 @@ public interface ArsenalSounds {
     }
 
     private static SoundEvent createSoundEvent(String path) {
-        SoundEvent soundEvent = SoundEvent.of(new Identifier(Arsenal.MOD_ID, path));
-        SOUND_EVENTS.put(soundEvent, new Identifier(Arsenal.MOD_ID, path));
+        SoundEvent soundEvent = SoundEvent.of(Identifier.of(Arsenal.MOD_ID, path));
+        SOUND_EVENTS.put(soundEvent, Identifier.of(Arsenal.MOD_ID, path));
         return soundEvent;
     }
 }

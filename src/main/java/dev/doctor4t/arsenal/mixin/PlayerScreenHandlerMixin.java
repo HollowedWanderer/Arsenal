@@ -4,8 +4,7 @@ import dev.doctor4t.arsenal.cca.BackWeaponComponent;
 import dev.doctor4t.arsenal.util.BackSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.screen.AbstractRecipeScreenHandler;
+import net.minecraft.screen.AbstractCraftingScreenHandler;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,9 +13,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerScreenHandler.class)
-public abstract class PlayerScreenHandlerMixin extends AbstractRecipeScreenHandler<CraftingInventory> {
-    public PlayerScreenHandlerMixin(ScreenHandlerType<?> screenHandlerType, int i) {
-        super(screenHandlerType, i);
+public abstract class PlayerScreenHandlerMixin extends AbstractCraftingScreenHandler {
+
+    public PlayerScreenHandlerMixin(ScreenHandlerType<?> type, int syncId, int width, int height) {
+        super(type, syncId, width, height);
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))

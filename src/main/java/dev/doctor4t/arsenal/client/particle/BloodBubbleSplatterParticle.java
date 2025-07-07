@@ -4,7 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.particle.SimpleParticleType;
 
 public class BloodBubbleSplatterParticle extends SpriteBillboardParticle {
     private final SpriteProvider spriteProvider;
@@ -22,15 +22,15 @@ public class BloodBubbleSplatterParticle extends SpriteBillboardParticle {
 
     @Override
     public ParticleTextureSheet getType() {
-        return ParticleTextureSheet.PARTICLE_SHEET_LIT;
+        return ParticleTextureSheet.PARTICLE_SHEET_OPAQUE;
     }
 
     @Override
     public void tick() {
         this.setSpriteForAge(this.spriteProvider);
-        this.prevPosX = this.x;
-        this.prevPosY = this.y;
-        this.prevPosZ = this.z;
+        this.lastX = this.x;
+        this.lastY = this.y;
+        this.lastZ = this.z;
         if (this.age++ >= this.maxAge) {
             this.markDead();
             return;
@@ -40,7 +40,7 @@ public class BloodBubbleSplatterParticle extends SpriteBillboardParticle {
     }
 
     @Environment(EnvType.CLIENT)
-    public static class Factory implements ParticleFactory<DefaultParticleType> {
+    public static class Factory implements ParticleFactory<SimpleParticleType> {
         private final SpriteProvider spriteProvider;
 
         public Factory(SpriteProvider spriteProvider) {
@@ -48,7 +48,7 @@ public class BloodBubbleSplatterParticle extends SpriteBillboardParticle {
         }
 
         @Override
-        public Particle createParticle(DefaultParticleType defaultParticleType, ClientWorld clientWorld, double d, double e, double f, double g, double h, double i) {
+        public Particle createParticle(SimpleParticleType defaultParticleType, ClientWorld clientWorld, double d, double e, double f, double g, double h, double i) {
             return new BloodBubbleSplatterParticle(clientWorld, d, e, f, g, h, i, this.spriteProvider);
         }
     }

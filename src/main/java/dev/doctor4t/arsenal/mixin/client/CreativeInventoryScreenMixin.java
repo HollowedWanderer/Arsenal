@@ -4,8 +4,9 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.doctor4t.arsenal.mixin.accessors.CreativeSlotAccessor;
 import dev.doctor4t.arsenal.util.BackSlot;
+import net.fabricmc.fabric.api.client.itemgroup.v1.FabricCreativeInventoryScreen;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -22,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(CreativeInventoryScreen.class)
-public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScreen<CreativeInventoryScreen.CreativeScreenHandler> {
+public abstract class CreativeInventoryScreenMixin extends HandledScreen<CreativeInventoryScreen.CreativeScreenHandler> implements FabricCreativeInventoryScreen {
     @Shadow
     private static ItemGroup selectedTab;
 
@@ -46,7 +47,7 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
         if (selectedTab.equals(Registries.ITEM_GROUP.get(ItemGroups.INVENTORY))) {
             int i = this.x + 126;
             int j = this.y + 19;
-            context.drawTexture(HandledScreen.BACKGROUND_TEXTURE, i, j, 76, 61, 18, 18);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, HandledScreen.BACKGROUND_TEXTURE, i, j, 76, 61, 18, 18, 256, 256);
 //			if (this.inventory.arsenal$getWeapon().isEmpty()) {					fixme: I don't know why, I don't want to know why, the texture won't render in the slot
 //				RenderSystem.setShader(GameRenderer::getPositionTexShader);
 //				RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);

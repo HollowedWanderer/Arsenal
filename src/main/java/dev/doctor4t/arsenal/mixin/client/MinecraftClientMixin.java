@@ -26,7 +26,7 @@ public class MinecraftClientMixin {
         if (this.player != null) BackWeaponComponent.setHoldingBackWeapon(this.player, false);
     }
 
-    @Inject(method = "doItemPick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;isValidHotbarIndex(I)Z"))
+    @Inject(method = "doItemPick", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/hit/HitResult;getType()Lnet/minecraft/util/hit/HitResult$Type;"))
     private void arsenal$pickSlot(CallbackInfo ci) {
         if (this.player != null) BackWeaponComponent.setHoldingBackWeapon(this.player, false);
     }

@@ -19,7 +19,6 @@ import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -43,18 +42,12 @@ public abstract class PlayerEntityMixin extends LivingEntity implements AnchorOw
         super(entityType, world);
     }
 
-    @Shadow
-    public abstract float getAttackCooldownProgress(float baseTime);
-
-    @Shadow
-    public abstract void disableShield(boolean sprinting);
-
     @Inject(method = "initDataTracker", at = @At("TAIL"))
-    private void arsenal$initDataTracker(CallbackInfo ci) {
-        this.dataTracker.startTracking(BASIC_ANCHOR_MAIN, -1);
-        this.dataTracker.startTracking(REELING_ANCHOR_MAIN, -1);
-        this.dataTracker.startTracking(BASIC_ANCHOR_OFF, -1);
-        this.dataTracker.startTracking(REELING_ANCHOR_OFF, -1);
+    private void arsenal$initDataTracker(DataTracker.Builder builder, CallbackInfo ci) {
+        builder.add(BASIC_ANCHOR_MAIN, -1);
+        builder.add(REELING_ANCHOR_MAIN, -1);
+        builder.add(BASIC_ANCHOR_OFF, -1);
+        builder.add(REELING_ANCHOR_OFF, -1);
     }
 
     @Inject(method = "getBlockBreakingSpeed", at = @At("RETURN"), cancellable = true)
@@ -69,18 +62,11 @@ public abstract class PlayerEntityMixin extends LivingEntity implements AnchorOw
         if (this.getStackInHand(Hand.MAIN_HAND).getItem() instanceof ScytheItem) {
             float strength = 1f;
             if (target instanceof LivingEntity livingEntity) {
-                strength = (float) (.25f * (1.0 - livingEntity.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE)));
+                strength = (float) (.25f * (1.0 - livingEntity.getAttributeValue(EntityAttributes.KNOCKBACK_RESISTANCE)));
                 livingEntity.addStatusEffect(new StatusEffectInstance(ArsenalStatusEffects.STUN, 10, 0, false, false, false));
             }
             target.setVelocity(this.getPos().subtract(target.getPos()).multiply(strength));
             target.velocityModified = true;
-        }
-    }
-
-    @Inject(method = "takeShieldHit", at = @At("HEAD"))
-    protected void arsenal$scytheDisableShield(LivingEntity attacker, CallbackInfo ci) {
-        if (attacker.getMainHandStack().getItem() instanceof ScytheItem) {
-            this.disableShield(true);
         }
     }
 

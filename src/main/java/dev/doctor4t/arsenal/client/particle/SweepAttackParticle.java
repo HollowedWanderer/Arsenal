@@ -1,34 +1,37 @@
 package dev.doctor4t.arsenal.client.particle;
 
-import dev.doctor4t.arsenal.client.particle.type.SweepParticleType;
+import dev.doctor4t.arsenal.particle.SweepParticleEffect;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.client.particle.ParticleTextureSheet;
-import net.minecraft.client.particle.SpriteBillboardParticle;
-import net.minecraft.client.particle.SpriteProvider;
+import net.minecraft.client.particle.*;
+import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.util.math.ColorHelper;
 import org.jetbrains.annotations.Nullable;
-
-import java.awt.*;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 public class SweepAttackParticle extends SpriteBillboardParticle {
     private final SpriteProvider spriteWithAge;
+    private final Vector3f baseColor;
+    private final Vector3f shadowColor;
 
-    private SweepAttackParticle(ClientWorld world, double x, double y, double z, SpriteProvider spriteWithAge) {
+    private SweepAttackParticle(ClientWorld world, double x, double y, double z, SpriteProvider spriteWithAge, SweepParticleEffect particleEffect) {
         super(world, x, y, z, 0.0D, 0.0D, 0.0D);
         this.spriteWithAge = spriteWithAge;
         this.maxAge = 4;
         this.scale = 1.0F;
         this.setSpriteForAge(spriteWithAge);
+        this.baseColor = ColorHelper.toVector(particleEffect.baseColor());
+        this.shadowColor = ColorHelper.toVector(particleEffect.shadowColor());
     }
 
     @Override
     public void tick() {
-        this.prevPosX = this.x;
-        this.prevPosY = this.y;
-        this.prevPosZ = this.z;
+        this.lastX = this.x;
+        this.lastY = this.y;
+        this.lastZ = this.z;
         if (this.age++ >= this.maxAge) {
             this.markDead();
         } else {
@@ -37,27 +40,32 @@ public class SweepAttackParticle extends SpriteBillboardParticle {
     }
 
     @Override
+    protected void render(VertexConsumer vertexConsumer, Camera camera, Quaternionf quaternionf, float tickProgress) {
+        this.setSprite(this.spriteWithAge.getSprite(this.age, this.maxAge * 2));
+        this.setColor(this.baseColor.x, this.baseColor.y, this.baseColor.z);
+        super.render(vertexConsumer, camera, quaternionf, tickProgress);
+        this.setSprite(this.spriteWithAge.getSprite(this.age + this.maxAge, this.maxAge * 2));
+        this.setColor(this.shadowColor.x, this.shadowColor.y, this.shadowColor.z);
+        super.render(vertexConsumer, camera, quaternionf, tickProgress);
+    }
+
+    @Override
     public ParticleTextureSheet getType() {
         return ParticleTextureSheet.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Environment(EnvType.CLIENT)
-    public static class Factory implements ParticleFactory<DefaultParticleType> {
+    public static class Factory implements ParticleFactory<SweepParticleEffect> {
         private final SpriteProvider spriteProvider;
 
         public Factory(SpriteProvider spriteProvider) {
             this.spriteProvider = spriteProvider;
         }
 
+        @Nullable
         @Override
-        public @Nullable SweepAttackParticle createParticle(DefaultParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
-            SweepAttackParticle instance = new SweepAttackParticle(world, x, y, z, this.spriteProvider);
-            if (parameters instanceof SweepParticleType sweepParameters && sweepParameters.initialData != null) {
-                Color color = new Color(sweepParameters.initialData.color, true);
-                instance.setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
-                instance.setAlpha(color.getAlpha() / 255f);
-            }
-            return instance;
+        public Particle createParticle(SweepParticleEffect parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
+            return new SweepAttackParticle(world, x, y, z, spriteProvider, parameters);
         }
     }
 }

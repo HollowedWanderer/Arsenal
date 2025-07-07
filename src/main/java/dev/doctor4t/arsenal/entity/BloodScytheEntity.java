@@ -2,7 +2,6 @@ package dev.doctor4t.arsenal.entity;
 
 import com.google.common.collect.Sets;
 import dev.doctor4t.arsenal.index.ArsenalDamageTypes;
-import dev.doctor4t.arsenal.index.ArsenalEntities;
 import dev.doctor4t.arsenal.index.ArsenalParticles;
 import dev.doctor4t.arsenal.index.ArsenalSounds;
 import net.minecraft.entity.EntityType;
@@ -10,6 +9,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
@@ -27,12 +27,13 @@ public class BloodScytheEntity extends PersistentProjectileEntity {
         super(entityType, world);
     }
 
-    public BloodScytheEntity(World world, LivingEntity owner) {
-        super(ArsenalEntities.BLOOD_SCYTHE, owner, world);
+    @Override
+    protected ItemStack asItemStack() {
+        return ItemStack.EMPTY;
     }
 
     @Override
-    protected ItemStack asItemStack() {
+    protected ItemStack getDefaultItemStack() {
         return ItemStack.EMPTY;
     }
 
@@ -45,12 +46,12 @@ public class BloodScytheEntity extends PersistentProjectileEntity {
         super.tick();
 
         for (float x = -3; x <= 3; x += 0.1f) {
-            this.getWorld().addParticle(ArsenalParticles.BLOOD_BUBBLE, this.getX() + x * Math.cos(this.getYaw()), this.getY(), this.getZ() + x * Math.sin(this.getYaw()), this.getVelocity().getX(), this.getVelocity().getY(), this.getVelocity().getZ());
+            this.getWorld().addParticleClient(ArsenalParticles.BLOOD_BUBBLE, this.getX() + x * Math.cos(this.getYaw()), this.getY(), this.getZ() + x * Math.sin(this.getYaw()), this.getVelocity().getX(), this.getVelocity().getY(), this.getVelocity().getZ());
         }
 
-        if (this.inGround || this.age > 20) {
+        if (this.isInGround() || this.age > 20) {
             for (int i = 0; i < 50; i++) {
-                this.getWorld().addParticle(ArsenalParticles.BLOOD_BUBBLE_SPLATTER, this.getX() + (this.random.nextGaussian() * 2) * Math.cos(this.getYaw()), this.getY(), this.getZ() + (this.random.nextGaussian() * 2) * Math.sin(this.getYaw()), this.random.nextGaussian() / 10, this.random.nextFloat() / 2, this.random.nextGaussian() / 10);
+                this.getWorld().addParticleClient(ArsenalParticles.BLOOD_BUBBLE_SPLATTER, this.getX() + (this.random.nextGaussian() * 2) * Math.cos(this.getYaw()), this.getY(), this.getZ() + (this.random.nextGaussian() * 2) * Math.sin(this.getYaw()), this.random.nextGaussian() / 10, this.random.nextFloat() / 2, this.random.nextGaussian() / 10);
             }
             this.ticksUntilRemove--;
         }
@@ -59,10 +60,10 @@ public class BloodScytheEntity extends PersistentProjectileEntity {
             this.discard();
         }
 
-        if (!this.getWorld().isClient) {
+        if (this.getWorld() instanceof ServerWorld serverWorld) {
             for (LivingEntity livingEntity : this.getWorld().getEntitiesByClass(LivingEntity.class, this.getBoundingBox(), livingEntity -> this.getOwner() != livingEntity)) {
                 if (!hitEntities.contains(livingEntity)) {
-                    livingEntity.damage(this.getWorld().getDamageSources().create(ArsenalDamageTypes.BLOOD_SCYTHE, this, this.getOwner()), 12.0f);
+                    livingEntity.damage(serverWorld, this.getWorld().getDamageSources().create(ArsenalDamageTypes.BLOOD_SCYTHE, this, this.getOwner()), 12.0f);
                     for (StatusEffectInstance effect : this.effects) {
                         livingEntity.addStatusEffect(effect);
                     }

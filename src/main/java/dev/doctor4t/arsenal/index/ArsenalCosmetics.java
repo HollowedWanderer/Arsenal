@@ -18,23 +18,23 @@ public interface ArsenalCosmetics {
     SyncToken<WeaponSkinsSupporterData> WEAPON_SKINS_DATA = DataSyncAPI.register(WeaponSkinsSupporterData.class, WEAPON_SKINS_DATA_ID, WeaponSkinsSupporterData.CODEC);
 
     static String getSkin(ItemStack itemStack) {
-        UUID owner = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(itemStack).getOwner();
-        String itemName = itemStack.getItem().getName().getString().toLowerCase(Locale.ROOT);
-        String stackName = itemStack.getName().getString().toLowerCase(Locale.ROOT);
-
-        if (owner != null) {
-            Optional<WeaponSkinsSupporterData> optional = WEAPON_SKINS_DATA.get(owner);
-            if (optional.isPresent()) {
-                String serialized = optional.get().serialized();
-                String[] namesAndSkins = serialized.split(";");
-                for (String nameAndSkin : namesAndSkins) {
-                    if (nameAndSkin.matches(itemName + "-" + stackName + ":.+")) {
-                        String[] split = nameAndSkin.split(":");
-                        return split[1];
-                    }
-                }
-            }
-        }
+//        UUID owner = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(itemStack).getOwner();
+//        String itemName = itemStack.getItem().getName().getString().toLowerCase(Locale.ROOT);
+//        String stackName = itemStack.getName().getString().toLowerCase(Locale.ROOT);
+//
+//        if (owner != null) {
+//            Optional<WeaponSkinsSupporterData> optional = WEAPON_SKINS_DATA.get(owner);
+//            if (optional.isPresent()) {
+//                String serialized = optional.get().serialized();
+//                String[] namesAndSkins = serialized.split(";");
+//                for (String nameAndSkin : namesAndSkins) {
+//                    if (nameAndSkin.matches(itemName + "-" + stackName + ":.+")) {
+//                        String[] split = nameAndSkin.split(":");
+//                        return split[1];
+//                    }
+//                }
+//            }
+//        }
 
         return "default";
     }
