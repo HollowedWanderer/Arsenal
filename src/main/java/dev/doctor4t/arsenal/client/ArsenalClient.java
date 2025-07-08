@@ -11,10 +11,13 @@ import dev.doctor4t.arsenal.client.particle.SweepAttackParticle;
 import dev.doctor4t.arsenal.client.render.entity.*;
 import dev.doctor4t.arsenal.index.ArsenalEntities;
 import dev.doctor4t.arsenal.index.ArsenalParticles;
+import dev.doctor4t.arsenal.payload.IsRecallingPayload;
+import dev.doctor4t.arsenal.payload.RecallNearbyTridentPayload;
 import dev.doctor4t.arsenal.util.ArsenalConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -41,6 +44,9 @@ public class ArsenalClient implements ClientModInitializer {
     public static KeyBinding weaponKeybind;
     public static KeyBinding swapKeybind;
 
+    //IMPALED
+    public int timeCharged = 0;
+    public boolean isRecalling=false;
     @Override
     public void onInitializeClient() {
 
@@ -126,5 +132,30 @@ public class ArsenalClient implements ClientModInitializer {
 //            });
 //        });
 
+        //IMPALED
+
+        ClientTickEvents.END_CLIENT_TICK.register(client1 -> {
+            if (client1.player != null) {
+                boolean isHolding = client1.player.getMainHandStack().isEmpty() && client1.options.useKey.isPressed();
+                if (isHolding) {
+                    if (!isRecalling) {
+                        isRecalling = true;
+                        timeCharged = 0;
+                        ClientPlayNetworking.send(new IsRecallingPayload());
+                    }
+                    timeCharged++;
+                    if (timeCharged >= 30) {
+                        ClientPlayNetworking.send(new RecallNearbyTridentPayload());
+                        timeCharged = 0;
+                    }
+                } else {
+                    if (isRecalling) {
+                        isRecalling = false;
+                        timeCharged = 0;
+                        ClientPlayNetworking.send(new IsRecallingPayload());
+                    }
+                }
+            }
+        });
     }
 }

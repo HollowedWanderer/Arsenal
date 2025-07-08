@@ -18,6 +18,8 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(TridentItem.class)
 public class TridentItemMixin {
 
+    //REMOVED FOR NOW AS IT CAUSES TRIDENTS TO NOT BE REMOVED FROM INVENTORY AFTER THROWING
+    /*
     @WrapOperation(method = "onStoppedUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;splitUnlessCreative(ILnet/minecraft/entity/LivingEntity;)Lnet/minecraft/item/ItemStack;"))
     private ItemStack arsenal$spawnEntity(ItemStack instance, int amount, LivingEntity entity, Operation<ItemStack> original, @Local(ordinal = 0, argsOnly = true) ItemStack stack, @Local(ordinal = 0, argsOnly = true) LivingEntity user) {
         if (user instanceof PlayerEntity player) {
@@ -37,4 +39,6 @@ public class TridentItemMixin {
         }
         return instance;
     }
+
+     */
 }
