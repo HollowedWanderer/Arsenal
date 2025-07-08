@@ -37,7 +37,10 @@
 	"custom": {
 		"cardinal-components": [
 			"arsenal:back_weapon",
-			"arsenal:weapon_skin"
+			"arsenal:weapon_skin",
+
+			"arsenal:trident_entity_component",
+			"arsenal:recalling_player_animation_component"
 		]
 	},
 	"depends": {

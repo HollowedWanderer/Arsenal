@@ -1,7 +1,11 @@
 package dev.doctor4t.arsenal;
 
 import dev.doctor4t.arsenal.index.*;
+import dev.doctor4t.arsenal.payload.IsRecallingPayload;
+import dev.doctor4t.arsenal.payload.RecallNearbyTridentPayload;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.util.Identifier;
 
 public class Arsenal implements ModInitializer {
@@ -60,5 +64,11 @@ public class Arsenal implements ModInitializer {
 //                }
 //            }
 //        });
+
+        //IMPALED
+        PayloadTypeRegistry.playC2S().register(RecallNearbyTridentPayload.ID, RecallNearbyTridentPayload.CODEC);
+        ServerPlayNetworking.registerGlobalReceiver(RecallNearbyTridentPayload.ID, new RecallNearbyTridentPayload.Receiver());
+        PayloadTypeRegistry.playC2S().register(IsRecallingPayload.ID, IsRecallingPayload.CODEC);
+        ServerPlayNetworking.registerGlobalReceiver(IsRecallingPayload.ID, new IsRecallingPayload.Receiver());
     }
 }

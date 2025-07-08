@@ -16,7 +16,14 @@
     "ProjectileEntityMixin",
     "ServerPlayNetworkHandlerMixin",
     "TridentItemMixin",
-    "VindicatorEntityMixin"
+    "VindicatorEntityMixin",
+    "impaled.AnvilScreenHandlerMixin",
+    "impaled.ForgingScreenHandlerAccessor",
+    "impaled.ItemEntityMixin",
+    "impaled.LivingEntityMixin",
+    "impaled.PersistentProjectileEntityMixin",
+    "impaled.TridentEntityMixin",
+    "impaled.TridentItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -32,6 +39,7 @@
     "client.InventoryScreenMixin",
     "client.MinecraftClientMixin",
     "client.PlayerCapeModelMixin",
-    "client.PlayerEntityRendererMixin"
+    "client.PlayerEntityRendererMixin",
+    "impaled.client.PlayerEntityRendererMixin"
   ]
 }
