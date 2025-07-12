@@ -1,7 +1,8 @@
 package dev.doctor4t.arsenal.index;
 
 import dev.doctor4t.arsenal.Arsenal;
-import dev.doctor4t.arsenal.cca.ArsenalComponents;
+import dev.doctor4t.arsenal.item.skin.AnchorbladeSkin;
+import dev.doctor4t.arsenal.item.skin.ScytheSkin;
 import dev.doctor4t.arsenal.util.WeaponSkinsSupporterData;
 import dev.upcraft.datasync.api.DataSyncAPI;
 import dev.upcraft.datasync.api.SyncToken;
@@ -10,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,23 +20,24 @@ public interface ArsenalCosmetics {
     SyncToken<WeaponSkinsSupporterData> WEAPON_SKINS_DATA = DataSyncAPI.register(WeaponSkinsSupporterData.class, WEAPON_SKINS_DATA_ID, WeaponSkinsSupporterData.CODEC);
 
     static String getSkin(ItemStack itemStack) {
-//        UUID owner = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(itemStack).getOwner();
-//        String itemName = itemStack.getItem().getName().getString().toLowerCase(Locale.ROOT);
-//        String stackName = itemStack.getName().getString().toLowerCase(Locale.ROOT);
-//
-//        if (owner != null) {
-//            Optional<WeaponSkinsSupporterData> optional = WEAPON_SKINS_DATA.get(owner);
-//            if (optional.isPresent()) {
-//                String serialized = optional.get().serialized();
-//                String[] namesAndSkins = serialized.split(";");
-//                for (String nameAndSkin : namesAndSkins) {
-//                    if (nameAndSkin.matches(itemName + "-" + stackName + ":.+")) {
-//                        String[] split = nameAndSkin.split(":");
-//                        return split[1];
-//                    }
-//                }
-//            }
-//        }
+        if (itemStack.get(ArsenalDataComponents.SKIN_OWNER) == null) return "default";
+        UUID ownerUUID = UUID.fromString(Objects.requireNonNull(itemStack.get(ArsenalDataComponents.SKIN_OWNER)));
+        String itemName = itemStack.getItem().getName().getString().toLowerCase(Locale.ROOT);
+        String stackName = itemStack.getName().getString().toLowerCase(Locale.ROOT);
+
+        if (!ownerUUID.toString().isEmpty()) {
+            Optional<WeaponSkinsSupporterData> optional = WEAPON_SKINS_DATA.get(ownerUUID);
+            if (optional.isPresent()) {
+                String serialized = optional.get().serialized();
+                String[] namesAndSkins = serialized.split(";");
+                for (String nameAndSkin : namesAndSkins) {
+                    if (nameAndSkin.matches(itemName + "-" + stackName + ":.+")) {
+                        String[] split = nameAndSkin.split(":");
+                        return split[1];
+                    }
+                }
+            }
+        }
 
         return "default";
     }

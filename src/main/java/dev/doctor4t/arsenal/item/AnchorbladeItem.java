@@ -3,6 +3,7 @@ package dev.doctor4t.arsenal.item;
 import dev.doctor4t.arsenal.entity.AnchorbladeEntity;
 import dev.doctor4t.arsenal.index.*;
 import dev.doctor4t.arsenal.item.skin.AnchorbladeSkin;
+import dev.doctor4t.arsenal.item.skin.ScytheSkin;
 import dev.doctor4t.arsenal.particle.SweepParticleEffect;
 import dev.doctor4t.arsenal.util.AnchorOwner;
 import dev.doctor4t.arsenal.util.EnchantmentListener;
@@ -10,6 +11,8 @@ import dev.doctor4t.ratatouille.item.CustomHitParticleItem;
 import dev.doctor4t.ratatouille.item.CustomHitSoundItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,6 +27,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public class AnchorbladeItem extends Item implements CustomHitParticleItem, CustomHitSoundItem, ArsenalWeaponItem {
 
@@ -35,17 +39,20 @@ public class AnchorbladeItem extends Item implements CustomHitParticleItem, Cust
     public ActionResult useOnBlock(ItemUsageContext context) {
         BlockState blockStateClicked = context.getWorld().getBlockState(context.getBlockPos());
         PlayerEntity user = context.getPlayer();
-        if (user != null && user.isSneaking() && (blockStateClicked.isIn(BlockTags.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE)) && context.getWorld().isClient) {
+        if (user != null && user.isSneaking() && (blockStateClicked.isIn(BlockTags.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE))) {
             if (ArsenalCosmetics.isSupporter(user.getUuid())) {
-                //WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(user.getStackInHand(context.getHand()));
+                context.getStack().set(ArsenalDataComponents.SKIN_OWNER, user.getUuid().toString());
                 AnchorbladeSkin currentSkin = AnchorbladeSkin.fromString(ArsenalCosmetics.getSkin(context.getStack()));
 
                 if (currentSkin == null) {
                     currentSkin = AnchorbladeSkin.DEFAULT;
                 }
-
-                //ArsenalCosmetics.setSkin(weaponOwnerComponent.getOwner(), context.getStack(), Skin.getNext(currentSkin).getName());
-                context.getPlayer().playSound(SoundEvents.BLOCK_SMITHING_TABLE_USE, 0.5f, 1.0f);
+                if (context.getWorld().isClient) {
+                    ArsenalCosmetics.setSkin(user.getUuid(), context.getStack(), AnchorbladeSkin.getNext(currentSkin).asString());
+                    context.getPlayer().playSound(SoundEvents.BLOCK_SMITHING_TABLE_USE, 0.5f, 1.0f);
+                } else {
+                    context.getStack().set(ArsenalDataComponents.ANCHORBLADE_SKIN, currentSkin);
+                }
 
                 return ActionResult.SUCCESS;
             } else {
@@ -102,27 +109,6 @@ public class AnchorbladeItem extends Item implements CustomHitParticleItem, Cust
         return ActionResult.SUCCESS;
     }
 
-//    @Override
-//    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-//        Skin skin = Skin.fromString(ArsenalCosmetics.getSkin(stack));
-//
-//        if (skin != null && skin != Skin.DEFAULT) {
-//            tooltip.add(Text.literal(skin.tooltipName != null ? skin.tooltipName : TextUtils.formatValueString(skin.getName())).styled(style -> style.withColor(skin.getFirstColor())));
-//            if (skin.lore != null) {
-//                if (Screen.hasShiftDown()) {
-//                    MutableText translatable = Text.translatable(skin.lore);
-//                    for (String line : translatable.getString().split("\n")) {
-//                        tooltip.add(Text.literal(line).styled(style -> style.withColor(Formatting.DARK_GRAY)));
-//                    }
-//                } else {
-//                    tooltip.add(Text.translatable("tooltip.arsenal.hidden").styled(style -> style.withColor(Formatting.DARK_GRAY)));
-//                }
-//            }
-//        }
-//
-//        super.appendTooltip(stack, world, tooltip, context);
-//    }
-
     @Override
     public void spawnHitParticles(PlayerEntity player) {
         if (player.getWorld() instanceof ServerWorld serverWorld) {
@@ -144,13 +130,20 @@ public class AnchorbladeItem extends Item implements CustomHitParticleItem, Cust
         player.playSound(ArsenalSounds.ITEM_ANCHORBLADE_HIT, 1.0F, (float) (1.0F + player.getRandom().nextGaussian() / 10f));
     }
 
-    //    @Override
-//    public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-//        super.inventoryTick(stack, world, entity, slot, selected);
-//
-//        if (entity instanceof PlayerEntity player) {
-//            WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(stack);
-//            weaponOwnerComponent.setOwner(player.getUuid());
-//        }
-//    }
+    @Override
+    public void inventoryTick(ItemStack stack, ServerWorld world, Entity entity, @Nullable EquipmentSlot slot) {
+        super.inventoryTick(stack, world, entity, slot);
+        if (entity instanceof PlayerEntity player) {
+            stack.set(ArsenalDataComponents.SKIN_OWNER, player.getUuid().toString());
+            AnchorbladeSkin currentSkin = AnchorbladeSkin.fromString(ArsenalCosmetics.getSkin(stack));
+
+            if (currentSkin == null || !ArsenalCosmetics.isSupporter(player.getUuid())) {
+                currentSkin = AnchorbladeSkin.DEFAULT;
+            }
+
+            if (!stack.getOrDefault(ArsenalDataComponents.ANCHORBLADE_SKIN, AnchorbladeSkin.DEFAULT).equals(currentSkin)) {
+                stack.set(ArsenalDataComponents.ANCHORBLADE_SKIN, currentSkin);
+            }
+        }
+    }
 }

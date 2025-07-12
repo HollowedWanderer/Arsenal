@@ -15,6 +15,7 @@ public interface ArsenalDataComponents {
 
     ComponentType<AnchorbladeSkin> ANCHORBLADE_SKIN = register("anchorblade_skin", builder -> builder.codec(AnchorbladeSkin.CODEC).packetCodec(AnchorbladeSkin.PACKET_CODEC));
     ComponentType<ScytheSkin> SCYTHE_SKIN = register("scythe_skin", builder -> builder.codec(ScytheSkin.CODEC).packetCodec(ScytheSkin.PACKET_CODEC));
+    ComponentType<String> SKIN_OWNER = register("skin_owner", builder -> builder.codec(Codec.STRING).packetCodec(PacketCodecs.STRING));
 
     // IMPALED
     ComponentType<Boolean> SOULD_RECALL = register("should_recall", builder -> builder.codec(Codec.BOOL).packetCodec(PacketCodecs.BOOLEAN));

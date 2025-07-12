@@ -10,7 +10,8 @@ import dev.doctor4t.ratatouille.item.CustomHitParticleItem;
 import dev.doctor4t.ratatouille.item.CustomHitSoundItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -23,13 +24,11 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class ScytheItem extends Item implements CustomHitParticleItem, CustomHitSoundItem, ArsenalWeaponItem {
 
@@ -41,18 +40,19 @@ public class ScytheItem extends Item implements CustomHitParticleItem, CustomHit
     public ActionResult useOnBlock(ItemUsageContext context) {
         BlockState blockStateClicked = context.getWorld().getBlockState(context.getBlockPos());
         PlayerEntity user = context.getPlayer();
-        if (user != null && user.isSneaking() && (blockStateClicked.isIn(BlockTags.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE)) && context.getWorld().isClient) {
+        if (user != null && user.isSneaking() && (blockStateClicked.isIn(BlockTags.ANVIL) || blockStateClicked.isOf(Blocks.SMITHING_TABLE))) {
             if (ArsenalCosmetics.isSupporter(user.getUuid())) {
-                //WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(user.getStackInHand(context.getHand()));
                 ScytheSkin currentSkin = ScytheSkin.fromString(ArsenalCosmetics.getSkin(context.getStack()));
 
                 if (currentSkin == null) {
                     currentSkin = ScytheSkin.DEFAULT;
                 }
-
-                //ArsenalCosmetics.setSkin(weaponOwnerComponent.getOwner(), context.getStack(), Skin.getNext(currentSkin).getName());
-
-                context.getPlayer().playSound(SoundEvents.BLOCK_SMITHING_TABLE_USE, 0.5f, 1.0f);
+                if (context.getWorld().isClient) {
+                    ArsenalCosmetics.setSkin(user.getUuid(), context.getStack(), ScytheSkin.getNext(currentSkin).asString());
+                    context.getPlayer().playSound(SoundEvents.BLOCK_SMITHING_TABLE_USE, 0.5f, 1.0f);
+                } else {
+                    context.getStack().set(ArsenalDataComponents.SCYTHE_SKIN, currentSkin);
+                }
 
                 return ActionResult.SUCCESS;
             } else {
@@ -112,27 +112,6 @@ public class ScytheItem extends Item implements CustomHitParticleItem, CustomHit
         return super.use(world, player, hand);
     }
 
-//    @Override
-//    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-//        Skin skin = Skin.fromString(ArsenalCosmetics.getSkin(stack));
-//
-//        if (skin != null && skin != Skin.DEFAULT) {
-//            tooltip.add(Text.literal(skin.tooltipName != null ? skin.tooltipName : TextUtils.formatValueString(skin.getName())).styled(style -> style.withColor(skin.color)));
-//            if (skin.lore != null) {
-//                if (Screen.hasShiftDown()) {
-//                    MutableText translatable = Text.translatable(skin.lore);
-//                    for (String line : translatable.getString().split("\n")) {
-//                        tooltip.add(Text.literal(line).styled(style -> style.withColor(Formatting.DARK_GRAY)));
-//                    }
-//                } else {
-//                    tooltip.add(Text.translatable("tooltip.arsenal.hidden").styled(style -> style.withColor(Formatting.DARK_GRAY)));
-//                }
-//            }
-//        }
-//
-//        super.appendTooltip(stack, world, tooltip, context);
-//    }
-
     @Override
     public void spawnHitParticles(PlayerEntity player) {
         if (player.getWorld() instanceof ServerWorld serverWorld) {
@@ -154,13 +133,20 @@ public class ScytheItem extends Item implements CustomHitParticleItem, CustomHit
         player.playSound(ArsenalSounds.ITEM_SCYTHE_HIT, 1.0F, (float) (1.0F + player.getRandom().nextGaussian() / 10f));
     }
 
-    //    @Override
-//    public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-//        super.inventoryTick(stack, world, entity, slot, selected);
-//
-//        if (entity instanceof PlayerEntity player) {
-//            WeaponOwnerComponent weaponOwnerComponent = ArsenalComponents.WEAPON_OWNER_COMPONENT.get(stack);
-//            weaponOwnerComponent.setOwner(player.getUuid());
-//        }
-//    }
+    @Override
+    public void inventoryTick(ItemStack stack, ServerWorld world, Entity entity, @Nullable EquipmentSlot slot) {
+        super.inventoryTick(stack, world, entity, slot);
+        if (entity instanceof PlayerEntity player) {
+            stack.set(ArsenalDataComponents.SKIN_OWNER, player.getUuid().toString());
+            ScytheSkin currentSkin = ScytheSkin.fromString(ArsenalCosmetics.getSkin(stack));
+
+            if (currentSkin == null || !ArsenalCosmetics.isSupporter(player.getUuid())) {
+                currentSkin = ScytheSkin.DEFAULT;
+            }
+
+            if (!stack.getOrDefault(ArsenalDataComponents.SCYTHE_SKIN, ScytheSkin.DEFAULT).equals(currentSkin)) {
+                stack.set(ArsenalDataComponents.SCYTHE_SKIN, currentSkin);
+            }
+        }
+    }
 }
