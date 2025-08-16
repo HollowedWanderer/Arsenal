@@ -2,7 +2,6 @@ package dev.doctor4t.arsenal.item;
 
 import dev.doctor4t.arsenal.entity.BloodScytheEntity;
 import dev.doctor4t.arsenal.index.*;
-import dev.doctor4t.arsenal.item.skin.AnchorbladeSkin;
 import dev.doctor4t.arsenal.item.skin.ScytheSkin;
 import dev.doctor4t.arsenal.particle.SweepParticleEffect;
 import dev.doctor4t.arsenal.util.EnchantmentListener;
