@@ -1,0 +1,173 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "cases": [
+      {
+        "model": {
+          "type": "minecraft:select",
+          "cases": [
+            {
+              "model": {
+                "type": "minecraft:model",
+                "model": "arsenal:item/scythe_clown_inventory"
+              },
+              "when": [
+                "gui",
+                "ground",
+                "fixed"
+              ]
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "arsenal:item/scythe_clown_in_hand"
+          },
+          "property": "minecraft:display_context"
+        },
+        "when": "clown"
+      },
+      {
+        "model": {
+          "type": "minecraft:select",
+          "cases": [
+            {
+              "model": {
+                "type": "minecraft:model",
+                "model": "arsenal:item/scythe_carrion_inventory"
+              },
+              "when": [
+                "gui",
+                "ground",
+                "fixed"
+              ]
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "arsenal:item/scythe_carrion_in_hand"
+          },
+          "property": "minecraft:display_context"
+        },
+        "when": "carrion"
+      },
+      {
+        "model": {
+          "type": "minecraft:select",
+          "cases": [
+            {
+              "model": {
+                "type": "minecraft:model",
+                "model": "arsenal:item/scythe_gilded_inventory"
+              },
+              "when": [
+                "gui",
+                "ground",
+                "fixed"
+              ]
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "arsenal:item/scythe_gilded_in_hand"
+          },
+          "property": "minecraft:display_context"
+        },
+        "when": "gilded"
+      },
+      {
+        "model": {
+          "type": "minecraft:select",
+          "cases": [
+            {
+              "model": {
+                "type": "minecraft:model",
+                "model": "arsenal:item/scythe_roze_inventory"
+              },
+              "when": [
+                "gui",
+                "ground",
+                "fixed"
+              ]
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "arsenal:item/scythe_roze_in_hand"
+          },
+          "property": "minecraft:display_context"
+        },
+        "when": "roze"
+      },
+      {
+        "model": {
+          "type": "minecraft:select",
+          "cases": [
+            {
+              "model": {
+                "type": "minecraft:model",
+                "model": "arsenal:item/scythe_folly_inventory"
+              },
+              "when": [
+                "gui",
+                "ground",
+                "fixed"
+              ]
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "arsenal:item/scythe_folly_in_hand"
+          },
+          "property": "minecraft:display_context"
+        },
+        "when": "folly"
+      },
+      {
+        "model": {
+          "type": "minecraft:select",
+          "cases": [
+            {
+              "model": {
+                "type": "minecraft:model",
+                "model": "arsenal:item/scythe_scissors_inventory"
+              },
+              "when": [
+                "gui",
+                "ground",
+                "fixed"
+              ]
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "arsenal:item/scythe_scissors_in_hand"
+          },
+          "property": "minecraft:display_context"
+        },
+        "when": "scissors"
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:select",
+      "cases": [
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "arsenal:item/scythe_inventory"
+          },
+          "when": [
+            "gui",
+            "ground",
+            "fixed"
+          ]
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "arsenal:item/scythe_in_hand"
+      },
+      "property": "minecraft:display_context"
+    },
+    "property": "arsenal:scythe_skin"
+  }
+}
