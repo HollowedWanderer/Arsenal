@@ -11,6 +11,7 @@ import dev.doctor4t.arsenal.client.particle.SweepAttackParticle;
 import dev.doctor4t.arsenal.client.render.entity.*;
 import dev.doctor4t.arsenal.index.ArsenalEntities;
 import dev.doctor4t.arsenal.index.ArsenalParticles;
+import dev.doctor4t.arsenal.payload.BackWeaponSwapPayload;
 import dev.doctor4t.arsenal.payload.IsRecallingPayload;
 import dev.doctor4t.arsenal.payload.RecallNearbyTridentPayload;
 import dev.doctor4t.arsenal.util.ArsenalConfig;
@@ -31,15 +32,6 @@ import org.lwjgl.glfw.GLFW;
 
 @SuppressWarnings("unused")
 public class ArsenalClient implements ClientModInitializer {
-//    public static ModelTransformationMode currentMode = ModelTransformationMode.NONE;
-//
-//    static {
-//        for (var mode : ModelTransformationMode.values()) {
-//            ModelPredicateProviderRegistry.register(Arsenal.id(mode.name().toLowerCase(Locale.ROOT)), (stack, world, entity, seed) -> mode == currentMode ? 1.0F : 0.0F);
-//        }
-//
-//        ModelPredicateProviderRegistry.register(new Identifier("vanilla"), (stack, world, entity, seed) -> ArsenalConfig.CUSTOM_TRIDENT_RENDERING ? 0f : 1f);
-//    }
 
     public static KeyBinding weaponKeybind;
     public static KeyBinding swapKeybind;
@@ -51,9 +43,9 @@ public class ArsenalClient implements ClientModInitializer {
     public void onInitializeClient() {
 
         // Register integrated resource pack
-        FabricLoader.getInstance().getModContainer(Arsenal.MOD_ID).ifPresent(modContainer -> {
-            ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of(Arsenal.MOD_ID, "classic"), modContainer, ResourcePackActivationType.NORMAL);
-        });
+        FabricLoader.getInstance().getModContainer(Arsenal.MOD_ID).ifPresent(modContainer ->
+                ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of(Arsenal.MOD_ID, "classic"), modContainer, ResourcePackActivationType.NORMAL)
+        );
 
         // Built-in Item Renderers
 //        BuiltinItemRendererRegistry.INSTANCE.register(ArsenalItems.SCYTHE, new ScytheDynamicItemRenderer());
@@ -81,8 +73,6 @@ public class ArsenalClient implements ClientModInitializer {
         SelectProperties.ID_MAPPER.put(Arsenal.id("anchorblade_skin"), AnchorbladeSkinProperty.TYPE);
         SelectProperties.ID_MAPPER.put(Arsenal.id("scythe_skin"), ScytheSkinProperty.TYPE);
 
-
-
         // particle renderers registration
         ParticleFactoryRegistry.getInstance().register(ArsenalParticles.SWEEP_PARTICLE, SweepAttackParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(ArsenalParticles.BLOOD_BUBBLE, BloodBubbleParticle.Factory::new);
@@ -107,33 +97,11 @@ public class ArsenalClient implements ClientModInitializer {
                 BackWeaponComponent.setHoldingBackWeapon(client.player, !BackWeaponComponent.isHoldingBackWeapon(client.player));
             }
             if (swapKeybind.wasPressed()) {
-                //ClientPlayNetworking.send(Arsenal.SERVERBOUND_SWAP_WEAPON_PACKET, PacketByteBufs.empty());
+                ClientPlayNetworking.send(new BackWeaponSwapPayload());
             }
         });
 
-        // Anchorblade entity model init
-//        for (AnchorbladeItem.Skin value : AnchorbladeItem.Skin.values()) {
-//            ModelLoadingPlugin.register(context -> context.addModels(value.anchorbladeEntityModel));
-//        }
-//
-//        // attack sweep particle packet
-//        ClientPlayNetworking.registerGlobalReceiver(Arsenal.CLIENTBOUND_SWEEP_PACKET, (client, handler, buf, responseSender) -> {
-//            int color = buf.readInt();
-//            int shadowColor = buf.readInt();
-//            double x = buf.readDouble();
-//            double y = buf.readDouble();
-//            double z = buf.readDouble();
-//
-//            client.execute(() -> {
-//                if (client.world != null) {
-//                    client.world.addParticle(ArsenalParticles.SWEEP_PARTICLE.setData(new ColoredParticleInitialData(color)), x, y, z, 0, 0, 0);
-//                    client.world.addParticle(ArsenalParticles.SWEEP_SHADOW_PARTICLE.setData(new ColoredParticleInitialData(shadowColor)), x, y, z, 0, 0, 0);
-//                }
-//            });
-//        });
-
         //IMPALED
-
         ClientTickEvents.END_CLIENT_TICK.register(client1 -> {
             if (client1.player != null) {
                 boolean isHolding = client1.player.getMainHandStack().isEmpty() && client1.options.useKey.isPressed();

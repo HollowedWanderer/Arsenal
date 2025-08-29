@@ -21,13 +21,13 @@ public record IsRecallingPayload() implements CustomPayload {
     public static Id<IsRecallingPayload> ID = new Id<>(Arsenal.id("is_recalling"));
     public static PacketCodec<RegistryByteBuf, IsRecallingPayload> CODEC = PacketCodec.unit(new IsRecallingPayload());
 
-
     @Override
     public Id<? extends CustomPayload> getId() {
         return ID;
     }
 
     public static class Receiver implements ServerPlayNetworking.PlayPayloadHandler<IsRecallingPayload> {
+
         @Override
         public void receive(IsRecallingPayload payload, ServerPlayNetworking.Context context) {
             ServerPlayerEntity player = context.player();

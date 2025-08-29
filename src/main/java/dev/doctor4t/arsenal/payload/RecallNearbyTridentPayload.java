@@ -12,7 +12,6 @@ import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 
 import java.util.List;
@@ -22,13 +21,13 @@ public record RecallNearbyTridentPayload() implements CustomPayload {
     public static Id<RecallNearbyTridentPayload> ID = new Id<>(Arsenal.id("recall_nearby_trident"));
     public static PacketCodec<RegistryByteBuf, RecallNearbyTridentPayload> CODEC = PacketCodec.unit(new RecallNearbyTridentPayload());
 
-
     @Override
     public Id<? extends CustomPayload> getId() {
         return ID;
     }
 
     public static class Receiver implements ServerPlayNetworking.PlayPayloadHandler<RecallNearbyTridentPayload> {
+
         @Override
         public void receive(RecallNearbyTridentPayload payload, ServerPlayNetworking.Context context) {
             ServerPlayerEntity player = context.player();
