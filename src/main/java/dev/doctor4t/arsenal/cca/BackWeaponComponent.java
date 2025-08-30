@@ -1,10 +1,10 @@
 package dev.doctor4t.arsenal.cca;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import dev.doctor4t.arsenal.payload.HoldWeaponPayload;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
@@ -71,10 +71,7 @@ public class BackWeaponComponent implements AutoSyncedComponent {
 
     public static void setHoldingBackWeapon(PlayerEntity player, boolean holdingBackWeapon) {
         if (player.getWorld().isClient()) {
-            PacketByteBuf buf = PacketByteBufs.create();
-            buf.writeBoolean(holdingBackWeapon);
-            //ClientPlayNetworking.send(Arsenal.SERVERBOUND_HOLD_WEAPON_PACKET, buf);
-            // PACKET
+            ClientPlayNetworking.send(new HoldWeaponPayload(holdingBackWeapon));
             return;
         }
         ArsenalComponents.BACK_WEAPON_COMPONENT.get(player).setHoldingBackWeapon(holdingBackWeapon);

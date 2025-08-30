@@ -15,6 +15,7 @@ import dev.doctor4t.arsenal.payload.BackWeaponSwapPayload;
 import dev.doctor4t.arsenal.payload.IsRecallingPayload;
 import dev.doctor4t.arsenal.payload.RecallNearbyTridentPayload;
 import dev.doctor4t.arsenal.util.ArsenalConfig;
+import dev.doctor4t.arsenal.util.ClientTickDelayScheduler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -93,6 +94,7 @@ public class ArsenalClient implements ClientModInitializer {
 
         // client tick events
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            ClientTickDelayScheduler.tick();
             if (weaponKeybind.wasPressed() && client.player != null) {
                 BackWeaponComponent.setHoldingBackWeapon(client.player, !BackWeaponComponent.isHoldingBackWeapon(client.player));
             }

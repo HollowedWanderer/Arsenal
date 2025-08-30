@@ -1,14 +1,16 @@
 package dev.doctor4t.arsenal;
 
 import dev.doctor4t.arsenal.index.*;
-import dev.doctor4t.arsenal.payload.BackWeaponCreativePayload;
-import dev.doctor4t.arsenal.payload.BackWeaponSwapPayload;
-import dev.doctor4t.arsenal.payload.IsRecallingPayload;
-import dev.doctor4t.arsenal.payload.RecallNearbyTridentPayload;
+import dev.doctor4t.arsenal.payload.*;
+import dev.doctor4t.arsenal.util.BackStateResources;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Arsenal implements ModInitializer {
     public static final String MOD_ID = "arsenal";
@@ -16,6 +18,8 @@ public class Arsenal implements ModInitializer {
     public static Identifier id(String path) {
         return Identifier.of(MOD_ID, path);
     }
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     @Override
     public void onInitialize() {
@@ -31,12 +35,13 @@ public class Arsenal implements ModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(BackWeaponSwapPayload.ID, new BackWeaponSwapPayload.Receiver());
         PayloadTypeRegistry.playC2S().register(BackWeaponCreativePayload.ID, BackWeaponCreativePayload.CODEC);
         ServerPlayNetworking.registerGlobalReceiver(BackWeaponCreativePayload.ID, new BackWeaponCreativePayload.Receiver());
+        PayloadTypeRegistry.playC2S().register(HoldWeaponPayload.ID, HoldWeaponPayload.CODEC);
+        ServerPlayNetworking.registerGlobalReceiver(HoldWeaponPayload.ID, new HoldWeaponPayload.Receiver());
+        PayloadTypeRegistry.playC2S().register(InventorySwapPayload.ID, InventorySwapPayload.CODEC);
+        ServerPlayNetworking.registerGlobalReceiver(InventorySwapPayload.ID, new InventorySwapPayload.Receiver());
 
-//        ServerPlayNetworking.registerGlobalReceiver(SERVERBOUND_HOLD_WEAPON_PACKET, (server, player, handler, buf, responseSender) -> {
-//            boolean hold = buf.readBoolean();
-//            BackWeaponComponent.setHoldingBackWeapon(player, hold);
-//        });
-//
+        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new BackStateResources());
+
 //        ServerPlayNetworking.registerGlobalReceiver(SERVERBOUND_SWAP_INVENTORY_PACKET, (server, player, handler, buf, responseSender) -> {
 //            int slotId = buf.readInt();
 //            if (!player.isSpectator()) {
