@@ -25,7 +25,7 @@ public enum AnchorbladeSkin implements StringIdentifiable {
 
     public static final Codec<AnchorbladeSkin> CODEC = StringIdentifiable.createCodec(AnchorbladeSkin::values);
 
-    private static final IntFunction<AnchorbladeSkin> INDEX_MAPPER = ValueLists.createIndexToValueFunction(AnchorbladeSkin::ordinal, values(), ValueLists.OutOfBoundsHandling.ZERO);
+    private static final IntFunction<AnchorbladeSkin> INDEX_MAPPER = ValueLists.createIdToValueFunction(AnchorbladeSkin::ordinal, values(), ValueLists.OutOfBoundsHandling.ZERO);
     public static final PacketCodec<ByteBuf, AnchorbladeSkin> PACKET_CODEC = PacketCodecs.indexed(INDEX_MAPPER, AnchorbladeSkin::ordinal);
 
     public final String name;

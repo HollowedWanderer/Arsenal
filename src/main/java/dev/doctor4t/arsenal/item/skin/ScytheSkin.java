@@ -21,7 +21,7 @@ public enum ScytheSkin implements StringIdentifiable {
 
     public static final Codec<ScytheSkin> CODEC = StringIdentifiable.createCodec(ScytheSkin::values);
 
-    private static final IntFunction<ScytheSkin> INDEX_MAPPER = ValueLists.createIndexToValueFunction(ScytheSkin::ordinal, values(), ValueLists.OutOfBoundsHandling.ZERO);
+    private static final IntFunction<ScytheSkin> INDEX_MAPPER = ValueLists.createIdToValueFunction(ScytheSkin::ordinal, values(), ValueLists.OutOfBoundsHandling.ZERO);
     public static final PacketCodec<ByteBuf, ScytheSkin> PACKET_CODEC = PacketCodecs.indexed(INDEX_MAPPER, ScytheSkin::ordinal);
 
     public final String name;

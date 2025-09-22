@@ -5,16 +5,16 @@ import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.state.TridentEntityRenderState;
+import net.minecraft.client.render.entity.TridentEntityRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.projectile.TridentEntity;
-import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 
-public class ArsenalTridentEntityRenderer extends EntityRenderer<TridentEntity, TridentEntityRenderState> {
+public class ArsenalTridentEntityRenderer extends EntityRenderer<TridentEntity> {
     private final ItemRenderer itemRenderer;
     private final ItemStack tridentStack = new ItemStack(Items.TRIDENT); // TODO: Replace with a synced stack so skins work
 
@@ -24,12 +24,17 @@ public class ArsenalTridentEntityRenderer extends EntityRenderer<TridentEntity, 
     }
 
     @Override
-    public TridentEntityRenderState createRenderState() {
-        return new TridentEntityRenderState();
+    public Identifier getTexture(TridentEntity entity) {
+        return null;
     }
 
     @Override
-    public void render(TridentEntityRenderState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
+    public TridentEntityRenderer createRenderState() {
+        return new TridentEntityRenderer();
+    }
+
+    @Override
+    public void render(TridentEntityRenderer state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
         matrices.push();
 
         float scale = 1.6f;

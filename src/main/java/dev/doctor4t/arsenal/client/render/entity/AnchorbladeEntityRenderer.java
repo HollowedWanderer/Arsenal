@@ -13,20 +13,25 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
 
-public class AnchorbladeEntityRenderer extends EntityRenderer<AnchorbladeEntity, AnchorBladeEntityRenderState> {
+public class AnchorbladeEntityRenderer extends EntityRenderer<AnchorbladeEntity> {
     private final ItemRenderer itemRenderer;
 
     public AnchorbladeEntityRenderer(EntityRendererFactory.Context ctx) {
         super(ctx);
         this.itemRenderer = MinecraftClient.getInstance().getItemRenderer();
+    }
+
+    @Override
+    public Identifier getTexture(AnchorbladeEntity entity) {
+        return null;
     }
 
     @Override

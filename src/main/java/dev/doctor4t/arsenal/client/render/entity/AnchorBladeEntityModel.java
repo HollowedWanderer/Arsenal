@@ -1,8 +1,9 @@
 package dev.doctor4t.arsenal.client.render.entity;
 
 import net.minecraft.client.model.*;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.state.ProjectileEntityRenderState;
+import net.minecraft.client.util.math.MatrixStack;
 
 public class AnchorBladeEntityModel extends EntityModel<ProjectileEntityRenderState> {
     private final ModelPart bone;
@@ -34,5 +35,15 @@ public class AnchorBladeEntityModel extends EntityModel<ProjectileEntityRenderSt
                         .uv(8, 14).cuboid(-2.0F, -13.75F, 0.0F, 4.0F, 4.0F, 0.0F, new Dilation(0.0F)),
                 ModelTransform.origin(0.0F, -1.25F, 0.0F));
         return TexturedModelData.of(modelData, 64, 64);
+    }
+
+    @Override
+    public void setAngles(ProjectileEntityRenderState entity, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {
+
+    }
+
+    @Override
+    public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
+
     }
 }

@@ -15,8 +15,7 @@ import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -50,17 +49,17 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
     }
 
     @Override
-    public void writeData(WriteView view) {
+    public void writeData(NbtCompound view) {
         super.writeData(view);
         view.put("stack", ItemStack.CODEC, this.getDataTracker().get(ITEM));
         view.putByte("flags", this.getDataTracker().get(ANCHOR_FLAGS));
     }
 
     @Override
-    public void readData(ReadView view) {
+    public void readData(NbtCompound view) {
         super.readData(view);
         this.dataTracker.set(ITEM, view.read("stack", ItemStack.CODEC).orElse(ItemStack.EMPTY));
-        this.dataTracker.set(ANCHOR_FLAGS, view.getByte("flags", (byte) 0));
+        this.dataTracker.set(ANCHOR_FLAGS, view.getByte("flags"));
     }
 
     @Override
@@ -108,7 +107,7 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
             } else {
                 float radius = 5f;
                 // impact
-                this.getWorld().addParticleClient(ArsenalParticles.SHOCKWAVE, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                this.getWorld().addParticle(ArsenalParticles.SHOCKWAVE, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
                 for (LivingEntity hitLivingEntity : this.getWorld().getEntitiesByClass(LivingEntity.class, this.getBoundingBox().expand(radius), LivingEntity::isAlive)) {
                     float strength = this.getKnockbackForEntity(hitLivingEntity);
                     if (!(strength <= 0.0)) {
@@ -198,7 +197,7 @@ public class AnchorbladeEntity extends PersistentProjectileEntity {
     }
 
     private float getKnockbackForEntity(LivingEntity hitLivingEntity) {
-        return (float) (1f * (1.0 - hitLivingEntity.getAttributeValue(EntityAttributes.KNOCKBACK_RESISTANCE)));
+        return (float) (1f * (1.0 - hitLivingEntity.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE)));
     }
 
     @Override

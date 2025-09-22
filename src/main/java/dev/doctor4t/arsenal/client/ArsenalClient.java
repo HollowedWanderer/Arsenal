@@ -26,10 +26,11 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.item.property.select.SelectProperties;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.Properties;
 
 @SuppressWarnings("unused")
 public class ArsenalClient implements ClientModInitializer {

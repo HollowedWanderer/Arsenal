@@ -1,6 +1,5 @@
 package dev.doctor4t.arsenal.mixin.impaled;
 import dev.doctor4t.arsenal.index.ArsenalDataComponents;
-import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -18,6 +17,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.function.Consumer;
@@ -52,7 +52,7 @@ public class TridentItemMixin extends Item {
         return value;
     }
     @Inject(method = "onStoppedUsing", at = @At(value = "HEAD"))
-    public void pickupSavedSlotFrom(ItemStack stack, World world, LivingEntity user, int remainingUseTicks, CallbackInfoReturnable<Boolean> cir) {
+    public void pickupSavedSlotFrom(ItemStack stack, World world, LivingEntity user, int remainingUseTicks, CallbackInfo ci) {
 
         if (world.isClient()) return;
         if (user instanceof PlayerEntity player) {

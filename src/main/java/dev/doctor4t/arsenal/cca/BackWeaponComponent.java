@@ -5,8 +5,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
 public class BackWeaponComponent implements AutoSyncedComponent {
@@ -19,13 +19,13 @@ public class BackWeaponComponent implements AutoSyncedComponent {
     }
 
     @Override
-    public void readData(ReadView readView) {
+    public void readData(NbtCompound readView) {
         this.backWeapon.setStack(0, readView.read("backWeapon", ItemStack.CODEC).orElse(ItemStack.EMPTY));
         this.holdingBackWeapon = readView.getBoolean("holdingBackWeapon", false);
     }
 
     @Override
-    public void writeData(WriteView writeView) {
+    public void writeData(NbtCompound writeView) {
         writeView.put("backWeapon", ItemStack.CODEC, this.backWeapon.getStack(0));
         writeView.putBoolean("holdingBackWeapon", this.holdingBackWeapon);
     }
@@ -75,5 +75,15 @@ public class BackWeaponComponent implements AutoSyncedComponent {
             return;
         }
         ArsenalComponents.BACK_WEAPON_COMPONENT.get(player).setHoldingBackWeapon(holdingBackWeapon);
+    }
+
+    @Override
+    public void readFromNbt(NbtCompound nbtCompound, RegistryWrapper.WrapperLookup wrapperLookup) {
+
+    }
+
+    @Override
+    public void writeToNbt(NbtCompound nbtCompound, RegistryWrapper.WrapperLookup wrapperLookup) {
+
     }
 }

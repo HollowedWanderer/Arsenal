@@ -1,8 +1,7 @@
 package dev.doctor4t.arsenal.cca;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
+import net.minecraft.nbt.NbtCompound;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 import org.ladysnake.cca.api.v3.component.tick.CommonTickingComponent;
 
@@ -33,12 +32,12 @@ public class RecallingPlayerAnimationComponent implements AutoSyncedComponent, C
 
 
     @Override
-    public void readData(ReadView readView) {
-        this.isRecalling = readView.getBoolean("isrecalling",false);
+    public void readData(NbtCompound readView) {
+        this.isRecalling = readView.getBoolean("isrecalling");
     }
 
     @Override
-    public void writeData(WriteView writeView) {
+    public void writeData(NbtCompound writeView) {
         writeView.putBoolean("isrecalling",isRecalling);
     }
 }

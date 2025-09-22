@@ -1,8 +1,8 @@
 package dev.doctor4t.arsenal.cca;
 
 import net.minecraft.entity.projectile.TridentEntity;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 import org.ladysnake.cca.api.v3.component.tick.CommonTickingComponent;
 
@@ -42,14 +42,24 @@ public class TridentEntityComponent implements AutoSyncedComponent, CommonTickin
 
 
     @Override
-    public void readData(ReadView readView) {
-        readView.getBoolean("isdropped",false);
-        readView.getInt("slotdroppedfrom",-1);
+    public void readData(NbtCompound readView) {
+        readView.getBoolean("isdropped");
+        readView.getInt("slotdroppedfrom");
     }
 
     @Override
-    public void writeData(WriteView writeView) {
+    public void writeData(NbtCompound writeView) {
         writeView.putBoolean("isdropped",isDropped);
         writeView.putInt("slotdroppedfrom",slotDroppedFrom);
+    }
+
+    @Override
+    public void readFromNbt(NbtCompound nbtCompound, RegistryWrapper.WrapperLookup wrapperLookup) {
+
+    }
+
+    @Override
+    public void writeToNbt(NbtCompound nbtCompound, RegistryWrapper.WrapperLookup wrapperLookup) {
+
     }
 }

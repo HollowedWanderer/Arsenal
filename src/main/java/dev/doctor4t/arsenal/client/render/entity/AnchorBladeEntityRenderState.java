@@ -1,7 +1,6 @@
 package dev.doctor4t.arsenal.client.render.entity;
 
 import dev.doctor4t.arsenal.entity.AnchorbladeEntity;
-import net.minecraft.client.render.entity.state.ProjectileEntityRenderState;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 
